@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TCInfodbaMapper">
+	<resultMap id="BaseResultMap" type="sql.pojo.TCInfodbaRecord">
+		<result column="PUID" jdbcType="VARCHAR" property="puid"/>
+		<result column="ITEM_ID" jdbcType="VARCHAR" property="itemId"/>
+		<result column="ITEM_REVISION" jdbcType="VARCHAR" property="itemRevision"/>
+		<result column="ITEM_TYPE" jdbcType="VARCHAR" property="itemType"/>
+		<result column="PWNT_PATH_NAME" jdbcType="VARCHAR" property="pwntPathName"/>
+		<result column="PSD_PATH_NAME" jdbcType="VARCHAR" property="psdPathName"/>
+		<result column="PFILE_NAME" jdbcType="VARCHAR" property="pFileName"/>
+		<result column="PORIGINAL_FILE_NAME" jdbcType="VARCHAR" property="poriginalFileName"/>
+	</resultMap>
+
+	<select id="PublishDataDAOImpl_getTCInfodbaRecordListWithType" parameterType="sql.pojo.TCInfodbaRecord"
+			resultMap="BaseResultMap">
+		select t.puid,t.pfile_name,t.psd_path_name,t2.pwnt_path_name,t.poriginal_file_name from PIMANFILE t ,PIMANVOLUME t2
+    where t.pfile_name in (
+         SELECT t_02.pfile_name FROM PPOM_OBJECT t_01 , PIMANFILE t_02 , PPOM_OBJECT t_03 , PIMANVOLUME t_04
+              WHERE (
+                  ( t_02.puid in
+		(select t.pvalu_0 from  PREF_NAMES_0 m inner JOIN PREF_LIST_0 t on m.PUID = t.PUID  AND m.PVAL_0=#{itemType,jdbcType=VARCHAR}
+
+				  where t.puid in (SELECT  DISTINCT t_01.rsecondary_objectu FROM PIMANRELATION t_01 WHERE (
+ ( t_01.rprimary_objectu = (select t.puid from PITEMREVISION t where t.ritems_tagu=
+(select t_01.puid from PITEM t_01 where t_01.pitem_id=#{itemId,jdbcType=VARCHAR}) and t.pitem_revision_id=#{itemRevision,jdbcType=VARCHAR}
+) )  )))
+                      AND ( t_02.rvolume_tagu = t_04.puid ) )
+                  AND ( t_01.puid = t_02.puid AND t_03.puid = t_04.puid )
+              )
+    )
+	</select>
+
+
+
+	<select id="PublishDataDAOImpl_getTCInfodbaRecordList" parameterType="sql.pojo.TCInfodbaRecord"
+			resultMap="BaseResultMap">
+	select t.puid,t.pfile_name,t.psd_path_name,t2.pwnt_path_name,t.poriginal_file_name from PIMANFILE t ,PIMANVOLUME t2
+    where t.pfile_name in (
+         SELECT t_02.pfile_name FROM PPOM_OBJECT t_01 , PIMANFILE t_02 , PPOM_OBJECT t_03 , PIMANVOLUME t_04
+              WHERE (
+                  ( t_02.puid in (select t.pvalu_0 from PREF_LIST_0 t where t.puid in (SELECT  DISTINCT t_01.rsecondary_objectu FROM PIMANRELATION t_01 WHERE (
+ ( t_01.rprimary_objectu = (select t.puid from PITEMREVISION t where t.ritems_tagu=(select t_01.puid from PITEM t_01 where t_01.pitem_id=#{itemId,jdbcType=VARCHAR}) and t.pitem_revision_id=#{itemRevision,jdbcType=VARCHAR}
+) )  )))
+                      AND ( t_02.rvolume_tagu = t_04.puid ) )
+                  AND ( t_01.puid = t_02.puid AND t_03.puid = t_04.puid )
+              )
+    )
+	</select>
+
+
+</mapper>

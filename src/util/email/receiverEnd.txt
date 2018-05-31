@@ -1,0 +1,25 @@
+﻿</table>
+</div>
+<div class='common_div'>
+<p>数据共享路径:<a href='
+--sharePath--
+'>
+--sharePath--
+</a>
+</p>
+<p>(温馨提示：如果超链接失效，请将超链接复制浏览器地址栏中)</p>
+<p>具体生产采购任务以合众采购工程师下发的采购通知单为准，谢谢。</p>
+<strong>重要提示：本邮箱只有发送邮件权限，不接收任何邮件！</strong>
+</div>
+<div class='_bottom_'>
+<p class='toRight'>
+--sender--
+</p>
+<p class='toRight'>
+浙江合众新能源汽车有限公司
+</p>
+<p class='toRight'>
+--date--
+</p>
+</div>
+</div>

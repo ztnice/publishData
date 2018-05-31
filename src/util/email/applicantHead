@@ -1,0 +1,48 @@
+<style type='text/css'>
+p	{	
+		line-height:18px;
+		margin-left:30px;
+	}
+.p_marg	{
+		margin-left:0px;
+	}
+td	{	
+		width:330px;
+		text-align:center;
+	}
+th	{
+		width:530px;
+		text-align:center;
+	}
+.9re_content{
+		float:left;
+		clear:both;
+		width:660px;
+	}
+table	{
+	font-size:14px;
+	}
+.common_div	{
+	width:660px;
+	margin:0 auto;
+	}
+._bottom_	{
+		float:right;
+		clear:both;
+	}
+
+.toRight	{
+		text-align:right;
+}	
+</style>
+<div class='common_div'>
+
+<div class='common_div'>
+<p class='p_marg'>
+-----
+</p>
+<p>&emsp;&emsp;发放成功</p>
+</div>
+<div class='re_content' style='margin-left:40px'>
+<table border=1 cellspacing=0px cellpadding=5px>
+	<th></th>

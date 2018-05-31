@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sql.mapper.imapper.HzTempDocumentRecordMapper">
+	<resultMap id="BaseResultMap" type="sql.pojo.HzTempDocumentRecord">
+		<id column="ID" jdbcType="DECIMAL" property="id" />
+		<result column="BEL_PROCESS_NUM" jdbcType="VARCHAR" property="belProcessNum" />
+		<result column="ITEM_ID" jdbcType="VARCHAR" property="documentId" />
+		<result column="ITEM_NAME" jdbcType="VARCHAR" property="documentName" />
+		<result column="ITEMREVISION" jdbcType="VARCHAR" property="documentRevision" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from HZ_TEMPDOCUMENTRECORD
+		where ID = #{id,jdbcType=DECIMAL}
+	</select>
+	<select id="selectByMainRecord" parameterType="sql.pojo.HzTempMainRecord"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from HZ_TEMPDOCUMENTRECORD
+		where BEL_PROCESS_NUM = #{processNum,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from HZ_TEMPDOCUMENTRECORD
+		where ID = #{id,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="sql.pojo.HzTempDocumentRecord">
+		insert into HZ_TEMPDOCUMENTRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
+		ITEM_NAME, ITEMREVISION)
+		values (#{id,jdbcType=DECIMAL}, #{belProcessNum,jdbcType=VARCHAR},
+		#{documentId,jdbcType=VARCHAR},
+		#{documentName,jdbcType=VARCHAR}, #{documentRevision,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="sql.pojo.HzTempDocumentRecord">
+		update HZ_TEMPITEMRECORD
+		set BEL_PROCESS_NUM = #{belProcessNum,jdbcType=VARCHAR},
+		ITEM_ID = #{documentId,jdbcType=VARCHAR},
+		ITEM_NAME = #{documentName,jdbcType=VARCHAR},
+		ITEMREVISION = #{documentRevision,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=DECIMAL}
+	</update>
+
+
+	<select id="PublishDataDAOImpl_getHzTempDocumentList" parameterType="sql.pojo.HzTempDocumentRecord"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from HZ_TEMPDOCUMENTRECORD
+		<where>
+            ITEM_ID = #{documentId}
+			and ITEMREVISION = #{documentRevision}
+			and BEL_PROCESS_NUM=#{belProcessNum}
+		</where>
+	</select>
+
+
+	<insert id="PublishDataDAOImpl_insertDocumentBeanList" useGeneratedKeys="false" parameterType="java.util.List" >
+		insert into HZ_TEMPDOCUMENTRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
+        ITEM_NAME, ITEMREVISION)
+		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
+			SELECT
+			#{item.id,jdbcType=DECIMAL},
+			#{item.belProcessNum,jdbcType=VARCHAR},
+			#{item.documentId,jdbcType=VARCHAR},
+			#{item.documentName,jdbcType=VARCHAR},
+			#{item.documentRevision,jdbcType=VARCHAR}
+			from DUAL
+		</foreach>
+	</insert>
+
+
+</mapper>

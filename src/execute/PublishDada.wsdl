@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://execute" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://execute" xmlns:intf="http://execute" xmlns:tns1="http://bean" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://bean" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://execute"/>
+   <complexType name="Supplier">
+    <sequence>
+     <element name="outCpnyAccepter" nillable="true" type="xsd:string"/>
+     <element name="outCpnyCode" nillable="true" type="xsd:string"/>
+     <element name="outCpnyEmail" nillable="true" type="xsd:string"/>
+     <element name="outCpnyName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="BaseDataBean">
+    <sequence>
+     <element name="appDept" nillable="true" type="xsd:string"/>
+     <element name="applicant" nillable="true" type="xsd:string"/>
+     <element name="applicantEmail" nillable="true" type="xsd:string"/>
+     <element name="applicantPhone" nillable="true" type="xsd:string"/>
+     <element name="inAccepter" nillable="true" type="xsd:string"/>
+     <element name="inDept" nillable="true" type="xsd:string"/>
+     <element name="proInspectorSugge" nillable="true" type="xsd:string"/>
+     <element name="proManagerSugge" nillable="true" type="xsd:string"/>
+     <element name="processNum" nillable="true" type="xsd:string"/>
+     <element name="provideType" nillable="true" type="xsd:string"/>
+     <element name="supplier" nillable="true" type="tns1:Supplier"/>
+     <element name="title" nillable="true" type="xsd:string"/>
+     <element name="vehCode" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Result">
+    <sequence>
+     <element name="errCode" nillable="true" type="xsd:int"/>
+     <element name="errMsg" nillable="true" type="xsd:string"/>
+     <element name="success" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema elementFormDefault="qualified" targetNamespace="http://execute" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bean"/>
+   <element name="baseDataBean" type="tns1:BaseDataBean"/>
+   <element name="publishBaseDataReturn" type="tns1:Result"/>
+   <complexType name="ArrayOf_xsd_anyType">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <element name="itemBean" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishItemBeanReturn" type="tns1:Result"/>
+   <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDocumentBeanReturn" type="tns1:Result"/>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="publishBaseDataResponse">
+
+      <wsdl:part element="impl:publishBaseDataReturn" name="publishBaseDataReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishItemBeanRequest">
+
+      <wsdl:part element="impl:itemBean" name="itemBean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDocumentBeanRequest">
+
+      <wsdl:part element="impl:documentBean" name="documentBean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDocumentBeanResponse">
+
+      <wsdl:part element="impl:publishDocumentBeanReturn" name="publishDocumentBeanReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishBaseDataRequest">
+
+      <wsdl:part element="impl:baseDataBean" name="baseDataBean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishItemBeanResponse">
+
+      <wsdl:part element="impl:publishItemBeanReturn" name="publishItemBeanReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="PublishData">
+
+      <wsdl:operation name="publishBaseData" parameterOrder="baseDataBean">
+
+         <wsdl:input message="impl:publishBaseDataRequest" name="publishBaseDataRequest"/>
+
+         <wsdl:output message="impl:publishBaseDataResponse" name="publishBaseDataResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="publishItemBean" parameterOrder="itemBean">
+
+         <wsdl:input message="impl:publishItemBeanRequest" name="publishItemBeanRequest"/>
+
+         <wsdl:output message="impl:publishItemBeanResponse" name="publishItemBeanResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="publishDocumentBean" parameterOrder="documentBean">
+
+         <wsdl:input message="impl:publishDocumentBeanRequest" name="publishDocumentBeanRequest"/>
+
+         <wsdl:output message="impl:publishDocumentBeanResponse" name="publishDocumentBeanResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="PublishDadaSoapBinding" type="impl:PublishData">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="publishBaseData">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishBaseDataRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishBaseDataResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="publishItemBean">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishItemBeanRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishItemBeanResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="publishDocumentBean">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishDocumentBeanRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishDocumentBeanResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="PublishDadaService">
+
+      <wsdl:port binding="impl:PublishDadaSoapBinding" name="PublishDada">
+
+         <wsdlsoap:address location="http://localhost:8080//services/execute/PublishDada"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

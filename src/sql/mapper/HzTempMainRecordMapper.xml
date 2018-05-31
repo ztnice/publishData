@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sql.mapper.imapper.HzTempMainRecordMapper">
+	<resultMap id="BaseResultMap" type="sql.pojo.HzTempMainRecord">
+		<id column="PROCESS_NUM" jdbcType="VARCHAR" property="processNum" />
+		<result column="APP_DEPT" jdbcType="VARCHAR" property="appDept" />
+		<result column="VEH_CODE" jdbcType="VARCHAR" property="vehCode" />
+		<result column="APPLICANT" jdbcType="VARCHAR" property="applicant" />
+		<result column="APPLICANT_EMAIL" jdbcType="VARCHAR" property="applicantEmail" />
+		<result column="APPLICANT_PHONE" jdbcType="VARCHAR" property="applicantPhone" />
+		<result column="PROVIDE_TYPE" jdbcType="VARCHAR" property="provideType" />
+		<result column="IN_ACCEPTER" jdbcType="VARCHAR" property="inAccepter" />
+		<result column="IN_DEPT" jdbcType="VARCHAR" property="inDept" />
+		<result column="OUT_CPNY_NAME" jdbcType="VARCHAR" property="outCpnyName" />
+		<result column="OUT_CPNY_CODE" jdbcType="VARCHAR" property="outCpnyCode" />
+		<result column="OUT_CPNY_ACCEPTER" jdbcType="VARCHAR" property="outCpnyAccepter" />
+		<result column="OUT_CPNY_EMAIL" jdbcType="VARCHAR" property="outCpnyEmail" />
+		<result column="PRO_MANAGER_SUGGE" jdbcType="VARCHAR" property="proManagerSugge" />
+		<result column="PRO_INSPECTOR_SUGGE" jdbcType="VARCHAR" property="proInspectorSugge" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		PROCESS_NUM, APP_DEPT, VEH_CODE, APPLICANT,
+		APPLICANT_EMAIL, APPLICANT_PHONE,
+		PROVIDE_TYPE,
+		IN_ACCEPTER, IN_DEPT,
+		OUT_CPNY_NAME, OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
+		"OUT_CPNY_EMAIL",
+		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from HZ_TEMPMAINRECORD
+		where PROCESS_NUM =
+		#{processNum,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		HZ_TEMPMAINRECORD
+		where PROCESS_NUM = #{processNum,jdbcType=VARCHAR}
+	</delete>
+	<insert id="PublishDataDAOImpl_insertBaseData" parameterType="sql.pojo.HzTempMainRecord">
+		insert into HZ_TEMPMAINRECORD
+		(PROCESS_NUM, APP_DEPT, VEH_CODE,
+		APPLICANT, APPLICANT_EMAIL,
+		APPLICANT_PHONE,
+		PROVIDE_TYPE, IN_ACCEPTER, IN_DEPT,
+		OUT_CPNY_NAME,
+		OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
+		"OUT_CPNY_EMAIL",
+		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
+		)
+		values
+		(#{processNum,jdbcType=VARCHAR}, #{appDept,jdbcType=VARCHAR},
+		#{vehCode,jdbcType=VARCHAR},
+		#{applicant,jdbcType=VARCHAR},
+		#{applicantEmail,jdbcType=VARCHAR},
+		#{applicantPhone,jdbcType=VARCHAR},
+		#{provideType,jdbcType=VARCHAR},
+		#{inAccepter,jdbcType=VARCHAR}, #{inDept,jdbcType=VARCHAR},
+		#{outCpnyName,jdbcType=VARCHAR}, #{outCpnyCode,jdbcType=VARCHAR},
+		#{outCpnyAccepter,jdbcType=VARCHAR},
+		#{outCpnyEmail,jdbcType=VARCHAR},
+		#{proManagerSugge,jdbcType=VARCHAR},
+		#{proInspectorSugge,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="insertList" useGeneratedKeys="false" parameterType="java.util.List" >
+		insert into HZ_TEMPMAINRECORD
+        (PROCESS_NUM, APP_DEPT, VEH_CODE,
+        APPLICANT, APPLICANT_EMAIL,
+        APPLICANT_PHONE,
+        PROVIDE_TYPE, IN_ACCEPTER, IN_DEPT,
+        OUT_CPNY_NAME,
+        OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
+        "OUT_CPNY_EMAIL",
+        PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
+        )
+		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
+            SELECT
+			#{item.processNum,jdbcType=VARCHAR},
+			#{item.appDept,jdbcType=VARCHAR},
+			#{item.vehCode,jdbcType=VARCHAR},
+			#{item.applicant,jdbcType=VARCHAR},
+			#{item.applicantEmail,jdbcType=VARCHAR},
+			#{item.applicantPhone,jdbcType=VARCHAR},
+			#{item.provideType,jdbcType=VARCHAR},
+			#{item.inAccepter,jdbcType=VARCHAR},
+			#{item.inDept,jdbcType=VARCHAR},
+			#{item.outCpnyName,jdbcType=VARCHAR},
+			#{item.outCpnyCode,jdbcType=VARCHAR},
+			#{item.outCpnyAccepter,jdbcType=VARCHAR},
+			#{item.outCpnyEmail,jdbcType=VARCHAR},
+			#{item.proManagerSugge,jdbcType=VARCHAR},
+			#{item.proInspectorSugge,jdbcType=VARCHAR}
+            from DUAL
+		</foreach>
+	</insert>
+
+
+	<update id="updateByPrimaryKey" parameterType="sql.pojo.HzTempMainRecord">
+		update
+		HZ_TEMPMAINRECORD
+		set APP_DEPT = #{appDept,jdbcType=VARCHAR},
+		VEH_CODE =
+		#{vehCode,jdbcType=VARCHAR},
+		APPLICANT = #{applicant,jdbcType=VARCHAR},
+		APPLICANT_EMAIL = #{applicantEmail,jdbcType=VARCHAR},
+		APPLICANT_PHONE =
+		#{applicantPhone,jdbcType=VARCHAR},
+		PROVIDE_TYPE =
+		#{provideType,jdbcType=VARCHAR},
+		IN_ACCEPTER =
+		#{inAccepter,jdbcType=VARCHAR},
+		IN_DEPT = #{inDept,jdbcType=VARCHAR},
+		OUT_CPNY_NAME = #{outCpnyName,jdbcType=VARCHAR},
+		OUT_CPNY_CODE =
+		#{outCpnyCode,jdbcType=VARCHAR},
+		"OUT_CPNY_ACCEPTER" =
+		#{outCpnyAccepter,jdbcType=VARCHAR},
+		"OUT_CPNY_EMAIL" =
+		#{outCpnyEmail,jdbcType=VARCHAR},
+		PRO_MANAGER_SUGGE =
+		#{proManagerSugge,jdbcType=VARCHAR},
+		PRO_INSPECTOR_SUGGE =
+		#{proInspectorSugge,jdbcType=VARCHAR}
+		where PROCESS_NUM =
+		#{processNum,jdbcType=VARCHAR}
+	</update>
+</mapper>
