@@ -10,7 +10,7 @@ import java.io.Reader;
 public class FactoryManager {
 	static Reader reader = null;
 	public static SqlSessionFactory factory = null;
-	/** 配置文件所在地 */
+	/** 閰嶇疆鏂囦欢鎵�鍦ㄥ湴 */
 	public static String resource = "mybatis-config.xml";
 	static {
 		try {

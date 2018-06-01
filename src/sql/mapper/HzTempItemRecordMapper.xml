@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="sql.mapper.imapper.HzTempItemRecordMapper">
-	<resultMap id="BaseResultMap" type="sql.pojo.HzTempItemRecord">
+<mapper namespace="HzTempItemRecord">
+	<resultMap id="BaseResultMap" type="sql.dbdo.HzTempItemRecord">
 		<id column="ID" jdbcType="DECIMAL" property="id" />
 		<result column="BEL_PROCESS_NUM" jdbcType="VARCHAR" property="belProcessNum" />
 		<result column="ITEM_ID" jdbcType="VARCHAR" property="itemId" />
@@ -17,7 +17,7 @@
 	<sql id="Base_Column_List">
 		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX,
-		"CGR_DIGIFAX", CATIA_BLUEPRINT, CAD_BLUEPRINT, OTHERS
+		CGR_DIGIFAX, CATIA_BLUEPRINT, CAD_BLUEPRINT, OTHERS
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
@@ -26,7 +26,7 @@
 		from HZ_TEMPITEMRECORD
 		where ID = #{id,jdbcType=DECIMAL}
 	</select>
-	<select id="selectByMainRecord" parameterType="sql.pojo.HzTempMainRecord"
+	<select id="selectByMainRecord" parameterType="sql.dbdo.HzTempMainRecord"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
@@ -37,10 +37,10 @@
 		delete from HZ_TEMPITEMRECORD
 		where ID = #{id,jdbcType=DECIMAL}
 	</delete>
-	<insert id="insert" parameterType="sql.pojo.HzTempItemRecord">
+	<insert id="insert" parameterType="sql.dbdo.HzTempItemRecord">
 		insert into HZ_TEMPITEMRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
-		JT_DIGIFAX, "CGR_ DIGIFAX", CATIA_BLUEPRINT,
+		JT_DIGIFAX, CGR_DIGIFAX, CATIA_BLUEPRINT,
 		CAD_BLUEPRINT, OTHERS)
 		values (#{id,jdbcType=DECIMAL}, #{belProcessNum,jdbcType=VARCHAR},
 		#{itemId,jdbcType=VARCHAR},
@@ -49,7 +49,7 @@
 		#{catiaBlueprint,jdbcType=DECIMAL},
 		#{cadBlueprint,jdbcType=DECIMAL}, #{others,jdbcType=DECIMAL})
 	</insert>
-	<update id="updateByPrimaryKey" parameterType="sql.pojo.HzTempItemRecord">
+	<update id="updateByPrimaryKey" parameterType="sql.dbdo.HzTempItemRecord">
 		update HZ_TEMPITEMRECORD
 		set BEL_PROCESS_NUM = #{belProcessNum,jdbcType=VARCHAR},
 		ITEM_ID = #{itemId,jdbcType=VARCHAR},
@@ -57,7 +57,7 @@
 		ITEMREVISION = #{itemrevision,jdbcType=VARCHAR},
 		CATIA_DIGIFAX = #{catiaDigifax,jdbcType=DECIMAL},
 		JT_DIGIFAX = #{jtDigifax,jdbcType=DECIMAL},
-		"CGR_ DIGIFAX" = #{cgrDigifax,jdbcType=DECIMAL},
+		CGR_DIGIFAX = #{cgrDigifax,jdbcType=DECIMAL},
 		CATIA_BLUEPRINT = #{catiaBlueprint,jdbcType=DECIMAL},
 		CAD_BLUEPRINT = #{cadBlueprint,jdbcType=DECIMAL},
 		OTHERS = #{others,jdbcType=DECIMAL}
@@ -66,7 +66,7 @@
 
 
 
-	<select id="PublishDataDAOImpl_getHzTempItemRecordList" parameterType="sql.pojo.HzTempItemRecord"
+	<select id="PublishDataDAOImpl_getHzTempItemRecordList" parameterType="sql.dbdo.HzTempItemRecord"
 			resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
@@ -82,7 +82,7 @@
 	<insert id="PublishDataDAOImpl_insertItemBeanList" useGeneratedKeys="false" parameterType="java.util.List" >
 		insert into HZ_TEMPITEMRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
-		JT_DIGIFAX, "CGR_DIGIFAX", CATIA_BLUEPRINT,
+		JT_DIGIFAX, CGR_DIGIFAX, CATIA_BLUEPRINT,
 		CAD_BLUEPRINT, OTHERS)
 		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
 			SELECT

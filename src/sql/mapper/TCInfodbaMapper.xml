@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="TCInfodbaMapper">
-	<resultMap id="BaseResultMap" type="sql.pojo.TCInfodbaRecord">
+	<resultMap id="BaseResultMap" type="sql.dbdo.TCInfodbaRecord">
 		<result column="PUID" jdbcType="VARCHAR" property="puid"/>
 		<result column="ITEM_ID" jdbcType="VARCHAR" property="itemId"/>
 		<result column="ITEM_REVISION" jdbcType="VARCHAR" property="itemRevision"/>
@@ -12,7 +12,7 @@
 		<result column="PORIGINAL_FILE_NAME" jdbcType="VARCHAR" property="poriginalFileName"/>
 	</resultMap>
 
-	<select id="PublishDataDAOImpl_getTCInfodbaRecordListWithType" parameterType="sql.pojo.TCInfodbaRecord"
+	<select id="PublishDataDAOImpl_getTCInfodbaRecordListWithType" parameterType="sql.dbdo.TCInfodbaRecord"
 			resultMap="BaseResultMap">
 		select t.puid,t.pfile_name,t.psd_path_name,t2.pwnt_path_name,t.poriginal_file_name from PIMANFILE t ,PIMANVOLUME t2
     where t.pfile_name in (
@@ -33,7 +33,7 @@
 
 
 
-	<select id="PublishDataDAOImpl_getTCInfodbaRecordList" parameterType="sql.pojo.TCInfodbaRecord"
+	<select id="PublishDataDAOImpl_getTCInfodbaRecordList" parameterType="sql.dbdo.TCInfodbaRecord"
 			resultMap="BaseResultMap">
 	select t.puid,t.pfile_name,t.psd_path_name,t2.pwnt_path_name,t.poriginal_file_name from PIMANFILE t ,PIMANVOLUME t2
     where t.pfile_name in (

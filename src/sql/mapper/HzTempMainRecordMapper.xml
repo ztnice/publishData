@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="sql.mapper.imapper.HzTempMainRecordMapper">
-	<resultMap id="BaseResultMap" type="sql.pojo.HzTempMainRecord">
+<mapper namespace="HzTempMainRecord">
+	<resultMap id="BaseResultMap" type="sql.dbdo.HzTempMainRecord">
 		<id column="PROCESS_NUM" jdbcType="VARCHAR" property="processNum" />
 		<result column="APP_DEPT" jdbcType="VARCHAR" property="appDept" />
 		<result column="VEH_CODE" jdbcType="VARCHAR" property="vehCode" />
@@ -17,15 +17,12 @@
 		<result column="OUT_CPNY_EMAIL" jdbcType="VARCHAR" property="outCpnyEmail" />
 		<result column="PRO_MANAGER_SUGGE" jdbcType="VARCHAR" property="proManagerSugge" />
 		<result column="PRO_INSPECTOR_SUGGE" jdbcType="VARCHAR" property="proInspectorSugge" />
+		<result column="TITLE" jdbcType="VARCHAR" property="title" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		PROCESS_NUM, APP_DEPT, VEH_CODE, APPLICANT,
-		APPLICANT_EMAIL, APPLICANT_PHONE,
-		PROVIDE_TYPE,
-		IN_ACCEPTER, IN_DEPT,
-		OUT_CPNY_NAME, OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
-		"OUT_CPNY_EMAIL",
-		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
+	PROCESS_NUM, APP_DEPT, VEH_CODE, APPLICANT, APPLICANT_EMAIL, APPLICANT_PHONE, PROVIDE_TYPE,
+    IN_ACCEPTER, IN_DEPT, OUT_CPNY_NAME, OUT_CPNY_CODE, "OUT_CPNY_ ACCEPTER", "OUT_CPNY_ EMAIL",
+    PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE, TITLE
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
@@ -40,7 +37,7 @@
 		HZ_TEMPMAINRECORD
 		where PROCESS_NUM = #{processNum,jdbcType=VARCHAR}
 	</delete>
-	<insert id="PublishDataDAOImpl_insertBaseData" parameterType="sql.pojo.HzTempMainRecord">
+	<insert id="PublishDataDAOImpl_insertBaseData" parameterType="sql.dbdo.HzTempMainRecord">
 		insert into HZ_TEMPMAINRECORD
 		(PROCESS_NUM, APP_DEPT, VEH_CODE,
 		APPLICANT, APPLICANT_EMAIL,
@@ -48,8 +45,8 @@
 		PROVIDE_TYPE, IN_ACCEPTER, IN_DEPT,
 		OUT_CPNY_NAME,
 		OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
-		"OUT_CPNY_EMAIL",
-		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
+		OUT_CPNY_EMAIL,
+		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE,TITLE
 		)
 		values
 		(#{processNum,jdbcType=VARCHAR}, #{appDept,jdbcType=VARCHAR},
@@ -63,7 +60,8 @@
 		#{outCpnyAccepter,jdbcType=VARCHAR},
 		#{outCpnyEmail,jdbcType=VARCHAR},
 		#{proManagerSugge,jdbcType=VARCHAR},
-		#{proInspectorSugge,jdbcType=VARCHAR}
+		#{proInspectorSugge,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR}
 		)
 	</insert>
 
@@ -100,7 +98,7 @@
 	</insert>
 
 
-	<update id="updateByPrimaryKey" parameterType="sql.pojo.HzTempMainRecord">
+	<update id="updateByPrimaryKey" parameterType="sql.dbdo.HzTempMainRecord">
 		update
 		HZ_TEMPMAINRECORD
 		set APP_DEPT = #{appDept,jdbcType=VARCHAR},

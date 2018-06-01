@@ -2,7 +2,6 @@ package bean;
 
 /**
  * Created by haozt on 2018/5/29
- * 操作返回结果值
  */
 public class Result {
     private boolean success;

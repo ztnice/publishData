@@ -21,7 +21,7 @@ public abstract class BaseDAO {
             }
             // session.commit();
         } catch (Exception e) {
-           throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+           throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();
@@ -32,8 +32,8 @@ public abstract class BaseDAO {
     /**
      * 插入一个实体
      *
-     * @param sqlMapId  mybatis 映射id
-     * @param object  实体参数
+     * @param sqlMapId  mybatis ӳ��id
+     * @param object  实体
      * @return
      */
     public int insert(final String sqlMapId, final Object object) {
@@ -45,7 +45,7 @@ public abstract class BaseDAO {
             session.commit();
             return result;
         } catch (Exception e) {
-            throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+            throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();
@@ -56,8 +56,8 @@ public abstract class BaseDAO {
     /**
      * 查询一个实体
      *
-     * @param sqlMapId  mybatis 映射id
-     * @param param  实体参数
+     * @param sqlMapId  mybatis
+     * @param param
      * @return
      */
     public Object findForObject(final String sqlMapId, final Object param){
@@ -71,7 +71,7 @@ public abstract class BaseDAO {
                 return session.selectOne(sqlMapId);
             }
         } catch (Exception e) {
-            throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+            throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();
@@ -79,7 +79,7 @@ public abstract class BaseDAO {
     }
 
     /**
-     * 修改
+     * 更新一个实体
      * @param sqlMapId
      * @param param
      * @return
@@ -93,7 +93,7 @@ public abstract class BaseDAO {
             session.commit();
             return result;
         } catch (Exception e) {
-            throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+            throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();
@@ -109,7 +109,7 @@ public abstract class BaseDAO {
             session.commit();
             return result;
         } catch (Exception e) {
-            throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+            throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();
@@ -117,7 +117,7 @@ public abstract class BaseDAO {
     }
 
     /**
-     * 查找一个列表 查询TC infodba 数据库
+     * TC infodba数据库 查询一个列表
      * @param sqlMapId
      * @param param
      * @return
@@ -135,7 +135,7 @@ public abstract class BaseDAO {
             }
             // session.commit();
         } catch (Exception e) {
-            throw new DatabaseException("SQL执行出错"+sqlMapId,e);
+            throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
                 session.close();

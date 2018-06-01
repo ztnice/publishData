@@ -41,12 +41,16 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   <schema elementFormDefault="qualified" targetNamespace="http://execute" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://bean"/>
    <element name="baseDataBean" type="tns1:BaseDataBean"/>
-   <element name="publishBaseDataReturn" type="tns1:Result"/>
    <complexType name="ArrayOf_xsd_anyType">
     <sequence>
      <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
     </sequence>
    </complexType>
+   <element name="items" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="documents" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDataReturn" type="tns1:Result"/>
+   <element name="baseDataBean1" type="tns1:BaseDataBean"/>
+   <element name="publishBaseDataReturn" type="tns1:Result"/>
    <element name="itemBean" type="impl:ArrayOf_xsd_anyType"/>
    <element name="publishItemBeanReturn" type="tns1:Result"/>
    <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
@@ -60,9 +64,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="publishItemBeanRequest">
+   <wsdl:message name="publishDataRequest">
 
-      <wsdl:part element="impl:itemBean" name="itemBean"/>
+      <wsdl:part element="impl:baseDataBean" name="baseDataBean"/>
+
+      <wsdl:part element="impl:items" name="items"/>
+
+      <wsdl:part element="impl:documents" name="documents"/>
 
    </wsdl:message>
 
@@ -72,25 +80,45 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="publishDocumentBeanResponse">
-
-      <wsdl:part element="impl:publishDocumentBeanReturn" name="publishDocumentBeanReturn"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="publishBaseDataRequest">
-
-      <wsdl:part element="impl:baseDataBean" name="baseDataBean"/>
-
-   </wsdl:message>
-
    <wsdl:message name="publishItemBeanResponse">
 
       <wsdl:part element="impl:publishItemBeanReturn" name="publishItemBeanReturn"/>
 
    </wsdl:message>
 
+   <wsdl:message name="publishBaseDataRequest">
+
+      <wsdl:part element="impl:baseDataBean1" name="baseDataBean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDocumentBeanResponse">
+
+      <wsdl:part element="impl:publishDocumentBeanReturn" name="publishDocumentBeanReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDataResponse">
+
+      <wsdl:part element="impl:publishDataReturn" name="publishDataReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishItemBeanRequest">
+
+      <wsdl:part element="impl:itemBean" name="itemBean"/>
+
+   </wsdl:message>
+
    <wsdl:portType name="PublishData">
+
+      <wsdl:operation name="publishData" parameterOrder="baseDataBean items documents">
+
+         <wsdl:input message="impl:publishDataRequest" name="publishDataRequest"/>
+
+         <wsdl:output message="impl:publishDataResponse" name="publishDataResponse"/>
+
+      </wsdl:operation>
 
       <wsdl:operation name="publishBaseData" parameterOrder="baseDataBean">
 
@@ -118,9 +146,27 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:portType>
 
-   <wsdl:binding name="PublishDadaSoapBinding" type="impl:PublishData">
+   <wsdl:binding name="PublishDataSoapBinding" type="impl:PublishData">
 
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="publishData">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishDataRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishDataResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
 
       <wsdl:operation name="publishBaseData">
 
@@ -178,11 +224,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:binding>
 
-   <wsdl:service name="PublishDadaService">
+   <wsdl:service name="PublishDataService">
 
-      <wsdl:port binding="impl:PublishDadaSoapBinding" name="PublishDada">
+      <wsdl:port binding="impl:PublishDataSoapBinding" name="PublishData">
 
-         <wsdlsoap:address location="http://localhost:8080//services/execute/PublishDada"/>
+         <wsdlsoap:address location="http://localhost:8080//hozon/services/execute/PublishData"/>
 
       </wsdl:port>
 

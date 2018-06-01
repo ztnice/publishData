@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Created by haozt on 2018/4/11.
- * 记录文件清单发放 用于发送邮件通知客户 和上传ftp
+ *
  */
 public class DocumentResultBean {
     private List<FailBean> failBeans;

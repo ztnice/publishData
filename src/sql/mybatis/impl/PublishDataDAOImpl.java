@@ -34,7 +34,7 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
 
     @Override
     public List<TCInfodbaRecord> getTCInfodbaRecordList(TCInfodbaRecord record) {
-        return super.findForList("PublishDataDAOImpl_getTCInfodbaRecordList",record);
+        return super.findForListToTC("PublishDataDAOImpl_getTCInfodbaRecordList",record);
     }
 
     @Override

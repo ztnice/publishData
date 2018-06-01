@@ -9,7 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Apache commons-net ÊÔÓÃÒ»°Ñ£¬¿´¿´FTP¿Í»§¶Ë¹¤¾ß×öµÄºÃÓÃ²»
+ * Apache commons-net è¯•ç”¨ä¸€æŠŠï¼Œçœ‹çœ‹FTPå®¢æˆ·ç«¯å·¥å…·åšçš„å¥½ç”¨ä¸
  * 
  */
 public class FtpTest {
@@ -19,7 +19,7 @@ public class FtpTest {
 	}
 
 	/**
-	 * FTPÉÏ´«µ¥¸öÎÄ¼ş²âÊÔ 1.Á¬½Ó·şÎñ 2.È·¶¨ÄãÒªÉÏ´«µÄÎÄ¼ş 3.Ö¸¶¨ÄãÔÚ·şÎñÆ÷¶Ë´æ·ÅµÄÎ»ÖÃ
+	 * FTPä¸Šä¼ å•ä¸ªæ–‡ä»¶æµ‹è¯• 1.è¿æ¥æœåŠ¡ 2.ç¡®å®šä½ è¦ä¸Šä¼ çš„æ–‡ä»¶ 3.æŒ‡å®šä½ åœ¨æœåŠ¡å™¨ç«¯å­˜æ”¾çš„ä½ç½®
 	 */
 	public static void testUpload() {
 		FTPClient ftpClient = new FTPClient();
@@ -30,32 +30,32 @@ public class FtpTest {
 			File srcFile = new File(
 					"C:\\Users\\Administrator\\Desktop\\commons-net-3.6-bin\\commons-net-3.6\\RELEASE-NOTES.txt");
 			fis = new FileInputStream(srcFile);
-			// ÉèÖÃÉÏ´«Ä¿Â¼
+			// è®¾ç½®ä¸Šä¼ ç›®å½•
 			File path = new File("/hozon/text");
 			System.out.println(path.getPath());
 			ftpClient.changeWorkingDirectory(path.getPath());
 			ftpClient.setBufferSize(1024);
 			ftpClient.setControlEncoding("GBK");
-			// ÉèÖÃÎÄ¼şÀàĞÍ£¨¶ş½øÖÆ£©
+			// è®¾ç½®æ–‡ä»¶ç±»å‹ï¼ˆäºŒè¿›åˆ¶ï¼‰
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.storeFile("RELEASE-NOTES-sss.txt", fis);
-			System.out.println("ÉÏ´«Íê³É");
+			System.out.println("ä¸Šä¼ å®Œæˆ");
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RuntimeException("FTP¿Í»§¶Ë³ö´í£¡", e);
+			throw new RuntimeException("FTPå®¢æˆ·ç«¯å‡ºé”™ï¼", e);
 		} finally {
 			IOUtils.closeQuietly(fis);
 			try {
 				ftpClient.disconnect();
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new RuntimeException("¹Ø±ÕFTPÁ¬½Ó·¢ÉúÒì³££¡", e);
+				throw new RuntimeException("å…³é—­FTPè¿æ¥å‘ç”Ÿå¼‚å¸¸ï¼", e);
 			}
 		}
 	}
 
 	/**
-	 * FTPÏÂÔØµ¥¸öÎÄ¼ş²âÊÔ
+	 * FTPä¸‹è½½å•ä¸ªæ–‡ä»¶æµ‹è¯•
 	 */
 	public static void testDownload() {
 		FTPClient ftpClient = new FTPClient();
@@ -69,19 +69,19 @@ public class FtpTest {
 			fos = new FileOutputStream("c:/down.jpg");
 
 			ftpClient.setBufferSize(1024);
-			// ÉèÖÃÎÄ¼şÀàĞÍ£¨¶ş½øÖÆ£©
+			// è®¾ç½®æ–‡ä»¶ç±»å‹ï¼ˆäºŒè¿›åˆ¶ï¼‰
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.retrieveFile(remoteFileName, fos);
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RuntimeException("FTP¿Í»§¶Ë³ö´í£¡", e);
+			throw new RuntimeException("FTPå®¢æˆ·ç«¯å‡ºé”™ï¼", e);
 		} finally {
 			IOUtils.closeQuietly(fos);
 			try {
 				ftpClient.disconnect();
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new RuntimeException("¹Ø±ÕFTPÁ¬½Ó·¢ÉúÒì³££¡", e);
+				throw new RuntimeException("å…³é—­FTPè¿æ¥å‘ç”Ÿå¼‚å¸¸ï¼", e);
 			}
 		}
 	}

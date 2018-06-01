@@ -8,8 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FtpPropertyLoader {
-	/** ÊôĞÔÎÄ¼ş·ÅÔÚµ±Ç°°üÏÂÃæ¼´¿É£¬Èç¹ûFTP·şÎñÆ÷µÄÎ»ÖÃ¸Ä±äÁË£¬ĞèÒª¸ÄÊôĞÔÎÄ¼ş */
-	private final static String filePath = "resource.properties";
+	/** å±æ€§æ–‡ä»¶æ”¾åœ¨å½“å‰åŒ…ä¸‹é¢å³å¯ï¼Œå¦‚æœFTPæœåŠ¡å™¨çš„ä½ç½®æ”¹å˜äº†ï¼Œéœ€è¦æ”¹å±æ€§æ–‡ä»¶ */	private final static String filePath = "resource.properties";
 	private static String path2 = "C:\\Users\\Administrator\\Desktop\\commons-net-3.6-bin\\resource.properties";
 	private Properties Properties;
 
@@ -29,7 +28,7 @@ public class FtpPropertyLoader {
 		}
 	}
 
-	/** Ä¬ÈÏÊôĞÔÎÄ¼ş */
+	/** é»˜è®¤å±æ€§æ–‡ä»¶ */
 	private boolean defaultLoader() throws IOException {
 		Properties = new Properties();
 		InputStream in = null;
@@ -47,17 +46,17 @@ public class FtpPropertyLoader {
 		return false;
 	}
 
-	/** ×Ô¶¨ÒåÊôĞÔÎÄ¼ş */
+	/** è‡ªå®šä¹‰å±æ€§æ–‡ä»¶ */
 	private boolean loader(String filePath) throws IOException {
-		// ÊôĞÔÎÄ¼ş
+		//  å±æ€§æ–‡ä»¶
 		Properties = new Properties();
-		// ÊäÈëÁ÷
+		// è¾“å…¥æµ
 		InputStream in = null;
 		try {
 			File file = new File(filePath);
 			if (!file.exists()) {
-				System.out.println("Ã»ÓĞÕÒ´òÊôĞÔÎÄ¼ş" + filePath);
-				JOptionPane.showMessageDialog(null, "Î´ÕÒµ½ÊôĞÔÎÄ¼ş", "´íÎó", JOptionPane.ERROR_MESSAGE);
+				System.out.println("æ²¡æœ‰æ‰¾æ‰“å±æ€§æ–‡ä»¶" + filePath);
+				JOptionPane.showMessageDialog(null, "æœªæ‰¾åˆ°å±æ€§æ–‡ä»¶", "é”™è¯¯", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			in = new FileInputStream(file);

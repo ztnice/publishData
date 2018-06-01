@@ -11,6 +11,7 @@ import sql.mybatis.inter.PublishDataDAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by haozt on 2018/5/30
@@ -19,7 +20,6 @@ public class PublishDataServiceImpl implements PublishDataService {
     private PublishDataDAO publishDataDAO;
 
     /**
-     *  中间表查询零件清单是否已发放
      * @param itemId
      * @param itemRevision
      * @return
@@ -38,7 +38,6 @@ public class PublishDataServiceImpl implements PublishDataService {
     }
 
     /**
-     * 中间表查询文件清单是否已发放
      * @param documentId
      * @param documentRevision
      * @return
@@ -58,7 +57,6 @@ public class PublishDataServiceImpl implements PublishDataService {
 
 
     /**
-     * tc表中查询零件清单信息
      * @param itemId
      * @param itemRevision
      * @param type
@@ -86,7 +84,6 @@ public class PublishDataServiceImpl implements PublishDataService {
     }
 
     /**
-     * tc表中查询文件清单信息
      * @param documentId
      * @param documentRevision
      * @return
@@ -202,7 +199,6 @@ public class PublishDataServiceImpl implements PublishDataService {
     }
 
     /**
-     * 去除item重复
      * @param recordList
      * @return
      */

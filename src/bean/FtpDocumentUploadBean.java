@@ -4,17 +4,17 @@ import java.util.List;
 
 /**
  * Created by haozt on 2018/4/11.
- * 将要上传的文件清单
+ *
  */
 public class FtpDocumentUploadBean {
-    /** 文件号 */
+    /** 鏂囦欢id */
     private String document_id;
-    /** 文件名称 */
+    /** 鏂囦欢鍚嶇О */
     private String document_name;
-    /** 文件号 */
+    /** 鏂囦欢鐗堟湰 */
     private String documentRevision;
     /**
-     * 一个文件号 版本号下面 可能有多个文件
+     * TC琛ㄤ腑鏌ヨ鍒扮殑鏁版嵁
      */
     private List<FindDataInfoBean> documentInfoBeanList;
 

@@ -16,21 +16,25 @@ import java.util.*;
 /**
  * Created by haozt on 2018/05/31
  *
- *      * ½âÎöÁã¼şÇåµ¥ ¼ÇÂ¼´íÎóĞÅÏ¢ ÓÃÓÚ·¢ËÍÓÊ¼şÍ¨Öª ¼ÇÂ¼²éÑ¯µ½µÄĞÅÏ¢ ÓÃÓÚÉÏ´«ÖÁftp
- *      * ½âÎöÎÄ¼şÇåµ¥ ¼ÇÂ¼´íÎóĞÅÏ¢ ÓÃÓÚ·¢ËÍÓÊ¼şÍ¨Öª ¼ÇÂ¼²éÑ¯µ½µÄĞÅÏ¢ ÓÃÓÚÉÏ´«ÖÁftp
- *      * ³É¹¦µÄÎÄ¼şÇåµ¥ĞèÒª¼ÇÂ¼ Ê§°ÜµÄÒ²ĞèÒª¼ÇÂ¼ ·¢ÓÊ¼şÓÃ ¶¼Ğ´³ÉÒ»¸ölist°É
- *      * ×îºó½«Êı¾İ±£´æµ½Êı¾İ¿â
- *      * ¸øÉêÇëÈË·¢ËÍÓÊ¼şÍ¨Öª ĞèÒª¼ÇÂ¼ÓÊ¼ş·¢ËÍ³É¹¦Óë·ñ ºË¶ÔÉêÇëÈËÓÊÏäµØÖ· µÈ
+ *          * 1.æŸ¥è¯¢å¯¹åº”çš„é›¶ä»¶ä¿¡æ¯ï¼Œè®°å½•é”™è¯¯ä¿¡æ¯
+ *          * 2.è®°å½•æŸ¥è¯¢åˆ°çš„é›¶ä»¶ä¿¡æ¯
+ *          * 3.æŸ¥è¯¢å¯¹åº”çš„æ–‡ä»¶ä¿¡æ¯ï¼Œè®°å½•é”™è¯¯ä¿¡æ¯
+ *          * 4.è®°å½•æŸ¥è¯¢åˆ°çš„æ–‡ä»¶ä¿¡æ¯
+ *          * 5.å¤±è´¥ï¼šå°†å¤±è´¥çš„ä¿¡æ¯è¿”å›ç»™oaè°ƒç”¨è€…
+ *          * 6.æˆåŠŸï¼šå°†2ï¼Œ4æ­¥è®°å½•çš„æ¸…å•ä¿¡æ¯ä¸Šä¼ è‡³ftpæœåŠ¡å™¨
+ *          * 7.å°†æ‰€æœ‰æ•°æ®å‘æ”¾ä¿¡æ¯ä¿å­˜è‡³æ•°æ®åº“
+ *          * 8.ç»™ç”³è¯·äººï¼Œä¾›åº”å•†å‘é€æˆåŠŸé‚®ä»¶é€šçŸ¥
+ *
  */
 public class PublishDataAnalysis {
 
     /**
-     * ftpÉÏ´«ÎÄ¼şÇåµ¥
+     * ftpä¸Šä¼ æ–‡ä»¶æ¸…å•
      */
     private List<FtpDocumentUploadBean> documentUploadBeans;
 
     /**
-     * ftpÉÏ´«µÄÁã¼şÇåµ¥
+     * ftpä¸Šä¼ é›¶ä»¶æ¸…å•
      */
     private List<FtpItemUploadBean> itemUploadBeans;
 
@@ -60,13 +64,11 @@ public class PublishDataAnalysis {
         this.itemUploadBeans = uploadBeans;
     }
     /**
-     * »ñÈ¡·¢·ÅÁã¼şÇåµ¥ĞÅÏ¢²¢¼ÇÂ¼²éÑ¯µ½µÄÁã¼şĞÅÏ¢
+     * è®°å½•itemæ•°æ® å¤±è´¥é‚®ä»¶é€šçŸ¥   æˆåŠŸä¼ FTP
      * @param items
      * @return
      */
     public  ItemResultBean getItemsInfoAndRecordThem(List<ItemBean> items){
-        //¼ÆÊıÆ÷£¬¼ÇÂ¼ÒÑ·¢²¼»òÕß²»´æÔÚµÄitem
-        //½âÎöÁã¼şÇåµ¥
         this.publishDataService = new PublishDataServiceImpl();
         this.itemUploadBeans = new ArrayList<>();
         this.failMsg = new ArrayList<>();
@@ -76,86 +78,80 @@ public class PublishDataAnalysis {
             for(ItemBean item:items){
                 FailBean failBean = new FailBean();
                 boolean isRepeat = publishDataService.itemRepeat(item.getItem_id(),item.getItemRevision(),item.getProcessNum());
-                //ÖĞ¼ä±íÖĞÒÑ´æÔÚ¼ÇÂ¼£¬±íÊ¾ÒÑ·¢²¼¸ÃÁã¼ş£¬¹ÜÀíÔ±Î¬»¤Ôò¿ÉÒÔÖØĞÂ·¢·Å
+                //æŸ¥è¯¢æ˜¯å¦å·²å‘æ”¾
                 if(isRepeat){
                     failBean.setName(item.getItem_name());
-                    failBean.setFailMsg("Áã¼şÒÑ·¢²¼£ºÁã¼şºÅ"+item.getItem_id()+",°æ±¾ºÅ£º"+item.getItemRevision());
+                    failBean.setFailMsg("é›¶ä»¶å·²å‘å¸ƒï¼é›¶ä»¶å·"+item.getItem_id()+",ç‰ˆæœ¬å·"+item.getItemRevision());
                     this.failMsg.add(failBean);
                     this.itemErrorCount++;
                 }else{
-                    //¼ÇÂ¼ĞÅÏ¢£¬ÉÏ´«ÖÁftpÓÃ
+                    //ä¸Šä¼ FTPç»“æœé›†
                     FtpItemUploadBean ftpItemUploadBean = new FtpItemUploadBean();
-                    //itemÏÂÃæÓĞÆäËûÀàĞÍµÄ´«Èë
                     List<TypeBean> types = new ArrayList<>();
                     if(Integer.valueOf(1).equals(item.getCAD_blueprint())){
                         TypeBean typeBean = new TypeBean();
                         typeBean.setNameTC("H9_AutoCAD");
-                        typeBean.setName("CADÍ¼Ö½");
+                        typeBean.setName("CADå›¾çº¸Ö½");
                         types.add(typeBean);
                     }
                     if(Integer.valueOf(1).equals(item.getCatia_blueprint())){//catiaÍ¼Ö½
                         TypeBean typeBean = new TypeBean();
                         typeBean.setNameTC("");
-                        typeBean.setName("catiaÍ¼Ö½");
+                        typeBean.setName("catiaå›¾çº¸Ö½");
                         types.add(typeBean);
                     }
                     if(Integer.valueOf(1).equals(item.getCGR_digifax())){
                         TypeBean typeBean = new TypeBean();
                         typeBean.setNameTC("");
-                        typeBean.setName("CGRÊıÄ£");
+                        typeBean.setName("CGRæ•°æ¨¡");
                         types.add(typeBean);
                     }
-                    if(Integer.valueOf(1).equals(item.getCatia_digifax())){//catiaÊıÄ£
+                    if(Integer.valueOf(1).equals(item.getCatia_digifax())){//catiaï¿½ï¿½Ä£
                         TypeBean typeBean = new TypeBean();
                         typeBean.setNameTC("");
-                        typeBean.setName("CatiaÊıÄ£");
+                        typeBean.setName("Catiaæ•°æ¨¡");
                         types.add(typeBean);
                     }
                     if(Integer.valueOf(1).equals(item.getJT_digifax())){
                         TypeBean typeBean = new TypeBean();
                         typeBean.setNameTC("");
-                        typeBean.setName("JTÊıÄ£");
+                        typeBean.setName("JTæ•°æ¨¡");
                         types.add(typeBean);
                     }
-                    //ÆäËûÕâÒ»Çé¿öÔİÊ±ÏÈ²»¿¼ÂÇ
+                    //å…¶ä»–è¿™ä¸€æƒ…å†µæš‚æ—¶ä¸è€ƒè™‘
 //					if(item.getOthers() ==1){
 //						types.add("");
 //					}
 
                     List<FindDataInfoBean> itemInfoBeans = new ArrayList<>();
-                    StringBuffer buffer = new StringBuffer();
-                    //itemÏÂÃæÃ»ÓĞ´«Èë ÀàĞÍÖµ
+                    //item
                     if(types == null || types.size()==0){
                         List<FindDataInfoBean> itemInfoBeanList = publishDataService.getItemInfoInTC(item.getItem_id(),item.getItemRevision(),null);
                         if (itemInfoBeanList != null && itemInfoBeanList.size() > 0) {
                             for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
-                                //Ìí¼Ó²éÑ¯µ½µÄĞÅÏ¢£¬ÓÃÓÚÉÏ´«ftp
                                 itemInfoBeans.add(findItemInfoBean);
                             }
                         } else {
                             failBean.setName(item.getItem_name());
-                            failBean.setFailMsg(item.getItem_name()+"²»´æÔÚ£¡");
+                            failBean.setFailMsg(item.getItem_name()+"ä¸å­˜åœ¨");
                             this.failMsg.add(failBean);
                             this.itemErrorCount++;
                         }
                     }else{
                         for(TypeBean type:types){
-                            //µ½tc±íÖĞ½øĞĞ²éÑ¯
                             List<FindDataInfoBean> itemInfoBeanList = publishDataService.getItemInfoInTC(item.getItem_id(),item.getItemRevision(),type.getNameTC());
                             if (itemInfoBeanList != null && itemInfoBeanList.size() > 0) {
                                 for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
-                                    //Ìí¼Ó²éÑ¯µ½µÄĞÅÏ¢£¬ÓÃÓÚÉÏ´«ftp
                                     itemInfoBeans.add(findItemInfoBean);
                                 }
                             } else {
                                 failBean.setName(item.getItem_name());
-                                failBean.setFailMsg(item.getItem_name()+"ÏÂµÄ"+type.getName() + "ĞÅÏ¢²»´æÔÚ!");
+                                failBean.setFailMsg(item.getItem_name()+"ä¸‹çš„"+type.getName() + "ä¸å­˜åœ¨");
                                 this.failMsg.add(failBean);
                                 this.itemErrorCount++;
                             }
                         }
                     }
-                    //¼ÇÂ¼tcÖĞ²éÑ¯µ½µÄÁã¼şÇåµ¥ĞÅÏ¢£¬ÓÃÓÚÉÏ´«ÖÁftp
                     ftpItemUploadBean.setItemInfoBeanList(itemInfoBeans);
                     ftpItemUploadBean.setItem_id(item.getItem_id());
                     ftpItemUploadBean.setItem_name(item.getItem_name());
@@ -168,20 +164,19 @@ public class PublishDataAnalysis {
                 resultBean.setFtpItemUploadBeans(ftpItemUploadBeanList);
             }
         }
-        //Ö»ÓĞÈ«²¿Áã¼şÇåµ¥¶¼´æÔÚ»òÕßÎ´·¢²¼£¬²Å½«Çåµ¥ÖµÉÏ´«ÖÁftp
         return  resultBean;
     }
 
 
 
     /**
-     * »ñÈ¡·¢·ÅµÄÎÄ¼şÇåµ¥ĞÅÏ¢ ²¢¼ÇÂ¼²éÑ¯µ½µÄÎÄ¼şĞÅÏ¢
      * @param documentBeans
      * @return
      */
     public DocumentResultBean getDocumentsInfoAndRecordThem(List<DocumentBean> documentBeans){
         this.documentUploadBeans = new ArrayList<>();
         this.failMsg = new ArrayList<>();
+        this.publishDataService = new PublishDataServiceImpl();
         List<FtpDocumentUploadBean> ftpDocumentUploadBeans = new ArrayList<>();
         DocumentResultBean documentResult = new DocumentResultBean();
         if(null !=documentBeans && documentBeans.size()>0){
@@ -190,12 +185,11 @@ public class PublishDataAnalysis {
                 ftpDocumentUploadBean.setDocument_id(documentBean.getDocument_id());
                 ftpDocumentUploadBean.setDocument_name(documentBean.getDocument_name());
                 ftpDocumentUploadBean.setDocumentRevision(documentBean.getDocumentRevision());
-                DocumentResultBean resultBean = new DocumentResultBean();
                 boolean isRepeat = publishDataService.documentRepeat(documentBean.getDocument_id(),documentBean.getDocumentRevision(),documentBean.getProcessNum());
                 if(isRepeat){
                     FailBean failBean = new FailBean();
                     failBean.setName(documentBean.getDocument_name());
-                    failBean.setFailMsg("ÎÄ¼şÒÑ·¢²¼£¡ÎÄ¼şºÅ£º"+documentBean.getDocument_id()+",°æ±¾ºÅ£º"+documentBean.getDocumentRevision());
+                    failBean.setFailMsg("æ–‡ä»¶å·²å‘å¸ƒï¼æ–‡ä»¶å·"+documentBean.getDocument_id()+"ï¼Œç‰ˆæœ¬å·"+documentBean.getDocumentRevision());
                     this.failMsg.add(failBean);
                     this.documentErrorCount++;
                 }else{
@@ -206,32 +200,29 @@ public class PublishDataAnalysis {
                     }else{
                         FailBean failBean = new FailBean();
                         failBean.setName(documentBean.getDocument_name());
-                        failBean.setFailMsg("ÎÄ¼ş²»´æÔÚ£¡ÎÄ¼şºÅ£º"+documentBean.getDocument_id()+",°æ±¾ºÅ£º"+documentBean.getDocumentRevision());
-                        this.documentErrorCount++;
+                        failBean.setFailMsg("æ–‡ä»¶ä¸å­˜åœ¨ï¼æ–‡ä»¶å·"+documentBean.getDocument_id()+",ç‰ˆæœ¬å·"+documentBean.getDocumentRevision());
+                       this.failMsg.add(failBean);
+                       this.documentErrorCount++;
                     }
                 }
-                documentResult.setFailBeans(this.failMsg);
             }
+            documentResult.setFailBeans(this.failMsg);
             if(this.documentErrorCount == 0){
                 this.documentUploadBeans = ftpDocumentUploadBeans;
             }
+            documentResult.setFtpDocumentUploadBeans(ftpDocumentUploadBeans);
         }
-        //Ö»ÓĞµ±ËùÓĞµÄÎÄ¼şÇåµ¥¶¼Î´·¢²¼»òÕß¶¼´æÔÚ£¬²Å½«ÕâĞ©ÎÄ¼şÇåµ¥ÉÏ´«ÖÁftp
-
         return documentResult;
     }
 
 
     /**
-     * ½«Áã¼şÇåµ¥ÉÏ´«ftp
      * @param itemResultBean
      * @return
      */
     public FtpUploadResultBean upLoadItemListToFTP(ItemResultBean itemResultBean) {
         FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
-        // ÉÏ´«ftp³É¹¦Áã¼şÇåµ¥
         List<String> itemBeansSuccess = new ArrayList<>();
-        // ÉÏ´«ftpÊ§°ÜµÄÎÄ¼şÇåµ¥
         List<FailBean> failBeans = new ArrayList<>();
         List<FtpItemUploadBean> beans = itemResultBean.getFtpItemUploadBeans();
         try {
@@ -243,8 +234,6 @@ public class PublishDataAnalysis {
                 return ftpUploadResultBean;
             }
 
-            //°ÑÁã¼şÇåµ¥ÉÏ´«
-            //ÉÏ´«ftpÊ§°ÜµÄĞÅÏ¢ ĞèÒª·¢ËÍÊ§°ÜÓÊ¼şÍ¨ÖªÓÃ»§
             for (FtpItemUploadBean itemUploadBean : beans) {
                 String remoteFilePath = "/hozon/" + itemUploadBean.getItem_name();
                 int itemCount = 0;
@@ -252,31 +241,28 @@ public class PublishDataAnalysis {
                 List<String> itemBeanList = new ArrayList<>();
                 itemBeanList.add(itemUploadBean.getItem_name());
                 for (FindDataInfoBean itemInfoBean : list) {
-                    //±¾µØ¾íÂ·¾¶
                     FailBean failBean = new FailBean();
                     String volumePath = itemInfoBean.getPwntPathName();
                     String psdPathName = itemInfoBean.getPsdPathName();
-                    //ÎÄ¼şÃû³Æ
                     String fileName = itemInfoBean.getPoriginalFileName();
                     String realFile = itemInfoBean.getpFileName();
 
                     String filePath = volumePath + "\\" + psdPathName + "\\" + realFile;
                     File file = new File(filePath);
                     if (!file.exists()) {
-                        //ÕâÀï²»Ó¦¸ÃÅ×Òì³£
-                        failBean.setFailMsg("ÉÏ´«ftpÊ§°Ü£¬" + fileName + "²»´æÔÚ!");
+                        failBean.setFailMsg("é›¶ä»¶ä¸Šä¼ FTPå¤±è´¥" + fileName + "ä¸å­˜åœ¨");
                         failBean.setName(itemUploadBean.getItem_name());
                         failBeans.add(failBean);
                         itemCount++;
                         continue;
-//                        throw new RuntimeException(fileName+"²»´æÔÚ£¡");
+//                        throw new RuntimeException(fileName+"ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½");
                     }
                     InputStream input = new FileInputStream(new File(filePath));
 
                     int isSuccess = FtpUtil.uploadMutilFile1(properties, properties.getProperty("FTP_BASEPATH"), remoteFilePath, fileName, input);
                     if (isSuccess != 1) {
                         failBean.setName(itemUploadBean.getItem_name());
-                        failBean.setFailMsg(fileName + "ÉÏ´«ÖÁftpÊ§°Ü,ÍøÂç´íÎó£¡");
+                        failBean.setFailMsg(fileName + "é›¶ä»¶ä¸Šä¼ FTPå¤±è´¥ï¼Œç½‘ç»œé”™è¯¯");
                         itemCount++;
                     }
                 }
@@ -293,7 +279,6 @@ public class PublishDataAnalysis {
     }
 
     /**
-     * ½«ÎÄ¼şÇåµ¥ÉÏ´«
      * @param documentResultBean
      * @return
      */
@@ -317,10 +302,8 @@ public class PublishDataAnalysis {
                 List<String> documentFailedList = new ArrayList<>();
                 documentFailedList.add(documentUploadBean.getDocument_name());
                 for(FindDataInfoBean findDataInfoBean : findDataInfoBeans){
-                    //±¾µØ¾íÂ·¾¶
                     String volumePath = findDataInfoBean.getPwntPathName();
                     String psdPathName = findDataInfoBean.getPsdPathName();
-                    //ÎÄ¼şÃû³Æ
                     String fileName = findDataInfoBean.getPoriginalFileName();
                     String realFile = findDataInfoBean.getpFileName();
 
@@ -329,7 +312,7 @@ public class PublishDataAnalysis {
                     if(!file.exists()){
                         FailBean failBean = new FailBean();
                         failBean.setName(documentUploadBean.getDocument_name());
-                        failBean.setFailMsg("ÉÏ´«ftpÊ§°Ü£¬ÎÄ¼ş²»´æÔÚ!"+fileName);
+                        failBean.setFailMsg("æ–‡ä»¶ä¸Šä¼ FTPå¤±è´¥ï¼Œæ–‡ä»¶ä¸å­˜åœ¨!"+fileName);
                         documentFailBeans.add(failBean);
                         documentCount++;
                         continue;
@@ -338,7 +321,7 @@ public class PublishDataAnalysis {
                     int isSuccess = FtpUtil.uploadMutilFile1(properties,properties.getProperty("FTP_BASEPATH"),ftpFilePath, fileName, input);
                     if(isSuccess!=1){
                         FailBean failBean = new FailBean();
-                        failBean.setFailMsg(fileName+"ÉÏ´«ftpÊ§°Ü,ÍøÂç´íÎó");
+                        failBean.setFailMsg(fileName+"ä¸Šä¼ FTPå¤±è´¥ï¼Œç½‘ç»œé”™è¯¯ï¼");
                         failBean.setName(documentUploadBean.getDocument_name());
                         documentCount++;
                     }
@@ -357,8 +340,6 @@ public class PublishDataAnalysis {
 
 
     /**
-     * ·¢ËÍÓÊ¼ş
-     * ÓÊ¼şĞèÒª ¸øÉêÇëÈË ºÍ¹©Ó¦ÉÌ·¢ËÍ
      * @param resultBean
      * @param emailBean
      * @return
@@ -368,31 +349,28 @@ public class PublishDataAnalysis {
         List<FailBean> failBeans = resultBean.getFailList();
         List<String> success= resultBean.getSuccessList();
 
-        //·¢·ÅÇåµ¥ ÓÊ¼ş·¢ËÍ¸øÉêÇëÈË
         MailToApplicant mailToApplicant = new MailToApplicant();
         mailToApplicant.setFileName(success);
         mailToApplicant.setFailFiles(failBeans);
-        //½ÓÊÕÈËÎªÉêÇëÈË
+
         mailToApplicant.setReceiver(emailBean.getApplicators());
         mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
 
 
-        // Áã¼şÇåµ¥·¢ËÍ¸ø¹©Ó¦ÉÌ
         MailToSupplier mailToSupplier = new MailToSupplier();
         mailToSupplier.setFileNames(success);
-        //½ÓÊÕÈËÎª¹©Ó¦ÉÌ
+
         mailToSupplier.setReceiver(emailBean.getSupplies());
         mailToSupplier.setReceiveMailAccount(emailBean.getSupplyMails());
-        //ÓÊ¼şÄ©Î²ĞèÒªÏÔÊ¾ÉêÇëÈËĞÅÏ¢
         mailToSupplier.setApplicant(emailBean.getApplicators());
         try{
             boolean mailToApplication = mailToApplicant.release(type);
             if(!mailToApplication){
-                throw new Exception("ÓÊ¼ş·¢ËÍÊ§°Ü£¬Çë¼ì²éÊÕ¼şÈËÓÊÏä");
+                throw new Exception("é‚®ä»¶å‘é€å¤±è´¥ï¼Œè¯·æ ¸å¯¹æ”¶ä»¶äººåœ°å€");
             }
             boolean mailToSupp = mailToSupplier.release(type);
             if(!mailToSupp){
-                throw new Exception("ÓÊ¼ş·¢ËÍÊ§°Ü£¬Çë¼ì²éÊÕ¼şÈËÓÊÏä");
+                throw new Exception("é‚®ä»¶å‘é€å¤±è´¥ï¼Œè¯·æ ¸å¯¹æ”¶ä»¶äººåœ°å€");
             }
         }catch (Exception e){
             e.printStackTrace();

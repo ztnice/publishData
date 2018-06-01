@@ -4,17 +4,17 @@ import java.util.List;
 
 /**
  * Created by haozt on 2018/4/11.
- * ½«ÒªÉÏ´«FTPµÄÁã¼ş
+ *
  */
 public class FtpItemUploadBean {
-    /** Áã¼şºÅ */
+    /** é›¶ä»¶å· */
     private String item_id;
-    /** Áã¼şÃû³Æ */
+    /** é›¶ä»¶åç§° */
     private String item_name;
-    /** °æ±¾ºÅ */
+    /** ç‰ˆæœ¬å· */
     private String itemRevision;
     /**
-     * Ò»¸öÁã¼ş ÏÂÃæ¶ÔÓ¦ÓĞ catiaÊıÄ££¬jtÊıÄ££¬cadÍ¼Ö½µÈ
+     * ä¸€ä¸ªé›¶ä»¶ ä¸‹é¢å¯¹åº”æœ‰ catiaæ•°æ¨¡ï¼Œjtæ•°æ¨¡ï¼Œcadå›¾çº¸ç­‰
      */
     private List<FindDataInfoBean> itemInfoBeanList;
 

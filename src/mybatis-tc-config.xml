@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         <setting name="localCacheScope" value="STATEMENT"/>
     </settings>
 	<typeAliases>
-		<typeAlias type="sql.pojo.TCInfodbaRecord" alias="TCInfodbaRecord"/>
+		<typeAlias type="sql.dbdo.TCInfodbaRecord" alias="TCInfodbaRecord"/>
 	</typeAliases>
 
 	<environments default="development">
@@ -25,6 +25,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	</environments>
 	<!--映射文件：描述某个实体和数据库表的对应关系 -->
 	<mappers>
-		<mapper resource="sql/mapper/xml/TCInfodbaMapper.xml" />
+		<mapper resource="sql/mapper/TCInfodbaMapper.xml" />
 	</mappers>
 </configuration>

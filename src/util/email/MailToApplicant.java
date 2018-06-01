@@ -20,28 +20,25 @@ public class MailToApplicant {
 	private MimeMessage message;
 	private Transport transport;
 	private Properties props;
-	/** ÓÊ¼ş½ÓÈËÈËĞÕÃû*/
+	/** é‚®ä»¶æ¥äººäººå§“å*/
 	private List<String> receiver;
-	/** ÓÊ¼ş½ÓÊÕÕßÓÊÏä*/
+	/** é‚®ä»¶æ¥æ”¶è€…é‚®ç®±*/
 	private List<String> receiveMailAccount;
 	private boolean debug = true;
 	private String path = "";
 
 
 	private List<String> files;
-	//³É¹¦ÎÄ¼şÃû³ÆÇåµ¥
+	//æˆåŠŸçš„æ¸…å•
 	private List<String> fileName;
-	//Ê§°ÜµÄÎÄ¼şÇåµ¥
+	//å¤±è´¥æ¸…å•
 	private List<FailBean> failFiles;
 
-//	//³É¹¦µÄÁã¼şÇåµ¥
-//	private List<String> items;
-//	//Ê§°ÜµÄÁã¼şÇåµ¥
-//	private List<FailBean> itemFailFiles;
 
 
-	public static  final String ITEM_TYPE = "Áã¼şÃû³Æ";
-	public static  final String FILE_TYPE = "ÎÄ¼şÃû³Æ";
+
+	public static  final String ITEM_TYPE = "é›¶ä»¶åç§°";
+	public static  final String FILE_TYPE = "æ–‡ä»¶åç§°";
 
 	public MailToApplicant() {
 		props = loader.getProperties();
@@ -52,71 +49,74 @@ public class MailToApplicant {
 	public boolean release(String type) {
 		try {
 			message = createMimeMessage(session,type, props.getProperty("myEmailAccount"), receiveMailAccount);
-			// 4. ¸ù¾İ Session »ñÈ¡ÓÊ¼ş´«Êä¶ÔÏó
+			// // 4. æ ¹æ® Session è·å–é‚®ä»¶ä¼ è¾“å¯¹è±¡
 			transport = session.getTransport();
-			// 5. Ê¹ÓÃ ÓÊÏäÕËºÅ ºÍ ÃÜÂë Á¬½ÓÓÊ¼ş·şÎñÆ÷, ÕâÀïÈÏÖ¤µÄÓÊÏä±ØĞëÓë message ÖĞµÄ·¢¼şÈËÓÊÏäÒ»ÖÂ, ·ñÔò±¨´í
+			// 5. ä½¿ç”¨ é‚®ç®±è´¦å· å’Œ å¯†ç  è¿æ¥é‚®ä»¶æœåŠ¡å™¨, è¿™é‡Œè®¤è¯çš„é‚®ç®±å¿…é¡»ä¸ message ä¸­çš„å‘ä»¶äººé‚®ç®±ä¸€è‡´, å¦åˆ™æŠ¥é”™
 			//
-			// PS_01: ³É°ÜµÄÅĞ¶Ï¹Ø¼üÔÚ´ËÒ»¾ä, Èç¹ûÁ¬½Ó·şÎñÆ÷Ê§°Ü, ¶¼»áÔÚ¿ØÖÆÌ¨Êä³öÏàÓ¦Ê§°ÜÔ­ÒòµÄ log,
-			// ×ĞÏ¸²é¿´Ê§°ÜÔ­Òò, ÓĞĞ©ÓÊÏä·şÎñÆ÷»á·µ»Ø´íÎóÂë»ò²é¿´´íÎóÀàĞÍµÄÁ´½Ó, ¸ù¾İ¸ø³öµÄ´íÎó
-			// ÀàĞÍµ½¶ÔÓ¦ÓÊ¼ş·şÎñÆ÷µÄ°ïÖúÍøÕ¾ÉÏ²é¿´¾ßÌåÊ§°ÜÔ­Òò¡£
+			// PS_01: æˆè´¥çš„åˆ¤æ–­å…³é”®åœ¨æ­¤ä¸€å¥, å¦‚æœè¿æ¥æœåŠ¡å™¨å¤±è´¥, éƒ½ä¼šåœ¨æ§åˆ¶å°è¾“å‡ºç›¸åº”å¤±è´¥åŸå› çš„ log,
+			// ä»”ç»†æŸ¥çœ‹å¤±è´¥åŸå› , æœ‰äº›é‚®ç®±æœåŠ¡å™¨ä¼šè¿”å›é”™è¯¯ç æˆ–æŸ¥çœ‹é”™è¯¯ç±»å‹çš„é“¾æ¥, æ ¹æ®ç»™å‡ºçš„é”™è¯¯
+			// ç±»å‹åˆ°å¯¹åº”é‚®ä»¶æœåŠ¡å™¨çš„å¸®åŠ©ç½‘ç«™ä¸ŠæŸ¥çœ‹å…·ä½“å¤±è´¥åŸå› ã€‚
 			//
-			// PS_02: Á¬½ÓÊ§°ÜµÄÔ­ÒòÍ¨³£ÎªÒÔÏÂ¼¸µã, ×ĞÏ¸¼ì²é´úÂë:
-			// (1) ÓÊÏäÃ»ÓĞ¿ªÆô SMTP ·şÎñ;
-			// (2) ÓÊÏäÃÜÂë´íÎó, ÀıÈçÄ³Ğ©ÓÊÏä¿ªÆôÁË¶ÀÁ¢ÃÜÂë;
-			// (3) ÓÊÏä·şÎñÆ÷ÒªÇó±ØĞëÒªÊ¹ÓÃ SSL °²È«Á¬½Ó;
-			// (4) ÇëÇó¹ıÓÚÆµ·±»òÆäËûÔ­Òò, ±»ÓÊ¼ş·şÎñÆ÷¾Ü¾ø·şÎñ;
-			// (5) Èç¹ûÒÔÉÏ¼¸µã¶¼È·¶¨ÎŞÎó, µ½ÓÊ¼ş·şÎñÆ÷ÍøÕ¾²éÕÒ°ïÖú¡£
+			// PS_02: è¿æ¥å¤±è´¥çš„åŸå› é€šå¸¸ä¸ºä»¥ä¸‹å‡ ç‚¹, ä»”ç»†æ£€æŸ¥ä»£ç :
+			// (1) é‚®ç®±æ²¡æœ‰å¼€å¯ SMTP æœåŠ¡;
+			// (2) é‚®ç®±å¯†ç é”™è¯¯, ä¾‹å¦‚æŸäº›é‚®ç®±å¼€å¯äº†ç‹¬ç«‹å¯†ç ;
+			// (3) é‚®ç®±æœåŠ¡å™¨è¦æ±‚å¿…é¡»è¦ä½¿ç”¨ SSL å®‰å…¨è¿æ¥;
+			// (4) è¯·æ±‚è¿‡äºé¢‘ç¹æˆ–å…¶ä»–åŸå› , è¢«é‚®ä»¶æœåŠ¡å™¨æ‹’ç»æœåŠ¡;
+			// (5) å¦‚æœä»¥ä¸Šå‡ ç‚¹éƒ½ç¡®å®šæ— è¯¯, åˆ°é‚®ä»¶æœåŠ¡å™¨ç½‘ç«™æŸ¥æ‰¾å¸®åŠ©ã€‚
 			// 452698545
-			// PS_03: ×ĞÏ¸¿´log, ÈÏÕæ¿´log, ¿´¶®log, ´íÎóÔ­Òò¶¼ÔÚlogÒÑËµÃ÷¡£
+			// PS_03: ä»”ç»†çœ‹log, è®¤çœŸçœ‹log, çœ‹æ‡‚log, é”™è¯¯åŸå› éƒ½åœ¨logå·²è¯´æ˜ã€‚ilAccount"),
 			transport.connect(props.getProperty("mail.smtp.host"), props.getProperty("myEmailAccount"),
 					props.getProperty("myEmailPassword"));
 			// transport.connect(myEmailAccount, myEmailPassword);
-			// 6. ·¢ËÍÓÊ¼ş, ·¢µ½ËùÓĞµÄÊÕ¼şµØÖ·, message.getAllRecipients()
-			// »ñÈ¡µ½µÄÊÇÔÚ´´½¨ÓÊ¼ş¶ÔÏóÊ±Ìí¼ÓµÄËùÓĞÊÕ¼şÈË,
-			// ³­ËÍÈË, ÃÜËÍÈË
+			// 6. å‘é€é‚®ä»¶, å‘åˆ°æ‰€æœ‰çš„æ”¶ä»¶åœ°å€, message.getAllRecipients()
+			// è·å–åˆ°çš„æ˜¯åœ¨åˆ›å»ºé‚®ä»¶å¯¹è±¡æ—¶æ·»åŠ çš„æ‰€æœ‰æ”¶ä»¶äºº,
+			// æŠ„é€äºº, å¯†é€äºº
 			transport.sendMessage(message, message.getAllRecipients());
 			transport.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//			MessageBox.post("ÓÊ¼ş·¢ËÍÊ§°Ü£¬Çë¼ì²éÊÕ¼şÈËÓÊÏä:" + receiveMailAccount, "ÓÊ¼ş·¢ËÍÊ§°Ü", MessageBox.ERROR);
+//			MessageBox.post("é‚®ä»¶å‘é€å¤±è´¥ï¼Œè¯·æ£€æŸ¥æ”¶ä»¶äººé‚®ç®±:" + receiveMailAccount, "é‚®ä»¶å‘é€å¤±è´¥", MessageBox.ERROR);
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * ´´½¨Ò»·âÖ»°üº¬ÎÄ±¾µÄ¼òµ¥ÓÊ¼ş
+	 * åˆ›å»ºä¸€å°åªåŒ…å«æ–‡æœ¬çš„ç®€å•é‚®ä»¶
 	 *
 	 * @param session
-	 *            ºÍ·şÎñÆ÷½»»¥µÄ»á»°
+	 *            å’ŒæœåŠ¡å™¨äº¤äº’çš„ä¼šè¯
 	 * @param sendMail
-	 *            ·¢¼şÈËÓÊÏä
+	 *            å‘ä»¶äººé‚®ç®±
 	 * @param receiveMail
-	 *            ÊÕ¼şÈËÓÊÏä
+	 *            æ”¶ä»¶äººé‚®ç®±
 	 * @return
 	 * @throws Exception
 	 */
 	public MimeMessage createMimeMessage(Session session,String type, String sendMail, List<String> receiveMail) throws Exception {
-		// 1. ´´½¨Ò»·âÓÊ¼ş
+		// 1. åˆ›å»ºä¸€å°é‚®ä»¶
 		MimeMessage message = new MimeMessage(session);
 
-		// 2. From: ·¢¼şÈË£¨êÇ³ÆÓĞ¹ã¸æÏÓÒÉ£¬±ÜÃâ±»ÓÊ¼ş·şÎñÆ÷ÎóÈÏÎªÊÇÀÄ·¢¹ã¸æÒÔÖÁ·µ»ØÊ§°Ü£¬ÇëĞŞ¸ÄêÇ³Æ£©
-		message.setFrom(new InternetAddress(sendMail, "ºÏÖÚĞÂÄÜÔ´Æû³µÓĞÏŞ¹«Ë¾", "UTF-8"));
+		// 2. From: å‘ä»¶äººï¼ˆæ˜µç§°æœ‰å¹¿å‘Šå«Œç–‘ï¼Œé¿å…è¢«é‚®ä»¶æœåŠ¡å™¨è¯¯è®¤ä¸ºæ˜¯æ»¥å‘å¹¿å‘Šä»¥è‡³è¿”å›å¤±è´¥ï¼Œè¯·ä¿®æ”¹æ˜µç§°ï¼‰
 
-		// 3. To: ÊÕ¼şÈË£¨¿ÉÒÔÔö¼Ó¶à¸öÊÕ¼şÈË¡¢³­ËÍ¡¢ÃÜËÍ£©
+		message.setFrom(new InternetAddress(sendMail, "åˆä¼—æ–°èƒ½æºæ±½è½¦æœ‰é™å…¬å¸", "UTF-8"));
+
+		// 3. To: æ”¶ä»¶äººï¼ˆå¯ä»¥å¢åŠ å¤šä¸ªæ”¶ä»¶äººã€æŠ„é€ã€å¯†é€ï¼‰
 		//message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "XX???", "GB2312"));
-        //¶à¸öÊÕ¼şÈË
+		//å¤šä¸ªæ”¶ä»¶äºº
 		StringBuffer buffer = new StringBuffer();
 		for(String str :receiveMail){
 			buffer.append(str+",");
 		}
 		message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(buffer.toString()));
-		message.setSubject("Êı¾İ·¢·Å", "UTF-8");
+		message.setSubject("æ•°æ®å‘æ”¾", "UTF-8");
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getHeadModel(type));
+		if(fileName !=null && fileName.size()>0)
 		sb.append(getSuccContent(fileName));
+		if(failFiles!=null&&failFiles.size()>0)
 		sb.append(getFailContent(failFiles,type));
 //		sb.append("</table>");
 //		sb.append("</div>");
@@ -285,7 +285,7 @@ public class MailToApplicant {
 		// } else
 		// sb.append(applicant.get(i));
 		// }
-		sb.append("TCÊı¾İ·¢·Å");
+		sb.append("TCæ•°æ®å‘æ”¾");
 		return sb;
 	}
 
@@ -296,7 +296,7 @@ public class MailToApplicant {
 	private StringBuilder addDate() {
 		Calendar cal = Calendar.getInstance();
 		StringBuilder sb = new StringBuilder();
-		sb.append(cal.get(Calendar.YEAR) + "Äê" + (cal.get(Calendar.MONTH) + 1) + "ÔÂ" + cal.get(Calendar.DATE) + "ÈÕ");
+		sb.append(cal.get(Calendar.YEAR) + "å¹´" + (cal.get(Calendar.MONTH) + 1) + "æœˆ" + cal.get(Calendar.DATE) + "æ—¥");
 		return sb;
 	}
 
@@ -314,11 +314,11 @@ public class MailToApplicant {
 	private StringBuilder addSupplier() throws Exception {
 		StringBuilder sb = new StringBuilder();
 		if (receiver.size() <= 0 || receiver == null)
-			throw new Exception("Ã»ÓĞÓÊ¼ş½ÓÊÕÕß");
+			throw new Exception("æ²¡æœ‰é‚®ä»¶æ¥æ”¶è€…");
 		for (String string : receiver) {
-			sb.append(string + "£¬");
+			sb.append(string + ",");
 		}
-		sb.append("	ºÃ");
+		sb.append("	å¥½");
 		return sb;
 	}
 
@@ -338,7 +338,7 @@ public class MailToApplicant {
 //		list.add("mmpa");
 //		list.add("shibai a");
 //		list.add("sadasd");
-//		map.put("ÎÄ¼şÉÏ´«ÖÁftpÊ§°Ü",list);
+//		map.put("ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ftpÊ§ï¿½ï¿½",list);
 
 		List itemList = new ArrayList();
 		itemList.add("aaaaaaaaaaaa");
@@ -348,7 +348,7 @@ public class MailToApplicant {
 		List<String> itemL = new ArrayList<>();
 		itemL.add("1111111111");
 		itemL.add("222222222");
-		itemMap.put("ÎÄ¼şÉÏ´«ÖÁftpÊ§°Ü",itemL);
+		itemMap.put("ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ftpÊ§ï¿½ï¿½",itemL);
 //		ArrayList<String> files = new ArrayList<>();
 //		files.add("sdads");
 		mailUtil.setReceiver(receiver);

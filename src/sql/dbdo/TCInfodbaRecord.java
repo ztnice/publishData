@@ -2,7 +2,6 @@ package sql.dbdo;
 
 /**
  * Created by haozt on 2018/4/17.
- * tcÖĞµÄ±í
  */
 public class TCInfodbaRecord {
     private String puid;
@@ -11,30 +10,29 @@ public class TCInfodbaRecord {
      */
     private String itemId;
     /**
-     *°æ±¾
+     *ç‰ˆæœ¬
      */
     private String itemRevision;
     /**
-     *ÀàĞÍ
+     *ç±»å‹
      */
     private String itemType;
     /**
-     * ¾íÂ·¾¶
+     * å·è·¯å¾„
      */
     private String pwntPathName;
     /**
-     * ¾íÂ·¾¶ÏÂµÄÎÄ¼şÃû³Æ
+     * å·è·¯å¾„ä¸‹çš„æ–‡ä»¶åç§°
      */
     private String pFileName;
     /**
-     * ¾íÂ·¾¶ÏÂµÄÎÄ¼şÃû³ÆÂ·¾¶
+     * å·è·¯å¾„ä¸‹çš„æ–‡ä»¶åç§°è·¯å¾„
      */
     private String psdPathName;
     /**
-     * ÎÄ¼şÃû³Æ£¬ÓÃÓÚÉÏ´«µ½ftp·şÎñÆ÷
+     * æ–‡ä»¶åç§°ï¼Œç”¨äºä¸Šä¼ åˆ°ftpæœåŠ¡å™¨
      */
     private String poriginalFileName;
-
     public String getPuid() {
         return puid;
     }

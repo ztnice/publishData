@@ -10,15 +10,6 @@ import java.util.List;
 /**
  * Created by haozt on 2018/5/29
  *
- *      * 1.²éÑ¯¶ÔÓ¦µÄÁã¼şĞÅÏ¢£¬¼ÇÂ¼´íÎóĞÅÏ¢ ÓÃÓÚ·¢ÓÊ¼şÍ¨Öª¿Í»§ Áã¼şÃû³Æ+Ô­Òò
- *      * 2.¼ÇÂ¼²éÑ¯µ½µÄÁã¼şĞÅÏ¢  ÓÃÓÚÉÏ´«ftp
- *      * 3.²éÑ¯¶ÔÓ¦µÄÎÄ¼şĞÅÏ¢£¬¼ÇÂ¼´íÎóĞÅÏ¢ ÓÃÓÚ·¢ËÍÓÊ¼ş¸ø¿Í»§
- *      * 4.¼ÇÂ¼²éÑ¯µ½µÄÎÄ¼şĞÅÏ¢  ÓÃÓÚÉÏ´«ftp
- *      * 5.Ê§°Ü£º½«Ê§°ÜµÄĞÅÏ¢·µ»Ø¸øoaµ÷ÓÃÕß
- *      * 6.³É¹¦£º½«2£¬4²½¼ÇÂ¼µÄÇåµ¥ĞÅÏ¢ÉÏ´«ÖÁftp·şÎñÆ÷
- *      * 7.½«ËùÓĞÊı¾İ·¢·ÅĞÅÏ¢±£´æÖÁÊı¾İ¿â
- *      * 8.¸øÉêÇëÈË£¬¹©Ó¦ÉÌ·¢ËÍ³É¹¦ÓÊ¼şÍ¨Öª
- *
  */
 public class PublishData {
 
@@ -27,7 +18,7 @@ public class PublishData {
 
     private PublishDataAnalysis analysis;
     /**
-     * Êı¾İ·¢·ÅÕûÀí ×÷ÎªÒ»¸ö½Ó¿Ú
+     * æ•°æ®å‘æ”¾ å…¨éƒ¨æ•°æ® ä¿ç•™æ¥å£
      * @param baseDataBean
      * @param items
      * @param documents
@@ -38,7 +29,7 @@ public class PublishData {
     }
 
     /**
-     * »ù±¾ĞÅÏ¢·¢·Å
+     * åŸºæœ¬æ•°æ®
      * @param baseDataBean
      * @return
      */
@@ -48,19 +39,19 @@ public class PublishData {
         publishDataService = new PublishDataServiceImpl();
         int i =publishDataService.insertBaseData(baseDataBean);
         if(i>0){
-            result.setErrMsg("»ù±¾Êı¾İ·¢·Å³É¹¦£¡");
+            result.setErrMsg("åŸºæœ¬æ•°æ®å‘æ”¾æˆåŠŸï¼");
             result.setErrCode(1001);
             result.setSuccess(true);
         }else{
             result.setSuccess(false);
             result.setErrCode(1002);
-            result.setErrMsg("»ù±¾Êı¾İ·¢·ÅÊ§°Ü");
+            result.setErrMsg("åŸºæœ¬æ•°æ®å‘æ”¾å¤±è´¥ï¼");
         }
         return  result;
     }
 
     /**
-     * Áã¼şÇåµ¥·¢·Å
+     * é›¶ä»¶æ¸…å•
      * @param itemBean
      * @return
      */
@@ -82,25 +73,25 @@ public class PublishData {
             List<String> supplyEmails = new ArrayList<>();
             supplyEmails.add(baseDataBean.getSupplier().getOutCpnyEmail());
 
-            emailBean.setApplicatorMails(applicatorEmails);//ÉêÇëÈËÓÊÏä
-            emailBean.setSupplyMails(supplyEmails);//¹©Ó¦ÉÌÓÊÏä
-            emailBean.setApplicators(applicators);//ÉêÇëÈË
-            emailBean.setSupplies(supplies);//¹©Ó¦ÉÌ
+            emailBean.setApplicatorMails(applicatorEmails);//
+            emailBean.setSupplyMails(supplyEmails);//
+            emailBean.setApplicators(applicators);//
+            emailBean.setSupplies(supplies);//
 
-            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"Áã¼şÃû³Æ");
+            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"é›¶ä»¶åç§°");
             if(!success){
-                result.setErrMsg("Áã¼şÇåµ¥·¢·ÅÊ§°Ü£¬ÇëºË¶ÔÊÕ¼şÈËÓÊÏäµØÖ·£¡");
+                result.setErrMsg("é›¶ä»¶æ¸…å•å‘æ”¾å¤±è´¥ï¼Œè¯·æ ¸å¯¹æ”¶ä»¶äººé‚®ç®±åœ°å€");
                 result.setErrCode(1002);
                 result.setSuccess(false);
             }else{
                 result.setSuccess(true);
                 result.setErrCode(1001);
-                result.setErrMsg("Áã¼şÇåµ¥·¢·Å³É¹¦£¬Çë²éÊÕÓÊ¼ş£¡");
+                result.setErrMsg("é›¶ä»¶æ¸…å•å‘æ”¾æˆåŠŸï¼è¯·æŸ¥çœ‹é‚®ä»¶");
             }
         }else{
             result.setSuccess(false);
             result.setErrCode(1002);
-            result.setErrMsg("Áã¼şÇåµ¥·¢·ÅÊ§°Ü£¬Çë¼ì²éÍøÂç£¡");
+            result.setErrMsg("é›¶ä»¶æ¸…å•å‘æ”¾å¤±è´¥ï¼Œç½‘ç»œé”™è¯¯ï¼");
         }
 
 
@@ -108,7 +99,7 @@ public class PublishData {
     }
 
     /**
-     * ÎÄ¼şÇåµ¥·¢·Å
+     * æ–‡ä»¶æ¸…å•
      * @param documentBean
      * @return
      */
@@ -130,24 +121,24 @@ public class PublishData {
             List<String> supplyEmails = new ArrayList<>();
             supplyEmails.add(baseDataBean.getSupplier().getOutCpnyEmail());
 
-            emailBean.setApplicatorMails(applicatorEmails);//ÉêÇëÈËÓÊÏä
-            emailBean.setSupplyMails(supplyEmails);//¹©Ó¦ÉÌÓÊÏä
-            emailBean.setApplicators(applicators);//ÉêÇëÈË
-            emailBean.setSupplies(supplies);//¹©Ó¦ÉÌ
-            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"ÎÄ¼şÃû³Æ");
+            emailBean.setApplicatorMails(applicatorEmails);//ç”³è¯·äººåœ°å€
+            emailBean.setSupplyMails(supplyEmails);//ä¾›åº”å•†åœ°å€
+            emailBean.setApplicators(applicators);//ç”³è¯·äºº
+            emailBean.setSupplies(supplies);//ä¾›åº”å•†
+            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"æ–‡ä»¶åç§°");
             if(!success){
-                result.setErrMsg("ÎÄ¼şÇåµ¥·¢·ÅÊ§°Ü£¬ÇëºË¶ÔÊÕ¼şÈËÓÊÏäµØÖ·£¡");
+                result.setErrMsg("æ–‡ä»¶æ¸…å•å‘æ”¾å¤±è´¥ï¼Œæ¸…æ£€æŸ¥æ”¶ä»¶äººé‚®ç®±åœ°å€");
                 result.setErrCode(1002);
                 result.setSuccess(false);
             }else{
                 result.setSuccess(true);
                 result.setErrCode(1001);
-                result.setErrMsg("ÎÄ¼şÇåµ¥·¢·Å³É¹¦£¬Çë²éÊÕÓÊ¼ş£¡");
+                result.setErrMsg("æ–‡ä»¶æ¸…å•å‘æ”¾æˆåŠŸï¼Œè¯·æŸ¥æ”¶é‚®ä»¶");
             }
         }else{
             result.setSuccess(false);
             result.setErrCode(1002);
-            result.setErrMsg("ÎÄ¼şÇåµ¥·¢·ÅÊ§°Ü£¬Çë¼ì²éÍøÂç£¡");
+            result.setErrMsg("æ–‡ä»¶æ¸…å•å‘æ”¾å¤±è´¥ï¼Œç½‘ç»œé”™è¯¯");
         }
         return result;
     }

@@ -2,7 +2,6 @@ package sql.dbdo;
 
 /**
  * Created by haozt on 2018/4/9.
- *  Êı¾İ·¢·ÅÁ÷³Ì Áã¼şÇåµ¥
  */
 public class HzTempItemRecord {
     /**
@@ -10,43 +9,43 @@ public class HzTempItemRecord {
      */
     private Long id;
     /**
-     * ËùÊôÁ÷³Ì
+     * æ‰€å±æµç¨‹
      */
     private Object belProcessNum;
     /**
-     *Áã¼şºÅ
+     *é›¶ä»¶å·
      */
     private String itemId;
     /**
-     *Áã¼şÃû³Æ
+     *é›¶ä»¶åç§°
      */
     private String itemName;
     /**
-     *°æ±¾ºÅ
+     *ç‰ˆæœ¬å·
      */
     private String itemRevision;
     /**
-     *CatiaÊıÄ£
+     *Catiaæ•°æ¨¡
      */
     private Integer catiaDigifax;
     /**
-     *JTÊıÄ£
+     *JTæ•°æ¨¡
      */
     private Integer jtDigifax;
     /**
-     *CGRÊıÄ£
+     *CGRæ•°æ¨¡
      */
     private Integer cgrDigifax;
     /**
-     *CatiaÍ¼Ö½
+     *Catiaå›¾çº¸
      */
     private Integer catiaBlueprint;
     /**
-     *CADÍ¼Ö½
+     *CADå›¾çº¸
      */
     private Integer cadBlueprint;
     /**
-     *ÆäËû
+     *å…¶ä»–
      */
     private Integer others;
 

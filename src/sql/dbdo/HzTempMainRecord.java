@@ -2,72 +2,71 @@ package sql.dbdo;
 
 /**
  * Created by haozt on 2018/4/9.
- * Êı¾İ¶ÔÏó Êı¾İ·¢·ÅÁ÷³Ì
  */
 public class HzTempMainRecord {
     /**
-     * ±êÌâ
+     * æ ‡é¢˜
      */
     private String title;
     /**
-     * Á÷³Ì±àºÅ
+     * æµç¨‹ç¼–å·
      */
     private String processNum;
     /**
-     * ÉêÇë²¿ÃÅ
+     * ç”³è¯·éƒ¨é—¨
      */
     private String appDept;
 
     /**
-     * ³µĞÍ´úÂë
+     * è½¦å‹ä»£ç 
      */
     private String vehCode;
     /**
-     *  ÉêÇëÈË
+     *  ç”³è¯·äºº
      */
     private String applicant;
     /**
-     * ÉêÇëÈËÓÊÏä
+     * ç”³è¯·äººé‚®ç®±
      */
     private String applicantEmail;
     /**
-     * ÉêÇëÈËµç»°
+     * ç”³è¯·äººç”µè¯
      */
     private String applicantPhone;
     /**
-     * ·¢·ÅÀàĞÍ
+     * å‘æ”¾ç±»å‹
      */
     private String provideType;
     /**
-     *  ÄÚ²¿·¢·Å-½ÓÊÕÈË
+     *  å†…éƒ¨å‘æ”¾-æ¥æ”¶äºº
      */
     private String inAccepter;
     /**
-     *  ÄÚ²¿·¢·Å-½ÓÊÕ²¿ÃÅ
+     *  å†…éƒ¨å‘æ”¾-æ¥æ”¶éƒ¨é—¨
      */
     private String inDept;
     /**
-     *  Íâ²¿·¢·Å-µ¥Î»Ãû³Æ
+     *  å¤–éƒ¨å‘æ”¾-å•ä½åç§°
      */
     private String outCpnyName;
     /**
-     *  Íâ²¿·¢·Å-µ¥Î»´úÂë
+     *  å¤–éƒ¨å‘æ”¾-å•ä½ä»£ç 
      */
     private String outCpnyCode;
     /**
-     *  Íâ²¿·¢·Å-½ÓÊÕÈË
+     *  å¤–éƒ¨å‘æ”¾-æ¥æ”¶äºº
      */
     private String outCpnyAccepter;
     /**
-     *  Íâ²¿·¢·Å-ÓÊÏäµØÖ·
+     *  å¤–éƒ¨å‘æ”¾-é‚®ç®±åœ°å€
      */
     private String outCpnyEmail;
     /**
-     *  ÏîÄ¿¾­ÀíÒâ¼û
+     *  é¡¹ç›®ç»ç†æ„è§
      */
     private String proManagerSugge;
     /**
-     *  ÏîÄ¿×Ü¼àÒâ¼û
+     *  é¡¹ç›®æ€»ç›‘æ„è§
      */
     private String proInspectorSugge;
 

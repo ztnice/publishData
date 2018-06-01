@@ -27,10 +27,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	</environments>
 	<!--映射文件：描述某个实体和数据库表的对应关系 -->
 	<mappers>
-		<mapper resource="sql/mapper/xml/UserAuthorizationMapper.xml" />
-		<mapper resource="sql/mapper/xml/HzAuthorityOfuserMapper.xml" />
-		<mapper resource="sql/mapper/xml/HzTempItemRecordMapper.xml" />
-		<mapper resource="sql/mapper/xml/HzTempMainRecordMapper.xml" />
-		<mapper resource="sql/mapper/xml/HzTempDocumentRecordMapper.xml"/>
+		<mapper resource="sql/mapper/HzTempItemRecordMapper.xml" />
+		<mapper resource="sql/mapper/HzTempMainRecordMapper.xml" />
+		<mapper resource="sql/mapper/HzTempDocumentRecordMapper.xml"/>
 	</mappers>
 </configuration>

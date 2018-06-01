@@ -13,15 +13,15 @@ public class Test {
 		String path = "C:\\db_extract.xml";
 		File file = new File(path);
 		if (!file.exists()) {
-			System.out.println("²»´æÔÚÎÄ¼ş" + file.getName());
+			System.out.println("ä¸å­˜åœ¨æ–‡ä»¶" + file.getName());
 			return;
 		}
 		InputStream input = new FileInputStream(new File(path));
 		int i = FtpUtil.uploadMutilFile1(properties,properties.getProperty("FTP_BASEPATH"), "hozon", file.getName(), input);
 		if (i==1) {
-			System.out.println("ÉÏ´«³É¹¦");
+			System.out.println("ä¸Šä¼ æˆåŠŸ");
 		} else {
-			System.out.println("ÉÏ´«Ê§°Ü");
+			System.out.println("ä¸Šä¼ å¤±è´¥");
 		}
 	}
 }

@@ -2,7 +2,6 @@ package bean;
 
 /**
  * Created by haozt on 2018/05/31
- * TC 卷中查询放的名称和TC页面的名称
  */
 public class TypeBean {
 

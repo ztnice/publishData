@@ -12,11 +12,11 @@ public class Test {
     public static void main(String[] args){
         PublishData data = new PublishData();
         Supplier supplier = new Supplier();
-        supplier.setOutCpnyCode("12313");
-        supplier.setOutCpnyAccepter("ÕÅÈý");
+        supplier.setOutCpnyCode("123131");
+        supplier.setOutCpnyAccepter("å¼ ä¸‰");
         supplier.setOutCpnyEmail("zhit876@163.com");
         BaseDataBean b  = new BaseDataBean();
-        b.setProcessNum("11121314454241");
+        b.setProcessNum("3413å¤§ccda11");
         b.setAppDept("mmpa,donot in");
         b.setApplicant("sadas");
         b.setApplicantPhone("12324234");
@@ -33,7 +33,7 @@ public class Test {
         bean.setJT_digifax(0);
         bean.setCatia_digifax(1);
         bean.setCGR_digifax(1);
-        bean.setItem_name("Áã¼þ²âÊÔ ");
+        bean.setItem_name("ä¸¤ä»¶æµ‹è¯• ");
         bean.setItem_id("005621");
         bean.setItemRevision("A");
         bean.setProcessNum(b.getProcessNum());
@@ -41,18 +41,20 @@ public class Test {
         List<DocumentBean> beans = new ArrayList<>();
         DocumentBean documentBean = new DocumentBean();
         documentBean.setDocument_id("005621");
-        documentBean.setDocument_name("ÎÄ¼þ²âÊÔ");
+        documentBean.setDocument_name("æ–‡ä»¶æµ‹è¯•111");
         documentBean.setDocumentRevision("A");
         documentBean.setProcessNum(b.getProcessNum());
         beans.add(documentBean);
 
         DocumentBean documentBean1 = new DocumentBean();
         documentBean1.setDocument_id("005621");
-        documentBean1.setDocument_name("ÎÄ¼þ²âÊÔ2");
+        documentBean1.setDocument_name("æ–‡ä»¶æµ‹è¯•2222");
         documentBean1.setDocumentRevision("B");
         documentBean1.setProcessNum(b.getProcessNum());
         beans.add(documentBean1);
-        Result result = data.publishBaseData(b);
+        data.publishBaseData(b);
+       data.publishDocumentBean(beans);
+        Result result = data.publishItemBean(list);
         System.out.println(result.getErrMsg());
     }
 }

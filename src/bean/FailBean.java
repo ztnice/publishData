@@ -2,7 +2,6 @@ package bean;
 
 /**
  * Created by haozt on 2018/05/31
- * 用于记录失败的对象名称和失败原因
  */
 public class FailBean {
     private String name;
