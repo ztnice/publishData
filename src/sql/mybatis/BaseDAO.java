@@ -32,7 +32,7 @@ public abstract class BaseDAO {
     /**
      * 插入一个实体
      *
-     * @param sqlMapId  mybatis ӳ��id
+     * @param sqlMapId  mybatis
      * @param object  实体
      * @return
      */

@@ -2,50 +2,49 @@
   <library name="JAX-WS-Apache Axis" type="JAX-WS">
     <properties version="Apache Axis" />
     <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/activation.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/axis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-dbcp-1.2.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/commons-discovery-0.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/commons-logging-1.0.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-net-3.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-net-examples-3.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/druid-1.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.mail.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jaxrpc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jedis-2.9.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mybatis-3.4.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mybatis-spring-1.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ojdbc6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-3.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-examples-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-excelant-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-ooxml-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-ooxml-schemas-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-scratchpad-3.17.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/saaj.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/axis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-aop-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-beans-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-context-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-context-support-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-core-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-expression-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-jcl-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-jdbc-4.2.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-test-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-tx-3.2.13.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-web-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-webmvc-5.0.5.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/sqljdbc4.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/wsdl4j-1.5.1.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/axis.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/commons-dbcp-1.2.1.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/commons-net-3.6.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/commons-net-examples-3.6.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/druid-1.1.9.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/mybatis-spring-1.2.4.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-3.7.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-examples-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-excelant-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-ooxml-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-ooxml-schemas-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/poi-scratchpad-3.17.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-aop-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-beans-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-context-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-context-support-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-core-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-expression-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-jcl-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-jdbc-4.2.0.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-test-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-tx-3.2.13.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-web-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/spring-webmvc-5.0.5.RELEASE.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/activation.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/javax.mail.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/jedis-2.9.0.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/mybatis-3.4.5.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/ojdbc6.jar!/" />
-      <root url="jar://$USER_HOME$/Desktop/jar/sqljdbc4.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$USER_HOME$/Desktop/jar/druid-1.1.9-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/druid-1.1.9-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$USER_HOME$/Desktop/jar/commons-net-3.6-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-net-3.6-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
