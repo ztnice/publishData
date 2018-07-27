@@ -8,9 +8,13 @@
 		<result column="ITEM_NAME" jdbcType="VARCHAR" property="documentName" />
 		<result column="ITEMREVISION" jdbcType="VARCHAR" property="documentRevision" />
 	</resultMap>
+
 	<sql id="Base_Column_List">
 		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION
 	</sql>
+
+
+
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
@@ -18,6 +22,8 @@
 		from HZ_TEMPDOCUMENTRECORD
 		where ID = #{id,jdbcType=DECIMAL}
 	</select>
+
+
 	<select id="selectByMainRecord" parameterType="sql.dbdo.HzTempMainRecord"
 		resultMap="BaseResultMap">
 		select
@@ -25,10 +31,15 @@
 		from HZ_TEMPDOCUMENTRECORD
 		where BEL_PROCESS_NUM = #{processNum,jdbcType=DECIMAL}
 	</select>
+
+
+
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from HZ_TEMPDOCUMENTRECORD
 		where ID = #{id,jdbcType=DECIMAL}
 	</delete>
+
+
 	<insert id="insert" parameterType="sql.dbdo.HzTempDocumentRecord">
 		insert into HZ_TEMPDOCUMENTRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION)
@@ -46,17 +57,27 @@
 	</update>
 
 
+
 	<select id="PublishDataDAOImpl_getHzTempDocumentList" parameterType="sql.dbdo.HzTempDocumentRecord"
 			resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from HZ_TEMPDOCUMENTRECORD
 		<where>
-            ITEM_ID = #{documentId}
-			and ITEMREVISION = #{documentRevision}
-			and BEL_PROCESS_NUM=#{belProcessNum}
+			1=1
+			<if test="documentId != null">
+				and ITEM_ID = #{documentId}
+			</if>
+			<if test="documentRevision != null and documentRevision!=''">
+				and ITEMREVISION = #{documentRevision}
+			</if>
+			<if test="belProcessNum != null and belProcessNum!=''">
+				and BEL_PROCESS_NUM=#{belProcessNum}
+			</if>
 		</where>
 	</select>
+
+
 
 
 	<insert id="PublishDataDAOImpl_insertDocumentBeanList" useGeneratedKeys="false" parameterType="java.util.List" >

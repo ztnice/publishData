@@ -22,8 +22,6 @@ public class ItemBean {
 	private Integer CAD_blueprint;
 	/** 其他 */
 	private Integer others;
-	/** 发放状态值 0(审批)/ 1(撤销)/ 2(生效)*/
-	private Integer state;
 	/**流程编号*/
 	private String processNum;
 
@@ -106,13 +104,6 @@ public class ItemBean {
 		return processNum;
 	}
 
-	public Integer getState() {
-		return state;
-	}
-
-	public void setState(Integer state) {
-		this.state = state;
-	}
 
 	public void setProcessNum(String processNum) {
 		this.processNum = processNum;

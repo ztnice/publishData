@@ -18,13 +18,16 @@
 		<result column="PRO_MANAGER_SUGGE" jdbcType="VARCHAR" property="proManagerSugge" />
 		<result column="PRO_INSPECTOR_SUGGE" jdbcType="VARCHAR" property="proInspectorSugge" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
+		<result column="PUBLISH_TIME" jdbcType="DATE" property="publishTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 	PROCESS_NUM, APP_DEPT, VEH_CODE, APPLICANT, APPLICANT_EMAIL, APPLICANT_PHONE, PROVIDE_TYPE,
-    IN_ACCEPTER, IN_DEPT, OUT_CPNY_NAME, OUT_CPNY_CODE, "OUT_CPNY_ ACCEPTER", "OUT_CPNY_ EMAIL",
-    PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE, TITLE
+    IN_ACCEPTER, IN_DEPT, OUT_CPNY_NAME, OUT_CPNY_CODE, OUT_CPNY_ACCEPTER, OUT_CPNY_EMAIL,
+    PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE, TITLE,PUBLISH_TIME
 	</sql>
-	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+
+
+	<select id="PublishDataDAOImpl_getHzTempMainRecord" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
@@ -32,11 +35,15 @@
 		where PROCESS_NUM =
 		#{processNum,jdbcType=VARCHAR}
 	</select>
+
+
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from
 		HZ_TEMPMAINRECORD
 		where PROCESS_NUM = #{processNum,jdbcType=VARCHAR}
 	</delete>
+
+
 	<insert id="PublishDataDAOImpl_insertBaseData" parameterType="sql.dbdo.HzTempMainRecord">
 		insert into HZ_TEMPMAINRECORD
 		(PROCESS_NUM, APP_DEPT, VEH_CODE,
@@ -44,7 +51,7 @@
 		APPLICANT_PHONE,
 		PROVIDE_TYPE, IN_ACCEPTER, IN_DEPT,
 		OUT_CPNY_NAME,
-		OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
+		OUT_CPNY_CODE, OUT_CPNY_ACCEPTER,
 		OUT_CPNY_EMAIL,
 		PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE,TITLE
 		)
@@ -72,8 +79,8 @@
         APPLICANT_PHONE,
         PROVIDE_TYPE, IN_ACCEPTER, IN_DEPT,
         OUT_CPNY_NAME,
-        OUT_CPNY_CODE, "OUT_CPNY_ACCEPTER",
-        "OUT_CPNY_EMAIL",
+        OUT_CPNY_CODE, OUT_CPNY_ACCEPTER,
+        OUT_CPNY_EMAIL,
         PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE
         )
 		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
@@ -116,9 +123,9 @@
 		OUT_CPNY_NAME = #{outCpnyName,jdbcType=VARCHAR},
 		OUT_CPNY_CODE =
 		#{outCpnyCode,jdbcType=VARCHAR},
-		"OUT_CPNY_ACCEPTER" =
+		OUT_CPNY_ACCEPTER =
 		#{outCpnyAccepter,jdbcType=VARCHAR},
-		"OUT_CPNY_EMAIL" =
+		OUT_CPNY_EMAIL =
 		#{outCpnyEmail,jdbcType=VARCHAR},
 		PRO_MANAGER_SUGGE =
 		#{proManagerSugge,jdbcType=VARCHAR},
@@ -127,4 +134,19 @@
 		where PROCESS_NUM =
 		#{processNum,jdbcType=VARCHAR}
 	</update>
+
+
+	<!--流程结束后，更新发布时间-->
+	<update id="PublishDataDAOImpl_updatePublishTime" parameterType="java.lang.String">
+		update
+		HZ_TEMPMAINRECORD
+		set PUBLISH_TIME =sysdate
+		where PROCESS_NUM =
+		#{processNum,jdbcType=VARCHAR}
+	</update>
+
+
+
+
+
 </mapper>

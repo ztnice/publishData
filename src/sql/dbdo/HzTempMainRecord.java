@@ -1,5 +1,7 @@
 package sql.dbdo;
 
+import java.util.Date;
+
 /**
  * Created by haozt on 2018/4/9.
  */
@@ -70,6 +72,7 @@ public class HzTempMainRecord {
      */
     private String proInspectorSugge;
 
+    private Date publishTime;
     public String getProcessNum() {
         return processNum;
     }
@@ -196,5 +199,13 @@ public class HzTempMainRecord {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
     }
 }

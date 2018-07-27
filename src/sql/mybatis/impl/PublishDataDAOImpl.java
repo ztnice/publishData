@@ -51,4 +51,14 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     public int insertDocumentBeanList(List<HzTempDocumentRecord> documentRecords) {
         return super.insert("PublishDataDAOImpl_insertDocumentBeanList",documentRecords);
     }
+
+    @Override
+    public int updatePublishTime(String processNum) {
+        return super.update("PublishDataDAOImpl_updatePublishTime",processNum);
+    }
+
+    @Override
+    public HzTempMainRecord getHzTempMainRecord(String processNum) {
+        return (HzTempMainRecord)super.findForObject("PublishDataDAOImpl_getHzTempMainRecord",processNum);
+    }
 }

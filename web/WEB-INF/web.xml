@@ -35,7 +35,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/hozon/services/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SOAPMonitorService</servlet-name>

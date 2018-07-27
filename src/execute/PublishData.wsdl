@@ -3,6 +3,33 @@
 <!--WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://execute" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bean"/>
+   <element name="args">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="baseDataBean" type="tns1:BaseDataBean"/>
+   <complexType name="ArrayOf_xsd_anyType">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <element name="items" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="documents" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDataReturn" type="tns1:Result"/>
+   <element name="baseDataBean1" type="tns1:BaseDataBean"/>
+   <element name="publishBaseDataReturn" type="tns1:Result"/>
+   <element name="itemBean" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishItemBeanReturn" type="tns1:Result"/>
+   <element name="processNums" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDataFromTcReturn" type="tns1:OperateResult"/>
+   <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDocumentBeanReturn" type="tns1:Result"/>
+  </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://bean" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://execute"/>
    <complexType name="Supplier">
@@ -37,30 +64,34 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="success" type="xsd:boolean"/>
     </sequence>
    </complexType>
-  </schema>
-  <schema elementFormDefault="qualified" targetNamespace="http://execute" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://bean"/>
-   <element name="baseDataBean" type="tns1:BaseDataBean"/>
-   <complexType name="ArrayOf_xsd_anyType">
+   <complexType name="OperateResult">
     <sequence>
-     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+     <element name="errCode" nillable="true" type="xsd:long"/>
+     <element name="errMsg" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
-   <element name="items" type="impl:ArrayOf_xsd_anyType"/>
-   <element name="documents" type="impl:ArrayOf_xsd_anyType"/>
-   <element name="publishDataReturn" type="tns1:Result"/>
-   <element name="baseDataBean1" type="tns1:BaseDataBean"/>
-   <element name="publishBaseDataReturn" type="tns1:Result"/>
-   <element name="itemBean" type="impl:ArrayOf_xsd_anyType"/>
-   <element name="publishItemBeanReturn" type="tns1:Result"/>
-   <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
-   <element name="publishDocumentBeanReturn" type="tns1:Result"/>
   </schema>
  </wsdl:types>
+
+   <wsdl:message name="mainResponse">
+
+   </wsdl:message>
 
    <wsdl:message name="publishBaseDataResponse">
 
       <wsdl:part element="impl:publishBaseDataReturn" name="publishBaseDataReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="mainRequest">
+
+      <wsdl:part element="impl:args" name="args"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDataResponse">
+
+      <wsdl:part element="impl:publishDataReturn" name="publishDataReturn"/>
 
    </wsdl:message>
 
@@ -74,21 +105,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="publishItemBeanRequest">
+
+      <wsdl:part element="impl:itemBean" name="itemBean"/>
+
+   </wsdl:message>
+
    <wsdl:message name="publishDocumentBeanRequest">
 
       <wsdl:part element="impl:documentBean" name="documentBean"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="publishItemBeanResponse">
-
-      <wsdl:part element="impl:publishItemBeanReturn" name="publishItemBeanReturn"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="publishBaseDataRequest">
-
-      <wsdl:part element="impl:baseDataBean1" name="baseDataBean"/>
 
    </wsdl:message>
 
@@ -98,19 +123,39 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="publishDataResponse">
+   <wsdl:message name="publishDataFromTcResponse">
 
-      <wsdl:part element="impl:publishDataReturn" name="publishDataReturn"/>
+      <wsdl:part element="impl:publishDataFromTcReturn" name="publishDataFromTcReturn"/>
 
    </wsdl:message>
 
-   <wsdl:message name="publishItemBeanRequest">
+   <wsdl:message name="publishBaseDataRequest">
 
-      <wsdl:part element="impl:itemBean" name="itemBean"/>
+      <wsdl:part element="impl:baseDataBean1" name="baseDataBean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishDataFromTcRequest">
+
+      <wsdl:part element="impl:processNums" name="processNums"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishItemBeanResponse">
+
+      <wsdl:part element="impl:publishItemBeanReturn" name="publishItemBeanReturn"/>
 
    </wsdl:message>
 
    <wsdl:portType name="PublishData">
+
+      <wsdl:operation name="main" parameterOrder="args">
+
+         <wsdl:input message="impl:mainRequest" name="mainRequest"/>
+
+         <wsdl:output message="impl:mainResponse" name="mainResponse"/>
+
+      </wsdl:operation>
 
       <wsdl:operation name="publishData" parameterOrder="baseDataBean items documents">
 
@@ -136,6 +181,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="publishDataFromTc" parameterOrder="processNums">
+
+         <wsdl:input message="impl:publishDataFromTcRequest" name="publishDataFromTcRequest"/>
+
+         <wsdl:output message="impl:publishDataFromTcResponse" name="publishDataFromTcResponse"/>
+
+      </wsdl:operation>
+
       <wsdl:operation name="publishDocumentBean" parameterOrder="documentBean">
 
          <wsdl:input message="impl:publishDocumentBeanRequest" name="publishDocumentBeanRequest"/>
@@ -149,6 +202,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:binding name="PublishDataSoapBinding" type="impl:PublishData">
 
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="main">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="mainRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="mainResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
 
       <wsdl:operation name="publishData">
 
@@ -204,6 +275,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="publishDataFromTc">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishDataFromTcRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishDataFromTcResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="publishDocumentBean">
 
          <wsdlsoap:operation soapAction=""/>
@@ -228,7 +317,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:port binding="impl:PublishDataSoapBinding" name="PublishData">
 
-         <wsdlsoap:address location="http://localhost:8080//hozon/services/execute/PublishData"/>
+         <wsdlsoap:address location="http://localhost:8080//services/execute/PublishData"/>
 
       </wsdl:port>
 

@@ -2,12 +2,12 @@ package sql.mybatis;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.log4j.Logger;
 
 
 import java.util.List;
 
 public abstract class BaseDAO {
-
     public List findForList(final String sqlMapId, final Object param) {
         SqlSession session = null;
         List result = null;
@@ -109,6 +109,7 @@ public abstract class BaseDAO {
             session.commit();
             return result;
         } catch (Exception e) {
+//            logger.error("SQL执行出错"+sqlMapId,e);
             throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)
@@ -135,6 +136,7 @@ public abstract class BaseDAO {
             }
             // session.commit();
         } catch (Exception e) {
+//            logger.error("SQL执行出错"+sqlMapId,e);
             throw new DatabaseException("SQL执行失败"+sqlMapId,e);
         } finally {
             if (session != null)

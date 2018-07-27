@@ -1,8 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="webServiceDemo:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/webServiceDemo_war_exploded</output-path>
+  <artifact type="exploded-war" name="publishData:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/publishData_war_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="publishData/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="publishData" />
@@ -11,6 +10,7 @@
           <element id="library" level="project" name="JAX-WS-Apache Axis" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="publishData/web/Web" />
     </root>
   </artifact>
 </component>

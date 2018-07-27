@@ -1,6 +1,7 @@
 package execute;
 
 import bean.*;
+import org.apache.log4j.Logger;
 import service.PublishDataService;
 import service.impl.PublishDataServiceImpl;
 import util.email.MailToApplicant;
@@ -15,7 +16,7 @@ import java.util.*;
 
 /**
  * Created by haozt on 2018/05/31
- *
+ *          OA 端发放  TC 端发放
  *          * 1.查询对应的零件信息，记录错误信息
  *          * 2.记录查询到的零件信息
  *          * 3.查询对应的文件信息，记录错误信息
@@ -28,49 +29,28 @@ import java.util.*;
  */
 public class PublishDataAnalysis {
 
-    /**
-     * ftp上传文件清单
-     */
-    private List<FtpDocumentUploadBean> documentUploadBeans;
-
-    /**
-     * ftp上传零件清单
-     */
-    private List<FtpItemUploadBean> itemUploadBeans;
+    private static Logger logger = Logger.getLogger(PublishDataAnalysis.class);
 
     private List<FailBean> failMsg;
 
-    private List<String> successMsg;
 
     private PublishDataService publishDataService;
 
     private int itemErrorCount;
 
+    private int itemErrorCountForTC;
+
     private int documentErrorCount;
 
-    public PublishDataAnalysis(){
+    private int documentErrorCountForTC;
 
-    }
-
-    public PublishDataAnalysis(List<FailBean> failMsg,List<String> successMsg){
-        this.failMsg = failMsg;
-        this.successMsg = successMsg;
-    }
-    public PublishDataAnalysis(ArrayList<FtpDocumentUploadBean> uploadBeans){
-        this.documentUploadBeans = uploadBeans;
-    }
-
-    public PublishDataAnalysis(List<FtpItemUploadBean> uploadBeans){
-        this.itemUploadBeans = uploadBeans;
-    }
     /**
-     * 记录item数据 失败邮件通知   成功传FTP
+     * 记录item数据 失败邮件通知   成功传FTP OA 端发放
      * @param items
      * @return
      */
     public  ItemResultBean getItemsInfoAndRecordThem(List<ItemBean> items){
         this.publishDataService = new PublishDataServiceImpl();
-        this.itemUploadBeans = new ArrayList<>();
         this.failMsg = new ArrayList<>();
         List<FtpItemUploadBean> ftpItemUploadBeanList = new ArrayList<>();
         ItemResultBean resultBean = new ItemResultBean();
@@ -145,6 +125,7 @@ public class PublishDataAnalysis {
                                     itemInfoBeans.add(findItemInfoBean);
                                 }
                             } else {
+                                failBean = new FailBean();
                                 failBean.setName(item.getItem_name());
                                 failBean.setFailMsg(item.getItem_name()+"下的"+type.getName() + "不存在");
                                 this.failMsg.add(failBean);
@@ -169,12 +150,111 @@ public class PublishDataAnalysis {
 
 
 
+
     /**
+     * 记录item数据 失败邮件通知   成功传FTP TC端发放
+     * @param items
+     * @return
+     */
+    public  ItemResultBean getItemsInfoFromTCAndRecordThem(List<ItemBean> items){
+        this.publishDataService = new PublishDataServiceImpl();
+        this.failMsg = new ArrayList<>();
+        List<FtpItemUploadBean> ftpItemUploadBeanList = new ArrayList<>();
+        ItemResultBean resultBean = new ItemResultBean();
+        if(null != items && items.size()>0){
+            for(ItemBean item:items){
+                FailBean failBean = new FailBean();
+                    //上传FTP结果集
+                    FtpItemUploadBean ftpItemUploadBean = new FtpItemUploadBean();
+                    List<TypeBean> types = new ArrayList<>();
+                    if(Integer.valueOf(1).equals(item.getCAD_blueprint())){
+                        TypeBean typeBean = new TypeBean();
+                        typeBean.setNameTC("H9_AutoCAD");
+                        typeBean.setName("CAD图纸ֽ");
+                        types.add(typeBean);
+                    }
+                    if(Integer.valueOf(1).equals(item.getCatia_blueprint())){//catiaͼֽ
+                        TypeBean typeBean = new TypeBean();
+                        typeBean.setNameTC("CATDrawing");
+                        typeBean.setName("catia图纸ֽ");
+                        types.add(typeBean);
+                    }
+                    if(Integer.valueOf(1).equals(item.getCGR_digifax())){
+                        TypeBean typeBean = new TypeBean();
+                        typeBean.setNameTC("H9_CGR");
+                        typeBean.setName("CGR数模");
+                        types.add(typeBean);
+                    }
+                    if(Integer.valueOf(1).equals(item.getCatia_digifax())){//catia
+                        TypeBean typeBean = new TypeBean();
+                        typeBean.setNameTC("CATPart,CATProduct");
+                        typeBean.setName("Catia数模");
+                        types.add(typeBean);
+                    }
+                    if(Integer.valueOf(1).equals(item.getJT_digifax())){
+                        TypeBean typeBean = new TypeBean();
+                        typeBean.setNameTC("DirectModel");
+                        typeBean.setName("JT数模");
+                        types.add(typeBean);
+                    }
+                    //其他这一情况暂时不考虑
+//					if(item.getOthers() ==1){
+//						types.add("");
+//					}
+
+                    List<FindDataInfoBean> itemInfoBeans = new ArrayList<>();
+                    //item
+                    if(types == null || types.size()==0){
+                        List<FindDataInfoBean> itemInfoBeanList = publishDataService.getItemInfoInTC(item.getItem_id(),item.getItemRevision(),null);
+                        if (itemInfoBeanList != null && itemInfoBeanList.size() > 0) {
+                            for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
+                                itemInfoBeans.add(findItemInfoBean);
+                            }
+                        } else {
+                            failBean.setName(item.getItem_name());
+                            failBean.setFailMsg(item.getItem_name()+"不存在");
+                            logger.error(item.getItem_name()+"不存在");
+                            this.failMsg.add(failBean);
+                            this.itemErrorCountForTC++;
+                        }
+                    }else{
+                        for(TypeBean type:types){
+                            List<FindDataInfoBean> itemInfoBeanList = publishDataService.getItemInfoInTC(item.getItem_id(),item.getItemRevision(),type.getNameTC());
+                            if (itemInfoBeanList != null && itemInfoBeanList.size() > 0) {
+                                for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
+                                    itemInfoBeans.add(findItemInfoBean);
+                                }
+                            } else {
+                                failBean = new FailBean();
+                                failBean.setName(item.getItem_name());
+                                failBean.setFailMsg(item.getItem_name()+"下的"+type.getName() + "不存在");
+                                this.failMsg.add(failBean);
+                                logger.error(item.getItem_name()+"下的"+type.getName() + "不存在");
+                                this.itemErrorCountForTC++;
+                            }
+                        }
+                    }
+                    ftpItemUploadBean.setItemInfoBeanList(itemInfoBeans);
+                    ftpItemUploadBean.setItem_id(item.getItem_id());
+                    ftpItemUploadBean.setItem_name(item.getItem_name());
+                    ftpItemUploadBean.setItemRevision(item.getItemRevision());
+                    ftpItemUploadBeanList.add(ftpItemUploadBean);
+                }
+            }
+            resultBean.setFailBeans(this.failMsg);
+            if(this.itemErrorCountForTC == 0){
+                resultBean.setFtpItemUploadBeans(ftpItemUploadBeanList);
+            }
+        return  resultBean;
+        }
+
+
+    /**
+     * OA端数据发放 记录发放的文件清单信息 用于上传ftp文件信息
      * @param documentBeans
      * @return
      */
     public DocumentResultBean getDocumentsInfoAndRecordThem(List<DocumentBean> documentBeans){
-        this.documentUploadBeans = new ArrayList<>();
         this.failMsg = new ArrayList<>();
         this.publishDataService = new PublishDataServiceImpl();
         List<FtpDocumentUploadBean> ftpDocumentUploadBeans = new ArrayList<>();
@@ -208,15 +288,54 @@ public class PublishDataAnalysis {
             }
             documentResult.setFailBeans(this.failMsg);
             if(this.documentErrorCount == 0){
-                this.documentUploadBeans = ftpDocumentUploadBeans;
+                documentResult.setFtpDocumentUploadBeans(ftpDocumentUploadBeans);
             }
-            documentResult.setFtpDocumentUploadBeans(ftpDocumentUploadBeans);
         }
         return documentResult;
     }
 
+    /**
+     * TC端数据发放 记录发放的文件清单信息 用于上传ftp文件信息
+     * @param documentBeans
+     * @return
+     */
+    public DocumentResultBean getDocumentsInfoFromTCAndRecordThem(List<DocumentBean> documentBeans){
+        this.failMsg = new ArrayList<>();
+        this.publishDataService = new PublishDataServiceImpl();
+        List<FtpDocumentUploadBean> ftpDocumentUploadBeans = new ArrayList<>();
+        DocumentResultBean documentResult = new DocumentResultBean();
+        if(null !=documentBeans && documentBeans.size()>0){
+            for(DocumentBean documentBean :documentBeans){
+                FtpDocumentUploadBean ftpDocumentUploadBean = new FtpDocumentUploadBean();
+                ftpDocumentUploadBean.setDocument_id(documentBean.getDocument_id());
+                ftpDocumentUploadBean.setDocument_name(documentBean.getDocument_name());
+                ftpDocumentUploadBean.setDocumentRevision(documentBean.getDocumentRevision());
+                    List<FindDataInfoBean> infoBeanList = publishDataService.getDocumentInfoInTC(documentBean.getDocument_id(),documentBean.getDocumentRevision());
+                    if(infoBeanList!=null && infoBeanList.size()>0){
+                        ftpDocumentUploadBean.setDocumentInfoBeanList(infoBeanList);
+                        ftpDocumentUploadBeans.add(ftpDocumentUploadBean);
+                    }else{
+                        FailBean failBean = new FailBean();
+                        failBean.setName(documentBean.getDocument_name());
+                        failBean.setFailMsg("文件不存在！文件号"+documentBean.getDocument_id()+",版本号"+documentBean.getDocumentRevision());
+                        this.failMsg.add(failBean);
+                        logger.error("文件不存在！文件号"+documentBean.getDocument_id()+",版本号"+documentBean.getDocumentRevision());
+                        this.documentErrorCountForTC++;
+                    }
+                }
+            }
+            documentResult.setFailBeans(this.failMsg);
+            if(this.documentErrorCountForTC == 0){
+                documentResult.setFtpDocumentUploadBeans(ftpDocumentUploadBeans);
+            }
+
+        return documentResult;
+    }
+
+
 
     /**
+     * 上传发放零件清单 到ftp服务器
      * @param itemResultBean
      * @return
      */
@@ -253,6 +372,7 @@ public class PublishDataAnalysis {
                         failBean.setFailMsg("零件上传FTP失败" + fileName + "不存在");
                         failBean.setName(itemUploadBean.getItem_name());
                         failBeans.add(failBean);
+                        logger.error("零件上传FTP失败" + fileName + "不存在");
                         itemCount++;
                         continue;
 //                        throw new RuntimeException(fileName+"�����ڣ�");
@@ -263,6 +383,7 @@ public class PublishDataAnalysis {
                     if (isSuccess != 1) {
                         failBean.setName(itemUploadBean.getItem_name());
                         failBean.setFailMsg(fileName + "零件上传FTP失败，网络错误");
+                        logger.error(fileName + "零件上传FTP失败，网络错误");
                         itemCount++;
                     }
                 }
@@ -279,6 +400,7 @@ public class PublishDataAnalysis {
     }
 
     /**
+     * 上传ftp的文件清单
      * @param documentResultBean
      * @return
      */
@@ -314,6 +436,7 @@ public class PublishDataAnalysis {
                         failBean.setName(documentUploadBean.getDocument_name());
                         failBean.setFailMsg("文件上传FTP失败，文件不存在!"+fileName);
                         documentFailBeans.add(failBean);
+                        logger.error(fileName+"上传FTP失败，文件不存在!");
                         documentCount++;
                         continue;
                     }
@@ -323,6 +446,7 @@ public class PublishDataAnalysis {
                         FailBean failBean = new FailBean();
                         failBean.setFailMsg(fileName+"上传FTP失败，网络错误！");
                         failBean.setName(documentUploadBean.getDocument_name());
+                        logger.error(fileName+"上传FTP失败，网络错误！");
                         documentCount++;
                     }
                 }
@@ -340,6 +464,7 @@ public class PublishDataAnalysis {
 
 
     /**
+     * 发送邮件通知相关责任人
      * @param resultBean
      * @param emailBean
      * @return
@@ -356,7 +481,6 @@ public class PublishDataAnalysis {
         mailToApplicant.setReceiver(emailBean.getApplicators());
         mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
 
-
         MailToSupplier mailToSupplier = new MailToSupplier();
         mailToSupplier.setFileNames(success);
 
@@ -366,11 +490,15 @@ public class PublishDataAnalysis {
         try{
             boolean mailToApplication = mailToApplicant.release(type);
             if(!mailToApplication){
+                logger.error("邮件发送失败，请核对收件人地址"+emailBean.getApplicators());
                 throw new Exception("邮件发送失败，请核对收件人地址");
             }
-            boolean mailToSupp = mailToSupplier.release(type);
-            if(!mailToSupp){
-                throw new Exception("邮件发送失败，请核对收件人地址");
+            if(mailToSupplier != null && mailToSupplier.getReceiveMailAccount().size()>0){
+                boolean mailToSupp = mailToSupplier.release(type);
+                if(!mailToSupp){
+                    logger.error("邮件发送失败，请核对收件人地址"+emailBean.getSupplyMails());
+                    throw new Exception("邮件发送失败，请核对收件人地址");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

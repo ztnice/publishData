@@ -2,52 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="HzTempItemRecord">
 	<resultMap id="BaseResultMap" type="sql.dbdo.HzTempItemRecord">
-		<id column="ID" jdbcType="DECIMAL" property="id" />
+		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="BEL_PROCESS_NUM" jdbcType="VARCHAR" property="belProcessNum" />
 		<result column="ITEM_ID" jdbcType="VARCHAR" property="itemId" />
 		<result column="ITEM_NAME" jdbcType="VARCHAR" property="itemName" />
 		<result column="ITEMREVISION" jdbcType="VARCHAR" property="itemRevision" />
-		<result column="CATIA_DIGIFAX" jdbcType="DECIMAL" property="catiaDigifax" />
-		<result column="JT_DIGIFAX" jdbcType="DECIMAL" property="jtDigifax" />
-		<result column="CGR_DIGIFAX" jdbcType="DECIMAL" property="cgrDigifax" />
-		<result column="CATIA_BLUEPRINT" jdbcType="DECIMAL" property="catiaBlueprint" />
-		<result column="CAD_BLUEPRINT" jdbcType="DECIMAL" property="cadBlueprint" />
-		<result column="OTHERS" jdbcType="DECIMAL" property="others" />
+		<result column="CATIA_DIGIFAX" jdbcType="INTEGER" property="catiaDigifax" />
+		<result column="JT_DIGIFAX" jdbcType="INTEGER" property="jtDigifax" />
+		<result column="CGR_DIGIFAX" jdbcType="INTEGER" property="cgrDigifax" />
+		<result column="CATIA_BLUEPRINT" jdbcType="INTEGER" property="catiaBlueprint" />
+		<result column="CAD_BLUEPRINT" jdbcType="INTEGER" property="cadBlueprint" />
+		<result column="OTHERS" jdbcType="INTEGER" property="others" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX,
 		CGR_DIGIFAX, CATIA_BLUEPRINT, CAD_BLUEPRINT, OTHERS
 	</sql>
+	
+	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from HZ_TEMPITEMRECORD
-		where ID = #{id,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=INTEGER}
 	</select>
+	
+	
 	<select id="selectByMainRecord" parameterType="sql.dbdo.HzTempMainRecord"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from HZ_TEMPITEMRECORD
-		where BEL_PROCESS_NUM = #{processNum,jdbcType=DECIMAL}
+		where BEL_PROCESS_NUM = #{processNum,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from HZ_TEMPITEMRECORD
-		where ID = #{id,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="sql.dbdo.HzTempItemRecord">
 		insert into HZ_TEMPITEMRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX, CGR_DIGIFAX, CATIA_BLUEPRINT,
 		CAD_BLUEPRINT, OTHERS)
-		values (#{id,jdbcType=DECIMAL}, #{belProcessNum,jdbcType=VARCHAR},
+		values (#{id,jdbcType=INTEGER}, #{belProcessNum,jdbcType=VARCHAR},
 		#{itemId,jdbcType=VARCHAR},
-		#{itemName,jdbcType=VARCHAR}, #{itemrevision,jdbcType=VARCHAR}, #{catiaDigifax,jdbcType=DECIMAL},
-		#{jtDigifax,jdbcType=DECIMAL}, #{cgrDigifax,jdbcType=DECIMAL},
-		#{catiaBlueprint,jdbcType=DECIMAL},
-		#{cadBlueprint,jdbcType=DECIMAL}, #{others,jdbcType=DECIMAL})
+		#{itemName,jdbcType=VARCHAR}, #{itemrevision,jdbcType=VARCHAR}, #{catiaDigifax,jdbcType=INTEGER},
+		#{jtDigifax,jdbcType=INTEGER}, #{cgrDigifax,jdbcType=INTEGER},
+		#{catiaBlueprint,jdbcType=INTEGER},
+		#{cadBlueprint,jdbcType=INTEGER}, #{others,jdbcType=INTEGER})
 	</insert>
 	<update id="updateByPrimaryKey" parameterType="sql.dbdo.HzTempItemRecord">
 		update HZ_TEMPITEMRECORD
@@ -55,13 +59,13 @@
 		ITEM_ID = #{itemId,jdbcType=VARCHAR},
 		ITEM_NAME = #{itemName,jdbcType=VARCHAR},
 		ITEMREVISION = #{itemrevision,jdbcType=VARCHAR},
-		CATIA_DIGIFAX = #{catiaDigifax,jdbcType=DECIMAL},
-		JT_DIGIFAX = #{jtDigifax,jdbcType=DECIMAL},
-		CGR_DIGIFAX = #{cgrDigifax,jdbcType=DECIMAL},
-		CATIA_BLUEPRINT = #{catiaBlueprint,jdbcType=DECIMAL},
-		CAD_BLUEPRINT = #{cadBlueprint,jdbcType=DECIMAL},
-		OTHERS = #{others,jdbcType=DECIMAL}
-		where ID = #{id,jdbcType=DECIMAL}
+		CATIA_DIGIFAX = #{catiaDigifax,jdbcType=INTEGER},
+		JT_DIGIFAX = #{jtDigifax,jdbcType=INTEGER},
+		CGR_DIGIFAX = #{cgrDigifax,jdbcType=INTEGER},
+		CATIA_BLUEPRINT = #{catiaBlueprint,jdbcType=INTEGER},
+		CAD_BLUEPRINT = #{cadBlueprint,jdbcType=INTEGER},
+		OTHERS = #{others,jdbcType=INTEGER}
+		where ID = #{id,jdbcType=INTEGER}
 	</update>
 
 
@@ -72,9 +76,16 @@
 		<include refid="Base_Column_List" />
 		from HZ_TEMPITEMRECORD
 		<where>
-			ITEM_ID = #{itemId}
-			and ITEMREVISION = #{itemRevision}
-			and BEL_PROCESS_NUM=#{belProcessNum}
+            1=1
+            <if test="itemId != null and itemId!=''">
+                and ITEM_ID = #{itemId}
+            </if>
+            <if test="itemRevision != null and itemRevision!=''">
+                and ITEMREVISION = #{itemRevision}
+            </if>
+            <if test="belProcessNum != null and belProcessNum!=''">
+                and BEL_PROCESS_NUM=#{belProcessNum}
+            </if>
 		</where>
 	</select>
 
@@ -86,19 +97,19 @@
 		CAD_BLUEPRINT, OTHERS)
 		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
 			SELECT
-			#{item.id,jdbcType=DECIMAL},
+			#{item.id,jdbcType=INTEGER},
 			#{item.belProcessNum,jdbcType=VARCHAR},
 			#{item.itemId,jdbcType=VARCHAR},
 			#{item.itemName,jdbcType=VARCHAR},
 			#{item.itemRevision,jdbcType=VARCHAR},
-			#{item.catiaDigifax,jdbcType=DECIMAL},
-			#{item.jtDigifax,jdbcType=DECIMAL},
-			#{item.cgrDigifax,jdbcType=DECIMAL},
-			#{item.catiaBlueprint,jdbcType=DECIMAL},
-			#{item.cadBlueprint,jdbcType=DECIMAL},
-			#{item.others,jdbcType=DECIMAL}
+			#{item.catiaDigifax,jdbcType=INTEGER},
+			#{item.jtDigifax,jdbcType=INTEGER},
+			#{item.cgrDigifax,jdbcType=INTEGER},
+			#{item.catiaBlueprint,jdbcType=INTEGER},
+			#{item.cadBlueprint,jdbcType=INTEGER},
+			#{item.others,jdbcType=INTEGER}
 			from DUAL
 		</foreach>
 	</insert>
-
+	
 </mapper>
