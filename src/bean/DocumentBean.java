@@ -10,8 +10,6 @@ public class DocumentBean {
 	private String document_name;
 	/** 文件版本号 */
 	private String documentRevision;
-	/** 发放状态值 0(审批)/ 1(撤销)/ 2(生效)*/
-	private String state;
 	/**流程编号*/
 	private String processNum;
 
@@ -51,11 +49,4 @@ public class DocumentBean {
 		this.processNum = processNum;
 	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
 }

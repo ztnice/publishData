@@ -104,7 +104,6 @@ public class ItemBean {
 		return processNum;
 	}
 
-
 	public void setProcessNum(String processNum) {
 		this.processNum = processNum;
 	}

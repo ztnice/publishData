@@ -3,14 +3,12 @@ package sql.mybatis.impl;
 import bean.BaseDataBean;
 import bean.DocumentBean;
 import bean.ItemBean;
-import sql.dbdo.HzTempDocumentRecord;
-import sql.dbdo.HzTempItemRecord;
-import sql.dbdo.HzTempMainRecord;
-import sql.dbdo.TCInfodbaRecord;
+import sql.dbdo.*;
 import sql.mybatis.BaseDAO;
 import sql.mybatis.inter.PublishDataDAO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by haozt on 2018/5/30
@@ -60,5 +58,10 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     @Override
     public HzTempMainRecord getHzTempMainRecord(String processNum) {
         return (HzTempMainRecord)super.findForObject("PublishDataDAOImpl_getHzTempMainRecord",processNum);
+    }
+
+    @Override
+    public HzSupplyRecord getHzSupplyRecord(Map map) {
+        return (HzSupplyRecord)super.findForObject("PublishDataDAOImpl_getHzSupplyRecord",map);
     }
 }

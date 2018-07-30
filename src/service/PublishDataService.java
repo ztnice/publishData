@@ -1,6 +1,7 @@
 package service;
 
 import bean.*;
+import sql.dbdo.HzSupplyRecord;
 
 import java.util.List;
 
@@ -44,4 +45,5 @@ public interface PublishDataService {
 
     int  insertDocumentList(List<DocumentBean> documentBeans);
 
+    HzSupplyRecord getHzSupplyRecord(String supplyCode);
 }

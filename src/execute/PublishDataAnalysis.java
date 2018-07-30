@@ -4,6 +4,7 @@ import bean.*;
 import org.apache.log4j.Logger;
 import service.PublishDataService;
 import service.impl.PublishDataServiceImpl;
+import sql.dbdo.HzSupplyRecord;
 import util.email.MailToApplicant;
 import util.email.MailToSupplier;
 import util.ftp.FtpPropertyLoader;
@@ -12,6 +13,7 @@ import util.ftp.FtpUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -204,7 +206,7 @@ public class PublishDataAnalysis {
 
                     List<FindDataInfoBean> itemInfoBeans = new ArrayList<>();
                     //item
-                    if(types == null || types.size()==0){
+                     if(types == null || types.size()==0){
                         List<FindDataInfoBean> itemInfoBeanList = publishDataService.getItemInfoInTC(item.getItem_id(),item.getItemRevision(),null);
                         if (itemInfoBeanList != null && itemInfoBeanList.size() > 0) {
                             for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
@@ -339,7 +341,7 @@ public class PublishDataAnalysis {
      * @param itemResultBean
      * @return
      */
-    public FtpUploadResultBean upLoadItemListToFTP(ItemResultBean itemResultBean) {
+    public FtpUploadResultBean upLoadItemListToFTP(ItemResultBean itemResultBean,String dept,String supplyCode) {
         FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
         List<String> itemBeansSuccess = new ArrayList<>();
         List<FailBean> failBeans = new ArrayList<>();
@@ -353,8 +355,31 @@ public class PublishDataAnalysis {
                 return ftpUploadResultBean;
             }
 
+            Date date  = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            HzSupplyRecord hzSupplyRecord = null;
+            if(supplyCode != null){
+                hzSupplyRecord = publishDataService.getHzSupplyRecord(supplyCode);
+                if(hzSupplyRecord == null){
+                    logger.error("供应商信息不存在！");
+                }
+            }
             for (FtpItemUploadBean itemUploadBean : beans) {
-                String remoteFilePath = "/hozon/" + itemUploadBean.getItem_name();
+                String ftpFilePath = "";
+                if(supplyCode == null){
+                    if(dept == null){
+                        ftpFilePath = "/hozon/"+sdf.format(date)+"//"+itemUploadBean.getItem_name();
+                    }else {
+                        ftpFilePath = "/hozon/"+dept+"//"+sdf.format(date)+"//"+itemUploadBean.getItem_name();
+                    }
+                }else {
+                    if(hzSupplyRecord == null){
+                        ftpFilePath = "/suppliers/"+sdf.format(date)+"//"+itemUploadBean.getItem_name();
+
+                    }else {
+                        ftpFilePath = "/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"//"+sdf.format(date)+"//"+itemUploadBean.getItem_name();
+                    }
+                }
                 int itemCount = 0;
                 List<FindDataInfoBean> list = itemUploadBean.getItemInfoBeanList();
                 List<String> itemBeanList = new ArrayList<>();
@@ -369,21 +394,21 @@ public class PublishDataAnalysis {
                     String filePath = volumePath + "\\" + psdPathName + "\\" + realFile;
                     File file = new File(filePath);
                     if (!file.exists()) {
-                        failBean.setFailMsg("零件上传FTP失败" + fileName + "不存在");
+                        failBean.setFailMsg("零件上传FTP失败!" + fileName + "不存在");
                         failBean.setName(itemUploadBean.getItem_name());
                         failBeans.add(failBean);
-                        logger.error("零件上传FTP失败" + fileName + "不存在");
+                        logger.error("零件上传FTP失败!" + fileName + "不存在");
                         itemCount++;
                         continue;
 //                        throw new RuntimeException(fileName+"�����ڣ�");
                     }
                     InputStream input = new FileInputStream(new File(filePath));
 
-                    int isSuccess = FtpUtil.uploadMutilFile1(properties, properties.getProperty("FTP_BASEPATH"), remoteFilePath, fileName, input);
+                    int isSuccess = FtpUtil.uploadMFile(properties, properties.getProperty("FTP_BASEPATH"), ftpFilePath, fileName, input);
                     if (isSuccess != 1) {
                         failBean.setName(itemUploadBean.getItem_name());
-                        failBean.setFailMsg(fileName + "零件上传FTP失败，网络错误");
-                        logger.error(fileName + "零件上传FTP失败，网络错误");
+                        failBean.setFailMsg(fileName+"上传FTP失败，网络错误");
+                        logger.error(fileName+"上传FTP失败，网络错误");
                         itemCount++;
                     }
                 }
@@ -404,7 +429,7 @@ public class PublishDataAnalysis {
      * @param documentResultBean
      * @return
      */
-    public FtpUploadResultBean upLoadDocumentListToFTP(DocumentResultBean documentResultBean){
+    public FtpUploadResultBean upLoadDocumentListToFTP(DocumentResultBean documentResultBean,String dept,String supplyCode){
         FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
         List<String> documentSuccess = new ArrayList<>();
         List<FailBean> documentFailBeans = new ArrayList<>();
@@ -417,8 +442,31 @@ public class PublishDataAnalysis {
         try{
             FtpPropertyLoader loader = new FtpPropertyLoader();
             Properties properties = loader.getProperties();
+            Date date  = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            HzSupplyRecord hzSupplyRecord = null;
+            if(supplyCode != null){
+                hzSupplyRecord = publishDataService.getHzSupplyRecord(supplyCode);
+                if(hzSupplyRecord == null){
+                    logger.error("供应商信息不存在！");
+                }
+            }
             for(FtpDocumentUploadBean documentUploadBean :documentUploadBeans){
-                String ftpFilePath = "/hozon/"+documentUploadBean.getDocument_name();
+                String ftpFilePath = "";
+                if(supplyCode == null){
+                    if(dept == null){
+                        ftpFilePath = "/hozon/"+sdf.format(date)+"//"+documentUploadBean.getDocument_name();
+                    }else {
+                        ftpFilePath = "/hozon/"+dept+"//"+sdf.format(date)+"//"+documentUploadBean.getDocument_name();
+                    }
+                }else {
+                    if(hzSupplyRecord == null){
+                        ftpFilePath = "/suppliers/"+sdf.format(date)+"//"+documentUploadBean.getDocument_name();
+
+                    }else {
+                        ftpFilePath = "/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"//"+sdf.format(date)+"//"+documentUploadBean.getDocument_name();
+                    }
+                }
                 int documentCount = 0;
                 List<FindDataInfoBean> findDataInfoBeans = documentUploadBean.getDocumentInfoBeanList();
                 List<String> documentFailedList = new ArrayList<>();
@@ -441,7 +489,7 @@ public class PublishDataAnalysis {
                         continue;
                     }
                     InputStream input = new FileInputStream(new File(filePath));
-                    int isSuccess = FtpUtil.uploadMutilFile1(properties,properties.getProperty("FTP_BASEPATH"),ftpFilePath, fileName, input);
+                    int isSuccess = FtpUtil.uploadMFile(properties,properties.getProperty("FTP_BASEPATH"),ftpFilePath, fileName, input);
                     if(isSuccess!=1){
                         FailBean failBean = new FailBean();
                         failBean.setFailMsg(fileName+"上传FTP失败，网络错误！");
@@ -490,10 +538,10 @@ public class PublishDataAnalysis {
         try{
             boolean mailToApplication = mailToApplicant.release(type);
             if(!mailToApplication){
-                logger.error("邮件发送失败，请核对收件人地址"+emailBean.getApplicators());
+                logger.error("邮件发送失败，请核对收件人地址"+emailBean.getApplicatorMails());
                 throw new Exception("邮件发送失败，请核对收件人地址");
             }
-            if(mailToSupplier != null && mailToSupplier.getReceiveMailAccount().size()>0){
+            if(mailToSupplier != null && mailToSupplier.getReceiveMailAccount()!=null){
                 boolean mailToSupp = mailToSupplier.release(type);
                 if(!mailToSupp){
                     logger.error("邮件发送失败，请核对收件人地址"+emailBean.getSupplyMails());

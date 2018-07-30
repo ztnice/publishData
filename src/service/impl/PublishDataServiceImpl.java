@@ -1,16 +1,16 @@
 package service.impl;
 
 import bean.*;
+import org.omg.CORBA.OBJ_ADAPTER;
 import service.PublishDataService;
-import sql.dbdo.HzTempDocumentRecord;
-import sql.dbdo.HzTempItemRecord;
-import sql.dbdo.HzTempMainRecord;
-import sql.dbdo.TCInfodbaRecord;
+import sql.dbdo.*;
 import sql.mybatis.impl.PublishDataDAOImpl;
 import sql.mybatis.inter.PublishDataDAO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by haozt on 2018/5/30
@@ -67,7 +67,7 @@ public class PublishDataServiceImpl implements PublishDataService {
         TCInfodbaRecord recordQuery = new TCInfodbaRecord();
         recordQuery.setItemId(itemId);
         recordQuery.setItemRevision(itemRevision);
-        List<TCInfodbaRecord> recordList =publishDataDAO.getTCInfodbaRecordListWithType(recordQuery);
+        List<TCInfodbaRecord> recordList =publishDataDAO.getTCInfodbaRecordList(recordQuery);
         if(recordList!=null && recordList.size()>0){
             list =  removeRepeat(recordList);//去重
             List<FindDataInfoBean> dataInfoBeans = new ArrayList<>();
@@ -235,6 +235,13 @@ public class PublishDataServiceImpl implements PublishDataService {
         }
 
         return 0;
+    }
+
+    @Override
+    public HzSupplyRecord getHzSupplyRecord(String supplyCode) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("suppliersCode",supplyCode);
+        return publishDataDAO.getHzSupplyRecord(map);
     }
 
     /**

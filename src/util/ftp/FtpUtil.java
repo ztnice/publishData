@@ -20,6 +20,70 @@ public class FtpUtil {
 	private static FTPClient ftp = new FTPClient();
 
 
+
+	public static int uploadMFile(Properties properties, String basePath, String filePath,
+									  String filename, InputStream input) {
+		/** 全部上传成功 */
+		int flag = FTP_UPLOAD_ALL_SUCCESS;
+		FTPClient ftp = new FTPClient();
+		try {
+			int reply;
+			ftp.connect(properties.getProperty("FTP_ADDRESS"), Integer.parseInt(properties.getProperty("FTP_PORT")));// 连接FTP服务器
+			// 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
+			ftp.login(properties.getProperty("FTP_USERNAME"), properties.getProperty("FTP_PASSWORD"));// 登录
+			reply = ftp.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftp.disconnect();
+				return FTP_CONNECT_ERROR;
+			}
+			// 切换到上传目录
+
+				String p = basePath + "/" + filePath;
+				if (!ftp.changeWorkingDirectory(p)) {
+					// 如果目录不存在创建目录
+					// String path=basePath.get(i)
+					String pp = new String(p.replace(properties.getProperty("FTP_BASEPATH"), "").getBytes("GBK"),
+							"iso-8859-1");
+					String[] dirs = (pp.split("/"));
+					StringBuilder sb = new StringBuilder();
+					for (String dir : dirs) {
+						sb.append("/" + dir);
+						if (null == sb || "/".equals(sb))
+							continue;
+						if (!ftp.changeWorkingDirectory(sb.toString())) {
+							if (!ftp.makeDirectory(sb.toString())) {
+								flag = FTP_CREATE_FOLDER_FAIL;
+							} else {
+								ftp.changeWorkingDirectory(sb.toString());
+							}
+						}
+					}
+				}
+				// 设置上传文件的类型为二进制类型
+				ftp.setFileType(FTP.BINARY_FILE_TYPE);
+				// 上传文件,如果带中文，需要将中文按照GBK转成ios-8859-1才能成功，并不能转成utf-8（因为utf-8已禁用），ios-8859-1兼容GBK
+				if (!ftp.storeFile(new String(filename.getBytes("GBK"), "iso-8859-1"), input)) {
+					flag = FTP_UPLOAD_PART_FAIL;
+				}
+
+//				p = p.replace(properties.getProperty("FTP_TRIMBASEPATH"), "");
+
+				input.close();
+
+			ftp.logout();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (ftp.isConnected()) {
+				try {
+					ftp.disconnect();
+				} catch (IOException ioe) {
+				}
+			}
+		}
+		return flag;
+	}
+
 	/**
 	 * 上传文件至ftp
 	 * @param properties
@@ -72,13 +136,13 @@ public class FtpUtil {
 			// 设置上传文件的类型为二进制类型
 			ftp.setFileType(FTP.BINARY_FILE_TYPE);
 			// 上传文件,如果带中文，需要将中文按照GBK转成ios-8859-1才能成功，并不能转成utf-8（因为utf-8已禁用），ios-8859-1兼容GBK
-			if (!ftp.storeFile(new String(filename), input)) {
-				flag = FTP_UPLOAD_PART_FAIL;
-			}
-//				if (!ftp.storeFile(new String(filename.getBytes("GBK"), "iso-8859-1"), input)) {
-//					flag = FTP_UPLOAD_PART_FAIL;
-//				}
-			p = p.replace(properties.getProperty("FTP_TRIMBASEPATH"), "");
+//			if (!ftp.storeFile(new String(filename), input)) {
+//				flag = FTP_UPLOAD_PART_FAIL;
+//			}
+				if (!ftp.storeFile(new String(filename.getBytes("GBK"), "iso-8859-1"), input)) {
+					flag = FTP_UPLOAD_PART_FAIL;
+				}
+//			p = p.replace(properties.getProperty("FTP_TRIMBASEPATH"), "");
 
 			input.close();
 

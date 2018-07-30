@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MailToSupplier {
@@ -339,33 +340,8 @@ public class MailToSupplier {
 	}
 
 	public static void main(String[] args) {
-		MailToSupplier mailUtil = new MailToSupplier();
-		ArrayList<String> receiver = new ArrayList<>();
-		receiver.add("John");
-		receiver.add("Suphei");
-		ArrayList<String> applicant = new ArrayList<>();
-		applicant.add("����");
-		applicant.add("����");
-		ArrayList<String> fileName = new ArrayList<>();
-		fileName.add("sdas");
-
-		List<String> itemLists = new ArrayList<>();
-		itemLists.add("111");
-		itemLists.add("222");
-//		ArrayList<String> files = new ArrayList<>();
-//		files.add("sdads");
-		List<String> mail = new ArrayList<>();
-		mail.add("zhit876163.com");
-		mailUtil.setReceiveMailAccount(mail);
-		mailUtil.setReceiver(receiver);
-		mailUtil.setApplicant(applicant);
-		mailUtil.setFileNames(fileName);
-		mailUtil.setItemNames(itemLists);
-//		mailUtil.setFiles(files);
-		try {
-			mailUtil.release("");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Date date  = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss/SS");
+		System.out.println(sdf.format(date));
 	}
 }

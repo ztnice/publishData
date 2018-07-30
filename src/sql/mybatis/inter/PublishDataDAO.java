@@ -3,12 +3,10 @@ package sql.mybatis.inter;
 import bean.BaseDataBean;
 import bean.DocumentBean;
 import bean.ItemBean;
-import sql.dbdo.HzTempDocumentRecord;
-import sql.dbdo.HzTempItemRecord;
-import sql.dbdo.HzTempMainRecord;
-import sql.dbdo.TCInfodbaRecord;
+import sql.dbdo.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by haozt on 2018/5/30
@@ -40,4 +38,6 @@ public interface PublishDataDAO {
     int updatePublishTime(String processNum);
 
     HzTempMainRecord getHzTempMainRecord(String processNum);
+
+    HzSupplyRecord getHzSupplyRecord(Map map);
 }

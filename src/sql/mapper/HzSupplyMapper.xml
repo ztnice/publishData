@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HzSupplyRecord">
+  <resultMap id="BaseResultMap" type="sql.dbdo.HzSupplyRecord">
+    <id column="SUPPLIERS_ID" jdbcType="INTEGER" property="suppliersId" />
+    <result column="SUPPLIERS_NAME" jdbcType="VARCHAR" property="suppliersName" />
+    <result column="SUPPLIERS_CODE" jdbcType="VARCHAR" property="suppliersCode" />
+    <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="OUT_CPNY_ACCEPTER" jdbcType="VARCHAR" property="outCpnyAccepter" />
+    <result column="OUT_CPNY_EMAIL" jdbcType="VARCHAR" property="outCpnyEmail" />
+    <result column="OUT_CPNY_FTP_PATH" jdbcType="VARCHAR" property="outCpnyFtpPath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    SUPPLIERS_ID, SUPPLIERS_NAME, SUPPLIERS_CODE, CREATE_DATE, CREATE_USER, OUT_CPNY_ACCEPTER, 
+    OUT_CPNY_EMAIL, OUT_CPNY_FTP_PATH
+  </sql>
+  
+  <select id="PublishDataDAOImpl_getHzSupplyRecord" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from HZ_QUERY_SUPPLIERS
+    where SUPPLIERS_CODE = #{suppliersCode,jdbcType=VARCHAR}
+  </select>
+
+  
+</mapper>
