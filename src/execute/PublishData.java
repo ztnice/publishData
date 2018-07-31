@@ -46,6 +46,7 @@ public class PublishData {
      * @return
      */
     public OperateResult publishDataFromTc(String[] processNums){
+        logger.error("数据发放开始！");
         OperateResult operateResult = new OperateResult();
         PublishDataDAO publishDataDAO = new PublishDataDAOImpl();
         //根据流程编号获取文件清单 零件清单 更新基本信息之发放时间 发邮件通知人和上传服务ftp
@@ -81,7 +82,7 @@ public class PublishData {
 
                 FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
                 List<String> successFileNames = new ArrayList<>();
-                List<String> successRealFileNames = new ArrayList<>();
+
                 List<FailBean> failFileNames = new ArrayList<>();
                 FtpUploadResultBean ftpUploadResultBean1 = null;
 
@@ -152,15 +153,9 @@ public class PublishData {
                 for(String s :ftpUploadResultBean1.getSuccessList()){
                     successFileNames.add(s);
                 }
+
                 for(String s :ftpUploadResultBean2.getSuccessList()){
                     successFileNames.add(s);
-                }
-
-                for(String s :ftpUploadResultBean1.getSuccessRealFileName()){
-                    successRealFileNames.add(s);
-                }
-                for(String s :ftpUploadResultBean2.getSuccessRealFileName()){
-                    successRealFileNames.add(s);
                 }
 
                 for(FailBean failBean :ftpUploadResultBean1.getFailList()){
@@ -169,10 +164,9 @@ public class PublishData {
                 for(FailBean failBean :ftpUploadResultBean2.getFailList()){
                     failFileNames.add(failBean);
                 }
-                ftpUploadResultBean.setSuccessRealFileName(successRealFileNames);
-                ftpUploadResultBean.setSuccessList(successFileNames);
-                ftpUploadResultBean.setFailList(failFileNames);
 
+                ftpUploadResultBean.setFailList(failFileNames);
+                ftpUploadResultBean.setSuccessList(successFileNames);
                 List<String> applicators = new ArrayList<>();
                 applicators.add(baseDataRecord.getApplicant());
 

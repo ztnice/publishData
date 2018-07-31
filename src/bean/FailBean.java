@@ -6,6 +6,15 @@ package bean;
 public class FailBean {
     private String name;
     private String failMsg;
+    private String realName;
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
 
     public String getName() {
         return name;

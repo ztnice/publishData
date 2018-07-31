@@ -153,9 +153,9 @@ public class PublishDataServiceImpl implements PublishDataService {
                     }
                 }
                 if(!isRepeat){
-                    if(list.contains(recordList.get(i).getpFileName().split("\\.")[1])){
-                        continue;
-                    }
+//                    if(list.contains(poriginalName.split("\\.")[1])){
+//                        continue;
+//                    }
                     FindDataInfoBean findDataInfoBean = new FindDataInfoBean();
                     findDataInfoBean.setpFileName(recordList.get(i).getpFileName());
                     findDataInfoBean.setPoriginalFileName(poriginalName);

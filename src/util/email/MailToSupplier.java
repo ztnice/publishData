@@ -30,7 +30,7 @@ public class MailToSupplier {
 	/**邮件接受者邮箱地址*/
 	private List<String> receiveMailAccount;
 	private boolean debug = true;
-	private String path = "ftp://10.0.8.231/root/...";
+	private String path = "ftp://10.0.8.231";
 
 	private List<String> files;
 	//文件清单

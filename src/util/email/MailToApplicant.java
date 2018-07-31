@@ -110,7 +110,7 @@ public class MailToApplicant {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getMailHeadModel());
-		sb.append(getMailContent(realFileName,failFiles));
+		sb.append(getMailContent(failFiles));
 //		if(failFiles!=null&&failFiles.size()>0)
 //		sb.append(getFailContent(failFiles,type));
 //		sb.append("</table>");
@@ -199,31 +199,30 @@ public class MailToApplicant {
 	/**
 	 * 后期需求更改 邮件样式产生了变更
 	 * todo author haozt
-	 * @param fileRealName
+	 * @param
 	 * @param result
 	 * @return
 	 */
-	private StringBuilder getMailContent(List<String> fileRealName,List<FailBean> result) {
+	private StringBuilder getMailContent(List<FailBean> result) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < result.size(); i++) {
-			sb.append("<tr>");
-			sb.append("<td>");
-			sb.append(result.get(i).getName());
-			sb.append("</td>");
-			if(fileRealName != null && fileRealName.size() == result.size()){
+		if(result!=null && result.size()>0){
+			for (int i = 0; i < result.size(); i++) {
+				sb.append("<tr>");
 				sb.append("<td>");
-				sb.append(fileRealName.get(i));
+				sb.append(result.get(i).getName());
 				sb.append("</td>");
-			}else {
+
 				sb.append("<td>");
-				sb.append("-");
+				sb.append(result.get(i).getRealName());
 				sb.append("</td>");
+
+				sb.append("<td>");
+				sb.append(result.get(i).getFailMsg());
+				sb.append("</td>");
+				sb.append("</tr>");
 			}
-			sb.append("<td>");
-			sb.append(result.get(i).getFailMsg());
-			sb.append("</td>");
-			sb.append("</tr>");
 		}
+
 		return sb;
 	}
 
