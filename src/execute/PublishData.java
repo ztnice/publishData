@@ -29,9 +29,6 @@ public class PublishData {
 
     private PublishDataAnalysis analysis;
 
-    private int itemErrorCount;
-
-    private int documentErrorCount;
     /**
      * 数据发放 全部数据 保留接口
      * @param baseDataBean
@@ -68,19 +65,32 @@ public class PublishData {
 
                 List<HzTempItemRecord> hzTempItemRecords = publishDataDAO.getHzTempItemRecordList(record);
                 if(hzTempItemRecords == null || hzTempItemRecords.size() == 0){
-                    logger.error("数据发放失败，无零件清单发放！");
+                    logger.error("数据发放，无零件清单发放！");
                 }
                 //查询要发放的文件清单
                 HzTempDocumentRecord documentRecord = new HzTempDocumentRecord();
                 documentRecord.setBelProcessNum(processNum);
                 List<HzTempDocumentRecord> hzTempDocumentRecords = publishDataDAO.getHzTempDocumentList(documentRecord);
                 if(hzTempDocumentRecords == null || hzTempDocumentRecords.size() == 0){
-                    logger.error("数据发放失败，无文件清单发放！");
+                    logger.error("数据发放，无文件清单发放！");
                 }
                 //发邮件 通知 和上传ftp服务器
                 publishDataService = new PublishDataServiceImpl();
                 analysis = new PublishDataAnalysis();
                 List<ItemBean> itemBeans = new ArrayList<>();
+
+                FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
+                List<String> successFileNames = new ArrayList<>();
+                List<String> successRealFileNames = new ArrayList<>();
+                List<FailBean> failFileNames = new ArrayList<>();
+                FtpUploadResultBean ftpUploadResultBean1 = null;
+
+                FtpUploadResultBean ftpUploadResultBean2 = null;
+
+                EmailBean emailBean = new EmailBean();
+
+                List<String> supplies = new ArrayList<>();
+                List<String> supplyEmails = new ArrayList<>();
                 if(hzTempItemRecords!=null && hzTempItemRecords.size()>0){
                     for(HzTempItemRecord hzTempItemRecord:hzTempItemRecords){
                         ItemBean itemBean = new ItemBean();
@@ -98,46 +108,17 @@ public class PublishData {
                     }
 
                     ItemResultBean itemResultBean = analysis.getItemsInfoFromTCAndRecordThem(itemBeans);
-                    EmailBean emailBean = new EmailBean();
-                    FtpUploadResultBean ftpUploadResultBean = null;
+
                     //外部发放
-                    if("2".equals(baseDataRecord.getProvideType())){
-                        List<String> supplies = new ArrayList<>();
-                        supplies.add(baseDataRecord.getOutCpnyAccepter());//
-                        List<String> supplyEmails = new ArrayList<>();
-                        supplyEmails.add(baseDataRecord.getOutCpnyEmail());
-                        emailBean.setSupplies(supplies);//
-                        emailBean.setSupplyMails(supplyEmails);//
-                        ftpUploadResultBean = analysis.upLoadItemListToFTP(itemResultBean,null,baseDataRecord.getOutCpnyCode());
+                    if("外部发放".equals(baseDataRecord.getProvideType())){
+                        ftpUploadResultBean1 = analysis.upLoadItemListToFTP(itemResultBean,null,baseDataRecord.getOutCpnyCode());
 
                     }else {
-                        ftpUploadResultBean = analysis.upLoadItemListToFTP(itemResultBean,baseDataRecord.getInDept(),null);
+                        ftpUploadResultBean1 = analysis.upLoadItemListToFTP(itemResultBean,baseDataRecord.getInDept(),null);
 
                     }
-
-
-                    List<String> applicators = new ArrayList<>();
-                    applicators.add(baseDataRecord.getApplicant());
-
-                    List<String> applicatorEmails = new ArrayList<>();
-
-                    applicatorEmails.add(baseDataRecord.getApplicantEmail());
-
-                    emailBean.setApplicatorMails(applicatorEmails);//
-
-                    emailBean.setApplicators(applicators);//
-
-
-                    boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"零件名称");
-                    this.itemErrorCount = ftpUploadResultBean.getFailList().size();
-                    if(!success){
-                        operateResult.setErrMsg("零件清单发放失败，请核对收件人邮箱地址！");
-                        operateResult.setErrCode(1001L);
-                        logger.error("零件清单发放失败，请核对收件人邮箱地址！");
-                        return operateResult;
-                    }
-
                 }
+
 
 
 
@@ -156,53 +137,63 @@ public class PublishData {
                     DocumentResultBean documentResultBean = analysis.getDocumentsInfoFromTCAndRecordThem(documentBeans);
 
 
-                    EmailBean emailBean = new EmailBean();
-                    FtpUploadResultBean ftpUploadResultBean = null;
                     //外部发放
-                    if("2".equals(baseDataRecord.getProvideType())){
-                        List<String> supplies = new ArrayList<>();
+                    if("外部发放".equals(baseDataRecord.getProvideType())){
                         supplies.add(baseDataRecord.getOutCpnyAccepter());//
-                        List<String> supplyEmails = new ArrayList<>();
                         supplyEmails.add(baseDataRecord.getOutCpnyEmail());
-                        emailBean.setSupplies(supplies);//
-                        emailBean.setSupplyMails(supplyEmails);//
-                        ftpUploadResultBean = analysis.upLoadDocumentListToFTP(documentResultBean,null,baseDataRecord.getOutCpnyCode());
+
+                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,null,baseDataRecord.getOutCpnyCode());
                     }else {
-                        ftpUploadResultBean = analysis.upLoadDocumentListToFTP(documentResultBean,baseDataRecord.getInDept(),null);
-
-                    }
-
-                    List<String> applicators = new ArrayList<>();
-                    applicators.add(baseDataRecord.getApplicant());
-
-                    List<String> applicatorEmails = new ArrayList<>();
-                    applicatorEmails.add(baseDataRecord.getApplicantEmail());
-
-
-
-                    emailBean.setApplicatorMails(applicatorEmails);//申请人地址
-                    emailBean.setApplicators(applicators);//申请人
-                    boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"文件名称");
-                    this.documentErrorCount =ftpUploadResultBean.getFailList().size();
-                    if(!success){
-                        operateResult.setErrMsg("文件清单发放失败，清检查收件人邮箱地址");
-                        operateResult.setErrCode(1001L);
-                        logger.error("文件清单发放失败，请核对收件人邮箱！");
-                        return operateResult;
+                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,baseDataRecord.getInDept(),null);
 
                     }
                 }
-                if(this.itemErrorCount == 0 && this.documentErrorCount == 0){
-                    publishDataDAO.updatePublishTime(processNum);
-                    operateResult.setErrCode(1000L);
-                    operateResult.setErrMsg("数据发放成功！");
-                    logger.error("数据发放成功！");
-                    return operateResult;
+
+                for(String s :ftpUploadResultBean1.getSuccessList()){
+                    successFileNames.add(s);
+                }
+                for(String s :ftpUploadResultBean2.getSuccessList()){
+                    successFileNames.add(s);
+                }
+
+                for(String s :ftpUploadResultBean1.getSuccessRealFileName()){
+                    successRealFileNames.add(s);
+                }
+                for(String s :ftpUploadResultBean2.getSuccessRealFileName()){
+                    successRealFileNames.add(s);
+                }
+
+                for(FailBean failBean :ftpUploadResultBean1.getFailList()){
+                    failFileNames.add(failBean);
+                }
+                for(FailBean failBean :ftpUploadResultBean2.getFailList()){
+                    failFileNames.add(failBean);
+                }
+                ftpUploadResultBean.setSuccessRealFileName(successRealFileNames);
+                ftpUploadResultBean.setSuccessList(successFileNames);
+                ftpUploadResultBean.setFailList(failFileNames);
+
+                List<String> applicators = new ArrayList<>();
+                applicators.add(baseDataRecord.getApplicant());
+
+                List<String> applicatorEmails = new ArrayList<>();
+                applicatorEmails.add(baseDataRecord.getApplicantEmail());
+
+                supplies.add(baseDataRecord.getInAccepter());
+                supplyEmails.add(baseDataRecord.getInEmail());
+                emailBean.setSupplies(supplies);//
+                emailBean.setSupplyMails(supplyEmails);//
+
+                emailBean.setApplicatorMails(applicatorEmails);//申请人地址
+                emailBean.setApplicators(applicators);//申请人
+
+                boolean b = analysis.sendMessage(ftpUploadResultBean,emailBean,null);
+                if(b){
+                    logger.error("数据发放成功,详细信息请查阅邮件!");
+                    return OperateResult.getSuccessResult();
                 }else {
-                    operateResult.setErrCode(1001L);
-                    operateResult.setErrMsg("数据发放失败！");
-                    logger.error("数据发放失败！");
-                    return operateResult;
+                    logger.error("邮件发送失败!请核对申请人地址："+emailBean.getApplicatorMails()+"；请核对收件人地址："+emailBean.getSupplyMails());
+                    return OperateResult.getFailResult();
                 }
 
             }

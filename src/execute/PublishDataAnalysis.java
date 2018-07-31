@@ -212,6 +212,9 @@ public class PublishDataAnalysis {
                             for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
                                 itemInfoBeans.add(findItemInfoBean);
                             }
+                            failBean.setName(item.getItem_name());
+                            failBean.setFailMsg("success");
+                            this.failMsg.add(failBean);
                         } else {
                             failBean.setName(item.getItem_name());
                             failBean.setFailMsg(item.getItem_name()+"不存在");
@@ -226,6 +229,9 @@ public class PublishDataAnalysis {
                                 for (FindDataInfoBean findItemInfoBean : itemInfoBeanList) {
                                     itemInfoBeans.add(findItemInfoBean);
                                 }
+                                failBean.setName(item.getItem_name());
+                                failBean.setFailMsg("success");
+                                this.failMsg.add(failBean);
                             } else {
                                 failBean = new FailBean();
                                 failBean.setName(item.getItem_name());
@@ -313,11 +319,15 @@ public class PublishDataAnalysis {
                 ftpDocumentUploadBean.setDocument_name(documentBean.getDocument_name());
                 ftpDocumentUploadBean.setDocumentRevision(documentBean.getDocumentRevision());
                     List<FindDataInfoBean> infoBeanList = publishDataService.getDocumentInfoInTC(documentBean.getDocument_id(),documentBean.getDocumentRevision());
-                    if(infoBeanList!=null && infoBeanList.size()>0){
+                    FailBean failBean = new FailBean();
+                   if(infoBeanList!=null && infoBeanList.size()>0){
                         ftpDocumentUploadBean.setDocumentInfoBeanList(infoBeanList);
                         ftpDocumentUploadBeans.add(ftpDocumentUploadBean);
-                    }else{
-                        FailBean failBean = new FailBean();
+                        failBean.setName(documentBean.getDocument_name());
+                        failBean.setFailMsg("success");
+                        this.failMsg.add(failBean);
+                   }else{
+
                         failBean.setName(documentBean.getDocument_name());
                         failBean.setFailMsg("文件不存在！文件号"+documentBean.getDocument_id()+",版本号"+documentBean.getDocumentRevision());
                         this.failMsg.add(failBean);
@@ -342,6 +352,7 @@ public class PublishDataAnalysis {
      * @return
      */
     public FtpUploadResultBean upLoadItemListToFTP(ItemResultBean itemResultBean,String dept,String supplyCode) {
+        List<String> fileRealName = new ArrayList<>();
         FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
         List<String> itemBeansSuccess = new ArrayList<>();
         List<FailBean> failBeans = new ArrayList<>();
@@ -350,6 +361,7 @@ public class PublishDataAnalysis {
             FtpPropertyLoader loader = new FtpPropertyLoader();
             Properties properties = loader.getProperties();
             if (beans == null || beans.size() == 0) {
+                ftpUploadResultBean.setSuccessRealFileName(fileRealName);
                 ftpUploadResultBean.setSuccessList(itemBeansSuccess);
                 ftpUploadResultBean.setFailList(itemResultBean.getFailBeans());
                 return ftpUploadResultBean;
@@ -385,6 +397,7 @@ public class PublishDataAnalysis {
                 List<String> itemBeanList = new ArrayList<>();
                 itemBeanList.add(itemUploadBean.getItem_name());
                 for (FindDataInfoBean itemInfoBean : list) {
+                    fileRealName.add(itemInfoBean.getPoriginalFileName());
                     FailBean failBean = new FailBean();
                     String volumePath = itemInfoBean.getPwntPathName();
                     String psdPathName = itemInfoBean.getPsdPathName();
@@ -418,6 +431,7 @@ public class PublishDataAnalysis {
             }
             ftpUploadResultBean.setSuccessList(itemBeansSuccess);
             ftpUploadResultBean.setFailList(failBeans);
+            ftpUploadResultBean.setSuccessRealFileName(fileRealName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -430,6 +444,7 @@ public class PublishDataAnalysis {
      * @return
      */
     public FtpUploadResultBean upLoadDocumentListToFTP(DocumentResultBean documentResultBean,String dept,String supplyCode){
+        List<String> fileRealName = new ArrayList<>();
         FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
         List<String> documentSuccess = new ArrayList<>();
         List<FailBean> documentFailBeans = new ArrayList<>();
@@ -472,6 +487,7 @@ public class PublishDataAnalysis {
                 List<String> documentFailedList = new ArrayList<>();
                 documentFailedList.add(documentUploadBean.getDocument_name());
                 for(FindDataInfoBean findDataInfoBean : findDataInfoBeans){
+                    fileRealName.add(findDataInfoBean.getPoriginalFileName());
                     String volumePath = findDataInfoBean.getPwntPathName();
                     String psdPathName = findDataInfoBean.getPsdPathName();
                     String fileName = findDataInfoBean.getPoriginalFileName();
@@ -502,6 +518,7 @@ public class PublishDataAnalysis {
                     documentSuccess.add(documentUploadBean.getDocument_name());
                 }
             }
+            ftpUploadResultBean.setSuccessRealFileName(fileRealName);
             ftpUploadResultBean.setSuccessList(documentSuccess);
             ftpUploadResultBean.setFailList(documentFailBeans);
         }catch (Exception e){
@@ -521,13 +538,18 @@ public class PublishDataAnalysis {
 
         List<FailBean> failBeans = resultBean.getFailList();
         List<String> success= resultBean.getSuccessList();
+        List<String> fileRealName = resultBean.getSuccessRealFileName();
 
         MailToApplicant mailToApplicant = new MailToApplicant();
         mailToApplicant.setFileName(success);
         mailToApplicant.setFailFiles(failBeans);
+        mailToApplicant.setRealFileName(fileRealName);
 
         mailToApplicant.setReceiver(emailBean.getApplicators());
         mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
+
+
+
 
         MailToSupplier mailToSupplier = new MailToSupplier();
         mailToSupplier.setFileNames(success);
@@ -536,7 +558,7 @@ public class PublishDataAnalysis {
         mailToSupplier.setReceiveMailAccount(emailBean.getSupplyMails());
         mailToSupplier.setApplicant(emailBean.getApplicators());
         try{
-            boolean mailToApplication = mailToApplicant.release(type);
+            boolean mailToApplication = mailToApplicant.release();
             if(!mailToApplication){
                 logger.error("邮件发送失败，请核对收件人地址"+emailBean.getApplicatorMails());
                 throw new Exception("邮件发送失败，请核对收件人地址");

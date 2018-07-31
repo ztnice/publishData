@@ -19,11 +19,12 @@
 		<result column="PRO_INSPECTOR_SUGGE" jdbcType="VARCHAR" property="proInspectorSugge" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
 		<result column="PUBLISH_TIME" jdbcType="DATE" property="publishTime" />
+		<result column="IN_EMAIL" jdbcType="VARCHAR" property="inEmail" />
 	</resultMap>
 	<sql id="Base_Column_List">
 	PROCESS_NUM, APP_DEPT, VEH_CODE, APPLICANT, APPLICANT_EMAIL, APPLICANT_PHONE, PROVIDE_TYPE,
     IN_ACCEPTER, IN_DEPT, OUT_CPNY_NAME, OUT_CPNY_CODE, OUT_CPNY_ACCEPTER, OUT_CPNY_EMAIL,
-    PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE, TITLE,PUBLISH_TIME
+    PRO_MANAGER_SUGGE, PRO_INSPECTOR_SUGGE, TITLE,PUBLISH_TIME,IN_EMAIL
 	</sql>
 
 

@@ -129,11 +129,19 @@ public class PublishDataServiceImpl implements PublishDataService {
      */
     public List<FindDataInfoBean> getDocumentInfoInTC(String documentId, String documentRevision){
         this.publishDataDAO = new PublishDataDAOImpl();
+        List<String> list = new ArrayList<>();
+        list.add("CATPart");
+        list.add("CATProduct");
+        list.add("jt");
+        list.add("cgr");
+        list.add("CATDrawing");
+        list.add("dwg");
         TCInfodbaRecord recordQuery = new TCInfodbaRecord();
         recordQuery.setItemId(documentId);
         recordQuery.setItemRevision(documentRevision);
         List<FindDataInfoBean> findDataInfoBeans = new ArrayList<>();
         List<TCInfodbaRecord> recordList = publishDataDAO.getTCInfodbaRecordList(recordQuery);
+
         if(recordList!= null && recordList.size()>0){
             for(int i=0;i<recordList.size();i++){
                 boolean isRepeat = false;
@@ -145,6 +153,9 @@ public class PublishDataServiceImpl implements PublishDataService {
                     }
                 }
                 if(!isRepeat){
+                    if(list.contains(recordList.get(i).getpFileName().split("\\.")[1])){
+                        continue;
+                    }
                     FindDataInfoBean findDataInfoBean = new FindDataInfoBean();
                     findDataInfoBean.setpFileName(recordList.get(i).getpFileName());
                     findDataInfoBean.setPoriginalFileName(poriginalName);

@@ -120,10 +120,11 @@ public class MailToSupplier {
 		// message.setContent("XX用户你好, 今天全场5折, 快来抢购,<br/>---------\n
 		// 错过今天再等一年。。。", "text/html;charset=UTF-8");
 		StringBuilder sb = new StringBuilder();
-		sb.append(getHeadModel(type));
-		if(fileNames!=null&&fileNames.size()>0)
-		sb.append(getContent(fileNames));
-		else {
+
+		if(fileNames!=null&&fileNames.size()>0) {
+			sb.append(getHeadModel());
+			sb.append(getContent(fileNames));
+		} else {
 			List<String> list = new ArrayList<>();
 			list.add("暂无成功发放数据！");
 			sb.append(list)	;
@@ -216,7 +217,7 @@ public class MailToSupplier {
 		this.receiveMailAccount = receiveMailAccount;
 	}
 
-	private StringBuilder getHeadModel(String type) throws Exception {
+	private StringBuilder getHeadModel() throws Exception {
 		InputStream inputStream = this.getClass().getResourceAsStream("receiverHead.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 		String line = null;
@@ -227,7 +228,7 @@ public class MailToSupplier {
 				continue;
 			}
             if(line.trim().contains("<th>")){
-                line="<th>"+type+"</th>";
+                line="<th>对象名称</th>";
             }
 			sb.append(line);
 			sb.append("\n");
@@ -339,9 +340,4 @@ public class MailToSupplier {
 		return sb;
 	}
 
-	public static void main(String[] args) {
-		Date date  = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss/SS");
-		System.out.println(sdf.format(date));
-	}
 }

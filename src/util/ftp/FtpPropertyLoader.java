@@ -75,8 +75,8 @@ public class FtpPropertyLoader {
 	public Properties getProperties() {
 		return Properties;
 	}
-
-	public static void main(String[] args) {
-		new FtpPropertyLoader(path2);
-	}
+//
+//	public static void main(String[] args) {
+//		new FtpPropertyLoader(path2);
+//	}
 }

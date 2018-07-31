@@ -73,6 +73,17 @@ public class HzTempMainRecord {
     private String proInspectorSugge;
 
     private Date publishTime;
+
+    private String inEmail;
+
+    public String getInEmail() {
+        return inEmail;
+    }
+
+    public void setInEmail(String inEmail) {
+        this.inEmail = inEmail;
+    }
+
     public String getProcessNum() {
         return processNum;
     }

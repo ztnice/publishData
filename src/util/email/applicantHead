@@ -41,8 +41,8 @@ table	{
 <p class='p_marg'>
 -----
 </p>
-<p>&emsp;&emsp;发放成功</p>
+<p>&emsp;&emsp;发放结果</p>
 </div>
 <div class='re_content' style='margin-left:40px'>
 <table border=1 cellspacing=0px cellpadding=5px>
-	<th></th>
+<th>对象名称</th><th>文件/零件名称</th><th>失败/成功</th>

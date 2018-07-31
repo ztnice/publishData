@@ -1,11 +1,16 @@
 package bean;
 
+
+import java.io.Serializable;
+
 /**
  * @Author: haozt
  * @Date: 2018/7/25
  * @Description:
  */
-public class OperateResult {
+public class OperateResult implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final String SUCCESS_MSG ="数据发放成功！";
     public static final String FAILED_MSG ="数据发放失败！";
     public static final Long SUCCESS_CODE = 1000L;
@@ -58,4 +63,5 @@ public class OperateResult {
         respDTO.setErrCode(FAILED_CODE);
         return respDTO;
     }
+
 }

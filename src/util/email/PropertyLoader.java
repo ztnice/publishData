@@ -10,7 +10,6 @@ import java.util.Properties;
 public class PropertyLoader {
 	/** 属性文件放在当前包下面即可，如果FTP服务器的位置改变了，需要改属性文件 */
 	private final static String filePath = "resource.properties";
-	private static String path2 = "C:\\Users\\Administrator\\Desktop\\commons-net-3.6-bin\\resource.properties";
 	private Properties Properties;
 
 	public PropertyLoader() {
@@ -77,7 +76,7 @@ public class PropertyLoader {
 		return Properties;
 	}
 
-	public static void main(String[] args) {
-		new PropertyLoader(path2);
-	}
+//	public static void main(String[] args) {
+//		new PropertyLoader(path2);
+//	}
 }

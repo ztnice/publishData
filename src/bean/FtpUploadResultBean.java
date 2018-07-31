@@ -18,6 +18,15 @@ public class FtpUploadResultBean {
 
     private List<FailBean> failList;
 
+    private List<String> successRealFileName;
+
+    public List<String> getSuccessRealFileName() {
+        return successRealFileName;
+    }
+
+    public void setSuccessRealFileName(List<String> successRealFileName) {
+        this.successRealFileName = successRealFileName;
+    }
 
     public List<String> getSuccessList() {
         return successList;

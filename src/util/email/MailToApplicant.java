@@ -34,11 +34,7 @@ public class MailToApplicant {
 	//失败清单
 	private List<FailBean> failFiles;
 
-
-
-
-	public static  final String ITEM_TYPE = "零件名称";
-	public static  final String FILE_TYPE = "文件名称";
+	private List<String> realFileName;
 
 	public MailToApplicant() {
 		props = loader.getProperties();
@@ -46,9 +42,9 @@ public class MailToApplicant {
 		session.setDebug(debug);
 	}
 
-	public boolean release(String type) {
+	public boolean release() {
 		try {
-			message = createMimeMessage(session,type, props.getProperty("myEmailAccount"), receiveMailAccount);
+			message = createMimeMessage(session, props.getProperty("myEmailAccount"), receiveMailAccount);
 			// // 4. 根据 Session 获取邮件传输对象
 			transport = session.getTransport();
 			// 5. 使用 邮箱账号 和 密码 连接邮件服务器, 这里认证的邮箱必须与 message 中的发件人邮箱一致, 否则报错
@@ -94,7 +90,7 @@ public class MailToApplicant {
 	 * @return
 	 * @throws Exception
 	 */
-	public MimeMessage createMimeMessage(Session session,String type, String sendMail, List<String> receiveMail) throws Exception {
+	public MimeMessage createMimeMessage(Session session, String sendMail, List<String> receiveMail) throws Exception {
 		// 1. 创建一封邮件
 		MimeMessage message = new MimeMessage(session);
 
@@ -113,11 +109,10 @@ public class MailToApplicant {
 		message.setSubject("数据发放", "UTF-8");
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(getHeadModel(type));
-		if(fileName !=null && fileName.size()>0)
-		sb.append(getSuccContent(fileName));
-		if(failFiles!=null&&failFiles.size()>0)
-		sb.append(getFailContent(failFiles,type));
+		sb.append(getMailHeadModel());
+		sb.append(getMailContent(realFileName,failFiles));
+//		if(failFiles!=null&&failFiles.size()>0)
+//		sb.append(getFailContent(failFiles,type));
 //		sb.append("</table>");
 //		sb.append("</div>");
 //		sb.append(getHeadModelAnother(ITEM_TYPE));
@@ -199,6 +194,62 @@ public class MailToApplicant {
 			sb.append("</tr>");
 		}
 		return sb;
+	}
+
+	/**
+	 * 后期需求更改 邮件样式产生了变更
+	 * todo author haozt
+	 * @param fileRealName
+	 * @param result
+	 * @return
+	 */
+	private StringBuilder getMailContent(List<String> fileRealName,List<FailBean> result) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < result.size(); i++) {
+			sb.append("<tr>");
+			sb.append("<td>");
+			sb.append(result.get(i).getName());
+			sb.append("</td>");
+			if(fileRealName != null && fileRealName.size() == result.size()){
+				sb.append("<td>");
+				sb.append(fileRealName.get(i));
+				sb.append("</td>");
+			}else {
+				sb.append("<td>");
+				sb.append("-");
+				sb.append("</td>");
+			}
+			sb.append("<td>");
+			sb.append(result.get(i).getFailMsg());
+			sb.append("</td>");
+			sb.append("</tr>");
+		}
+		return sb;
+	}
+
+	/**
+	 * 后期需求更改 邮件样式产生了变更
+	 * todo author haozt
+	 * @return
+	 * @throws Exception
+	 */
+	private StringBuilder getMailHeadModel ()throws Exception {
+		InputStream inputStream = this.getClass().getResourceAsStream("applicantHead");
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+		String line = null;
+		StringBuilder sb = new StringBuilder();
+		while ((line = br.readLine()) != null) {
+			if (line.trim().equals("-----")) {
+				sb.append(addSupplier());
+				continue;
+			}
+			sb.append(line);
+			sb.append("\n");
+		}
+		// sb.replace(0, 1, "");
+		br.close();
+		return sb;
+
 	}
 
 	private StringBuilder getHeadModel(String type) throws Exception {
@@ -322,49 +373,6 @@ public class MailToApplicant {
 		return sb;
 	}
 
-	public static void main(String[] args) {
-		MailToApplicant mailUtil = new MailToApplicant();
-		ArrayList<String> receiver = new ArrayList<>();
-		receiver.add("John");
-		receiver.add("Suphei");
-		ArrayList<String> applicant = new ArrayList<>();
-		applicant.add("zhit876@163.com");
-		applicant.add("87636959@qq.com");
-		ArrayList<String> fileName = new ArrayList<>();
-		fileName.add("sdas");
-		fileName.add("www");
-//		Map<String,List<String>> map = new HashMap<>();
-//		List<String> list = new ArrayList<>();
-//		list.add("mmpa");
-//		list.add("shibai a");
-//		list.add("sadasd");
-//		map.put("�ļ��ϴ���ftpʧ��",list);
-
-		List itemList = new ArrayList();
-		itemList.add("aaaaaaaaaaaa");
-		itemList.add("ssssssss");
-
-		Map<String,List<String>> itemMap = new HashMap<>();
-		List<String> itemL = new ArrayList<>();
-		itemL.add("1111111111");
-		itemL.add("222222222");
-		itemMap.put("�ļ��ϴ���ftpʧ��",itemL);
-//		ArrayList<String> files = new ArrayList<>();
-//		files.add("sdads");
-		mailUtil.setReceiver(receiver);
-		mailUtil.setReceiveMailAccount(applicant);
-		mailUtil.setFileName(fileName);
-//		mailUtil.setFailFiles(map);
-//		mailUtil.setItems(itemList);
-//		mailUtil.setItemFailFiles(itemMap);
-//		mailUtil.setFiles(files);
-		try {
-			mailUtil.release("111");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public List<String> getReceiver() {
 		return receiver;
 	}
@@ -416,4 +424,11 @@ public class MailToApplicant {
 		this.failFiles = failFiles;
 	}
 
+	public List<String> getRealFileName() {
+		return realFileName;
+	}
+
+	public void setRealFileName(List<String> realFileName) {
+		this.realFileName = realFileName;
+	}
 }
