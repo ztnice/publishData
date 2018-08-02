@@ -22,6 +22,7 @@ public class FtpDocumentUploadBean {
         return documentInfoBeanList;
     }
 
+
     public void setDocumentInfoBeanList(List<FindDataInfoBean> documentInfoBeanList) {
         this.documentInfoBeanList = documentInfoBeanList;
     }

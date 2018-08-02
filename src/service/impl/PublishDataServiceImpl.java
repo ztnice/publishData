@@ -71,52 +71,57 @@ public class PublishDataServiceImpl implements PublishDataService {
         if(recordList!=null && recordList.size()>0){
             list =  removeRepeat(recordList);//去重
             List<FindDataInfoBean> dataInfoBeans = new ArrayList<>();
-            switch (type){
-                case "CATPart,CATProduct":
-                List<String> stringList = new ArrayList<>();
-                stringList.add("CATPart");
-                stringList.add("CATProduct");
-                list.forEach(findDataInfoBean -> {
-                    String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                    if(stringList.contains(poriginalFileName.split("\\.")[1])){
-                        dataInfoBeans.add(findDataInfoBean);
-                    }
-                });
-                return  dataInfoBeans;
-                case "DirectModel":
-                    list.forEach(findDataInfoBean -> {
-                        String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                        if("jt".equals(poriginalFileName.split("\\.")[1])){
-                            dataInfoBeans.add(findDataInfoBean);
-                        }
-                    });
-                    return  dataInfoBeans;
-                case "H9_CGR":
-                    list.forEach(findDataInfoBean -> {
-                        String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                        if("cgr".equals(poriginalFileName.split("\\.")[1])){
-                            dataInfoBeans.add(findDataInfoBean);
-                        }
-                    });
-                    return  dataInfoBeans;
-                case "CATDrawing":
-                    list.forEach(findDataInfoBean -> {
-                        String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                        if("CATDrawing".equals(poriginalFileName.split("\\.")[1])){
-                            dataInfoBeans.add(findDataInfoBean);
-                        }
-                    });
-                    return  dataInfoBeans;
-                case "H9_AutoCAD":
-                    list.forEach(findDataInfoBean -> {
-                        String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                        if("dwg".equals(poriginalFileName.split("\\.")[1])){
-                            dataInfoBeans.add(findDataInfoBean);
-                        }
-                    });
-                    return  dataInfoBeans;
-                default:return list;
+            if(type != null){
+                switch (type){
+                    case "CATPart,CATProduct":
+                        List<String> stringList = new ArrayList<>();
+                        stringList.add("CATPart");
+                        stringList.add("CATProduct");
+                        list.forEach(findDataInfoBean -> {
+                            String poriginalFileName = findDataInfoBean.getPoriginalFileName();
+                            if(stringList.contains(poriginalFileName.split("\\.")[1])){
+                                dataInfoBeans.add(findDataInfoBean);
+                            }
+                        });
+                        return  dataInfoBeans;
+                    case "DirectModel":
+                        list.forEach(findDataInfoBean -> {
+                            String poriginalFileName = findDataInfoBean.getPoriginalFileName();
+                            if("jt".equals(poriginalFileName.split("\\.")[1])){
+                                dataInfoBeans.add(findDataInfoBean);
+                            }
+                        });
+                        return  dataInfoBeans;
+                    case "H9_CGR":
+                        list.forEach(findDataInfoBean -> {
+                            String poriginalFileName = findDataInfoBean.getPoriginalFileName();
+                            if("cgr".equals(poriginalFileName.split("\\.")[1])){
+                                dataInfoBeans.add(findDataInfoBean);
+                            }
+                        });
+                        return  dataInfoBeans;
+                    case "CATDrawing":
+                        list.forEach(findDataInfoBean -> {
+                            String poriginalFileName = findDataInfoBean.getPoriginalFileName();
+                            if("CATDrawing".equals(poriginalFileName.split("\\.")[1])){
+                                dataInfoBeans.add(findDataInfoBean);
+                            }
+                        });
+                        return  dataInfoBeans;
+                    case "H9_AutoCAD":
+                        list.forEach(findDataInfoBean -> {
+                            String poriginalFileName = findDataInfoBean.getPoriginalFileName();
+                            if("dwg".equals(poriginalFileName.split("\\.")[1])){
+                                dataInfoBeans.add(findDataInfoBean);
+                            }
+                        });
+                        return  dataInfoBeans;
+                    default:return list;
+                }
+            }else {
+                return list;
             }
+
         }
       return null;
 

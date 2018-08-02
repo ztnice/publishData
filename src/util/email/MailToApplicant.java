@@ -25,8 +25,9 @@ public class MailToApplicant {
 	/** 邮件接收者邮箱*/
 	private List<String> receiveMailAccount;
 	private boolean debug = true;
-	private String path = "";
+	private String path ="";
 
+	private String processNum;
 
 	private List<String> files;
 	//成功的清单
@@ -213,7 +214,11 @@ public class MailToApplicant {
 				sb.append("</td>");
 
 				sb.append("<td>");
-				sb.append(result.get(i).getRealName());
+				if(result.get(i).getRealName() == null){
+					sb.append("-");
+				}else {
+					sb.append(result.get(i).getRealName());
+				}
 				sb.append("</td>");
 
 				sb.append("<td>");
@@ -240,6 +245,13 @@ public class MailToApplicant {
 		while ((line = br.readLine()) != null) {
 			if (line.trim().equals("-----")) {
 				sb.append(addSupplier());
+				continue;
+			}
+			if (line.trim().contains("发放结果")) {
+				if(processNum != null && processNum!=""){
+					line = processNum+"的发放结果：";
+					sb.append(line);
+				}
 				continue;
 			}
 			sb.append(line);
@@ -400,6 +412,14 @@ public class MailToApplicant {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getProcessNum() {
+		return processNum;
+	}
+
+	public void setProcessNum(String processNum) {
+		this.processNum = processNum;
 	}
 
 	public void setPath(String path) {

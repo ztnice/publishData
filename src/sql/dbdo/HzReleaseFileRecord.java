@@ -10,6 +10,7 @@ public class HzReleaseFileRecord {
 	private String itemId;
 
 	private String itemrevision;
+
 	private String fileType;
 
 	public String getFileType() {

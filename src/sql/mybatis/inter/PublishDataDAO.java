@@ -40,4 +40,9 @@ public interface PublishDataDAO {
     HzTempMainRecord getHzTempMainRecord(String processNum);
 
     HzSupplyRecord getHzSupplyRecord(Map map);
+
+
+    int updateItemChangeEffectTime(String itemId);
+
+    int updateDocumentEffectTime(String documentId);
 }

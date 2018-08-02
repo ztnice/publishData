@@ -1,5 +1,7 @@
 package sql.dbdo;
 
+import java.util.Date;
+
 public class HzTempDocumentRecord {
     private Long id;
 
@@ -10,6 +12,26 @@ public class HzTempDocumentRecord {
     private String documentName;
 
     private String documentRevision;
+
+    private Integer changeFlag;
+
+    private Date changeEffectTime;
+
+    public Date getChangeEffectTime() {
+        return changeEffectTime;
+    }
+
+    public void setChangeEffectTime(Date changeEffectTime) {
+        this.changeEffectTime = changeEffectTime;
+    }
+
+    public Integer getChangeFlag() {
+        return changeFlag;
+    }
+
+    public void setChangeFlag(Integer changeFlag) {
+        this.changeFlag = changeFlag;
+    }
 
     public Long getId() {
         return id;

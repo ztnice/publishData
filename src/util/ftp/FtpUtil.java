@@ -503,4 +503,17 @@ public class FtpUtil {
 	}
 
 
+
+//
+//	public static void main(String[] a) throws Exception{
+//		FtpPropertyLoader loader = new FtpPropertyLoader();
+//		Properties properties = loader.getProperties();
+//		String filePath = "D:\\AMD\\PPC\\接口明细信息-TC.xlsx";
+//		String fileName = "这是一条神奇的天路";
+//		String ftpFilePath = "/火狐/"+11111+"//"+"不要在出现乱码了";
+//		ftpFilePath=new String(ftpFilePath.getBytes("GBK"),"iso-8859-1");
+//		InputStream input = new FileInputStream(new File(filePath));
+//		int i = uploadMFile(properties,properties.getProperty("FTP_BASEPATH"),ftpFilePath, fileName, input);
+//		System.out.println(i);
+//	}
 }

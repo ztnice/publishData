@@ -7,23 +7,25 @@ import java.util.List;
  *
  */
 public class EmailBean {
-    /**
-     * �ʼ����շ� ��Ӧ��
-     */
+
     private List<String> supplies;
-    /**
-     * ���������� ������
-     */
+
     private List<String> applicators;
 
-    /**
-     * ��Ӧ�������ַ
-     */
+
     private List<String> supplyMails;
-    /**
-     * �����������ַ
-     */
+
     private List<String> applicatorMails;
+
+    private String ftpPath;
+
+    public String getFtpPath() {
+        return ftpPath;
+    }
+
+    public void setFtpPath(String ftpPath) {
+        this.ftpPath = ftpPath;
+    }
 
     public List<String> getSupplies() {
         return supplies;

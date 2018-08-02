@@ -13,11 +13,13 @@
 		<result column="CATIA_BLUEPRINT" jdbcType="INTEGER" property="catiaBlueprint" />
 		<result column="CAD_BLUEPRINT" jdbcType="INTEGER" property="cadBlueprint" />
 		<result column="OTHERS" jdbcType="INTEGER" property="others" />
+		<result column="CHANGE_FLAG" jdbcType="INTEGER" property="changeFlag" />
+		<result column="CHANGE_EFFECT_TIME" jdbcType="DATE" property="changeEffectTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX,
-		CGR_DIGIFAX, CATIA_BLUEPRINT, CAD_BLUEPRINT, OTHERS
+		CGR_DIGIFAX, CATIA_BLUEPRINT, CAD_BLUEPRINT, OTHERS,CHANGE_FLAG,CHANGE_EFFECT_TIME
 	</sql>
 	
 	
@@ -86,18 +88,23 @@
             <if test="belProcessNum != null and belProcessNum!=''">
                 and BEL_PROCESS_NUM=#{belProcessNum}
             </if>
+			<if test="changeFlag != null">
+				and CHANGE_FLAG=#{changeFlag}
+			</if>
+			<if test="changeFlag == null">
+				and CHANGE_FLAG IS NULL
+			</if>
 		</where>
 	</select>
 
 
 	<insert id="PublishDataDAOImpl_insertItemBeanList" useGeneratedKeys="false" parameterType="java.util.List" >
-		insert into HZ_TEMPITEMRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
+		insert into HZ_TEMPITEMRECORD ( BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX, CGR_DIGIFAX, CATIA_BLUEPRINT,
-		CAD_BLUEPRINT, OTHERS)
+		CAD_BLUEPRINT, OTHERS,CHANGE_FLAG)
 		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
 			SELECT
-			#{item.id,jdbcType=INTEGER},
 			#{item.belProcessNum,jdbcType=VARCHAR},
 			#{item.itemId,jdbcType=VARCHAR},
 			#{item.itemName,jdbcType=VARCHAR},
@@ -107,9 +114,17 @@
 			#{item.cgrDigifax,jdbcType=INTEGER},
 			#{item.catiaBlueprint,jdbcType=INTEGER},
 			#{item.cadBlueprint,jdbcType=INTEGER},
-			#{item.others,jdbcType=INTEGER}
+			#{item.others,jdbcType=INTEGER},
+			#{item.changeFlag,jdbcType=INTEGER}
 			from DUAL
 		</foreach>
 	</insert>
-	
+
+
+	<update id="PublishDataDAOImpl_updateItemChangeEffectTime" parameterType="java.lang.String">
+		update HZ_TEMPITEMRECORD
+		set CHANGE_EFFECT_TIME = sysdate
+		where ITEM_ID = #{itemId,jdbcType=INTEGER} and CHANGE_FLAG=1
+	</update>
+
 </mapper>

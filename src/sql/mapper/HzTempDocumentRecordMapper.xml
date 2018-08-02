@@ -2,15 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="HzTempDocumentRecordMapper">
 	<resultMap id="BaseResultMap" type="sql.dbdo.HzTempDocumentRecord">
-		<id column="ID" jdbcType="DECIMAL" property="id" />
+		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="BEL_PROCESS_NUM" jdbcType="VARCHAR" property="belProcessNum" />
 		<result column="ITEM_ID" jdbcType="VARCHAR" property="documentId" />
 		<result column="ITEM_NAME" jdbcType="VARCHAR" property="documentName" />
 		<result column="ITEMREVISION" jdbcType="VARCHAR" property="documentRevision" />
+		<result column="CHANGE_FLAG" jdbcType="INTEGER" property="changeFlag" />
+		<result column="CHANGE_EFFECT_TIME" jdbcType="DATE" property="changeEffectTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION
+		ID, BEL_PROCESS_NUM, ITEM_ID, ITEM_NAME, ITEMREVISION,CHANGE_FLAG,CHANGE_EFFECT_TIME
 	</sql>
 
 
@@ -20,7 +22,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from HZ_TEMPDOCUMENTRECORD
-		where ID = #{id,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=INTEGER}
 	</select>
 
 
@@ -29,32 +31,24 @@
 		select
 		<include refid="Base_Column_List" />
 		from HZ_TEMPDOCUMENTRECORD
-		where BEL_PROCESS_NUM = #{processNum,jdbcType=DECIMAL}
+		where BEL_PROCESS_NUM = #{processNum,jdbcType=INTEGER}
 	</select>
 
 
 
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from HZ_TEMPDOCUMENTRECORD
-		where ID = #{id,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=INTEGER}
 	</delete>
 
 
 	<insert id="insert" parameterType="sql.dbdo.HzTempDocumentRecord">
 		insert into HZ_TEMPDOCUMENTRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION)
-		values (#{id,jdbcType=DECIMAL}, #{belProcessNum,jdbcType=VARCHAR},
+		values (#{id,jdbcType=INTEGER}, #{belProcessNum,jdbcType=VARCHAR},
 		#{documentId,jdbcType=VARCHAR},
 		#{documentName,jdbcType=VARCHAR}, #{documentRevision,jdbcType=VARCHAR})
 	</insert>
-	<update id="updateByPrimaryKey" parameterType="sql.dbdo.HzTempDocumentRecord">
-		update HZ_TEMPITEMRECORD
-		set BEL_PROCESS_NUM = #{belProcessNum,jdbcType=VARCHAR},
-		ITEM_ID = #{documentId,jdbcType=VARCHAR},
-		ITEM_NAME = #{documentName,jdbcType=VARCHAR},
-		ITEMREVISION = #{documentRevision,jdbcType=VARCHAR}
-		where ID = #{id,jdbcType=DECIMAL}
-	</update>
 
 
 
@@ -74,6 +68,12 @@
 			<if test="belProcessNum != null and belProcessNum!=''">
 				and BEL_PROCESS_NUM=#{belProcessNum}
 			</if>
+			<if test="changeFlag != null">
+				and CHANGE_FLAG=#{changeFlag}
+			</if>
+			<if test="changeFlag == null">
+				and CHANGE_FLAG IS NULL
+			</if>
 		</where>
 	</select>
 
@@ -81,18 +81,24 @@
 
 
 	<insert id="PublishDataDAOImpl_insertDocumentBeanList" useGeneratedKeys="false" parameterType="java.util.List" >
-		insert into HZ_TEMPDOCUMENTRECORD (ID, BEL_PROCESS_NUM, ITEM_ID,
-        ITEM_NAME, ITEMREVISION)
+		insert into HZ_TEMPDOCUMENTRECORD (BEL_PROCESS_NUM, ITEM_ID,
+        ITEM_NAME, ITEMREVISION,CHANGE_FLAG)
 		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
 			SELECT
-			#{item.id,jdbcType=DECIMAL},
 			#{item.belProcessNum,jdbcType=VARCHAR},
 			#{item.documentId,jdbcType=VARCHAR},
 			#{item.documentName,jdbcType=VARCHAR},
-			#{item.documentRevision,jdbcType=VARCHAR}
+			#{item.documentRevision,jdbcType=VARCHAR},
+			#{item.changeFlag,jdbcType=INTEGER}
 			from DUAL
 		</foreach>
 	</insert>
 
 
+
+	<update id="PublishDataDAOImpl_updateDocumentEffectTime" parameterType="java.lang.String">
+		update HZ_TEMPDOCUMENTRECORD
+		set CHANGE_EFFECT_TIME = sysdate
+		where ITEM_ID = #{itemId,jdbcType=INTEGER} and CHANGE_FLAG=1
+	</update>
 </mapper>

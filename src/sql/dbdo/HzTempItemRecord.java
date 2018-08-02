@@ -1,5 +1,7 @@
 package sql.dbdo;
 
+import java.util.Date;
+
 /**
  * Created by haozt on 2018/4/9.
  */
@@ -48,6 +50,26 @@ public class HzTempItemRecord {
      *其他
      */
     private Integer others;
+
+    private Integer changeFlag;
+
+    private Date changeEffectTime;
+
+    public Date getChangeEffectTime() {
+        return changeEffectTime;
+    }
+
+    public void setChangeEffectTime(Date changeEffectTime) {
+        this.changeEffectTime = changeEffectTime;
+    }
+
+    public Integer getChangeFlag() {
+        return changeFlag;
+    }
+
+    public void setChangeFlag(Integer changeFlag) {
+        this.changeFlag = changeFlag;
+    }
 
     public Long getId() {
         return id;

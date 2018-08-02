@@ -4,17 +4,13 @@ import bean.*;
 import org.apache.log4j.Logger;
 import service.PublishDataService;
 import service.impl.PublishDataServiceImpl;
+import sql.dbdo.HzSupplyRecord;
 import sql.dbdo.HzTempDocumentRecord;
 import sql.dbdo.HzTempItemRecord;
 import sql.dbdo.HzTempMainRecord;
 import sql.mybatis.impl.PublishDataDAOImpl;
 import sql.mybatis.inter.PublishDataDAO;
 
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -30,7 +26,7 @@ public class PublishData {
     private PublishDataAnalysis analysis;
 
     /**
-     * 数据发放 全部数据 保留接口
+     * 数据发放 全部数据 保留接口 OA端
      * @param baseDataBean
      * @param items
      * @param documents
@@ -39,6 +35,317 @@ public class PublishData {
     public Result publishData(BaseDataBean baseDataBean, List<ItemBean> items, List<DocumentBean> documents) {
         return null;
     }
+
+    /**
+     * 发生设变时 自动触发流程进行数据发放 TC端
+     * @param
+     * @return
+     */
+    public OperateResult publishDataFromTcChange(String[] ddddd ){
+        List<SupplySendInfo> supplySendInfos = new ArrayList<>();
+        OperateResult operateResult = new OperateResult();
+        PublishDataDAO publishDataDAO = new PublishDataDAOImpl();
+        try {
+            for(String itemInfo :ddddd){
+                String itemId = itemInfo.split("/")[0];
+                String itemRevision = itemInfo.split("/")[1];
+                String itemType = itemInfo.split("/")[2];
+                //找出发放的基本信息  零件清单信息  文件清单信息不会涉及设变
+                List<HzTempMainRecord> hzTempMainRecords = new ArrayList<>();
+//                List<HzTempDocumentRecord> documentRecords = null;
+                List<HzTempItemRecord> hzTempItemRecords = null;
+                Set<String> processNums = new HashSet<>();
+//                if("D".equals(itemType)){//文件
+//                    HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
+//                    documentQuery.setDocumentId(itemId);
+//                    documentRecords = publishDataDAO.getHzTempDocumentList(documentQuery);
+//                    if(documentRecords == null || documentRecords.size() ==0){
+//                        logger.error("未找到设变数据发放的文件清单信息！");
+//                    }else {
+//                        for(HzTempDocumentRecord record :documentRecords){
+//                            processNums.add((String)record.getBelProcessNum());
+//                        }
+//                        String processNum = (String)documentRecords.get(0).getBelProcessNum();
+//                        hzTempMainRecord = publishDataDAO.getHzTempMainRecord(processNum);
+//                    }
+//                }
+
+                if("P".equals(itemType)){//零件
+                    HzTempItemRecord itemQuery = new HzTempItemRecord();
+                    itemQuery.setItemId(itemId);
+                    hzTempItemRecords = publishDataDAO.getHzTempItemRecordList(itemQuery);
+                    if(hzTempItemRecords == null || hzTempItemRecords.size() ==0){
+                        logger.error("未找到设变数据发放的零件清单信息！");
+                    }else {
+                        for(HzTempItemRecord record :hzTempItemRecords){
+                            processNums.add((String)record.getBelProcessNum());
+                        }
+                    }
+                }
+
+                if(hzTempItemRecords!=null && hzTempItemRecords.size()>0){
+                    //查询之前有没有发放过对应的变更数据，有则跳过 无则新增数据到表
+                    HzTempItemRecord itemQuery = new HzTempItemRecord();
+                    itemQuery.setItemId(itemId);
+                    itemQuery.setItemRevision(itemRevision);
+                    itemQuery.setChangeFlag(1);
+                    List<HzTempItemRecord> records = publishDataDAO.getHzTempItemRecordList(itemQuery);
+                    if(records == null || records.size() == 0){
+                        List<HzTempItemRecord> itemRecords = new ArrayList<>();
+                        for(HzTempItemRecord hzTempItemRecord :hzTempItemRecords){
+                            hzTempItemRecord.setItemRevision(itemRevision);
+                            hzTempItemRecord.setChangeFlag(1);
+                            itemRecords.add(hzTempItemRecord);
+                        }
+                        publishDataDAO.insertItemBeanList(itemRecords);
+                        records = itemRecords;
+                    }
+                    hzTempItemRecords = records;
+                }
+
+//                if(documentRecords!= null && documentRecords.size()>0){
+//                    List<HzTempDocumentRecord> documentRecordList = new ArrayList<>();
+//                    HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
+//                    documentQuery.setDocumentId(itemId);
+//                    documentQuery.setDocumentRevision(itemRevision);
+//                    documentQuery.setChangeFlag(1);
+//                    List<HzTempDocumentRecord> records = publishDataDAO.getHzTempDocumentList(documentQuery);
+//                    if(records == null || records.size() == 0){
+//                        for(HzTempDocumentRecord hzTempDocumentRecord :documentRecords){
+//                            hzTempDocumentRecord.setDocumentRevision(itemRevision);
+//                            hzTempDocumentRecord.setChangeFlag(1);
+//                            documentRecordList.add(hzTempDocumentRecord);
+//                        }
+//                        publishDataDAO.insertDocumentBeanList(documentRecordList);
+//                    }
+//                }
+
+                for(String s :processNums){
+                    HzTempMainRecord tempMainRecord = publishDataDAO.getHzTempMainRecord(s);
+                    hzTempMainRecords.add(tempMainRecord);
+                }
+
+                if(hzTempItemRecords == null || hzTempMainRecords.size() == 0){
+                    operateResult.setErrCode(1001L);
+                    operateResult.setErrMsg("未找到变更基本数据信息！");
+                    logger.error("未找到变更基本数据信息");
+                    return operateResult;
+                }
+
+                //发邮件 通知 和上传ftp服务器
+                publishDataService = new PublishDataServiceImpl();
+                analysis = new PublishDataAnalysis();
+
+                FtpUploadResultBean ftpUploadResultBean = new FtpUploadResultBean();
+
+                FtpUploadResultBean ftpUploadResultBean1 = null;
+
+
+                Set<SupplySendInfo> supplies = new HashSet<>();
+
+                List<ApplicantSendInfo> applicators = new ArrayList<>();
+
+                HzTempItemRecord itemQuery = new HzTempItemRecord();
+                itemQuery.setItemId(itemId);
+                itemQuery.setItemRevision(itemRevision);
+                itemQuery.setChangeFlag(1);
+                hzTempItemRecords = publishDataDAO.getHzTempItemRecordList(itemQuery);
+                if(hzTempItemRecords!=null && hzTempItemRecords.size()>0){
+                    Map<HzTempMainRecord,List<ItemBean>> map = new HashMap<>();
+
+                    for(HzTempMainRecord record:hzTempMainRecords){
+                        List<ItemBean> list = new ArrayList<>();
+                        for(HzTempItemRecord hzTempItemRecord:hzTempItemRecords){
+                            if(record.getProcessNum().equals(hzTempItemRecord.getBelProcessNum())){
+                                ItemBean itemBean = new ItemBean();
+                                itemBean.setProcessNum((String)hzTempItemRecord.getBelProcessNum());
+                                itemBean.setItem_id(hzTempItemRecord.getItemId());
+                                itemBean.setItem_name(hzTempItemRecord.getItemName());
+                                itemBean.setItemRevision(hzTempItemRecord.getItemRevision());
+                                itemBean.setCAD_blueprint(hzTempItemRecord.getCadBlueprint());
+                                itemBean.setCatia_blueprint(hzTempItemRecord.getCatiaBlueprint());
+                                itemBean.setCGR_digifax(hzTempItemRecord.getCgrDigifax());
+                                itemBean.setJT_digifax(hzTempItemRecord.getJtDigifax());
+                                itemBean.setCatia_digifax(hzTempItemRecord.getCatiaDigifax());
+                                list.add(itemBean);
+                            }
+                        }
+                        map.put(record,list);
+
+                    }
+
+
+                    for(Map.Entry<HzTempMainRecord,List<ItemBean>> entry :map.entrySet()){
+                        if(entry.getValue()==null ||entry.getValue().size()==0){
+                            continue;
+                        }
+                        analysis = new PublishDataAnalysis();
+                        ItemResultBean itemResultBean = analysis.getItemsInfoFromTCAndRecordThem(entry.getValue());
+                        //外部发放
+                        if("外部发放".equals(entry.getKey().getProvideType())){
+                            ftpUploadResultBean1 = analysis.upLoadItemListToFTP(itemResultBean,null,entry.getKey().getOutCpnyCode());
+
+
+                        }else {
+                            ftpUploadResultBean1 = analysis.upLoadItemListToFTP(itemResultBean,entry.getKey().getInDept(),null);
+
+                        }
+                        List<String> success = new ArrayList<>();
+                        List<FailBean> fail  = new ArrayList<>();
+                        if(ftpUploadResultBean1 != null){
+                            for(String s :ftpUploadResultBean1.getSuccessList()){
+                                success.add(s);
+                            }
+                            for(FailBean failBean :ftpUploadResultBean1.getFailList()){
+                                fail.add(failBean);
+                            }
+                        }
+
+                        ApplicantSendInfo applicantSendInfo = new ApplicantSendInfo();
+                        SupplySendInfo supplySendInfo = new SupplySendInfo();
+                        applicantSendInfo.setEmail(entry.getKey().getApplicantEmail());
+                        applicantSendInfo.setName(entry.getKey().getApplicant());
+                        applicantSendInfo.setFailList(fail);
+                        applicantSendInfo.setSuccessList(success);
+
+                        if("内部发放".equals(entry.getKey().getProvideType())){
+                            supplySendInfo.setSupplyName(entry.getKey().getInAccepter());
+                            supplySendInfo.setSupplyEmail(entry.getKey().getInEmail());
+                            supplySendInfo.setSupplyCode(entry.getKey().getInDept());
+                            applicantSendInfo.setSupplyCode(entry.getKey().getInDept());
+                        }
+                        if("外部发放".equals(entry.getKey().getProvideType())){
+                            supplySendInfo.setSupplyName(entry.getKey().getOutCpnyAccepter());
+                            supplySendInfo.setSupplyEmail(entry.getKey().getOutCpnyEmail());
+                            supplySendInfo.setSupplyCode(entry.getKey().getOutCpnyCode());
+                            applicantSendInfo.setSupplyCode(entry.getKey().getOutCpnyCode());
+                        }
+                        applicantSendInfo.setProcessNum(entry.getKey().getProcessNum());
+                        supplySendInfo.setApplyName(entry.getKey().getApplicant());
+                        supplySendInfo.setFailList(fail);
+                        supplySendInfo.setSuccessList(success);
+                        applicators.add(applicantSendInfo);
+                        supplies.add(supplySendInfo);
+                        supplySendInfos.add(analysis.getSupplySendInfo());
+                    }
+
+                }
+
+
+
+                //文件清单
+//                List<DocumentBean> documentBeans = new ArrayList<>();
+//                HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
+//                documentQuery.setDocumentId(itemId);
+//                documentQuery.setDocumentRevision(itemRevision);
+//                documentQuery.setChangeFlag(1);
+//                documentRecords = publishDataDAO.getHzTempDocumentList(documentQuery);
+//                if(documentRecords != null && documentRecords.size()>0){
+//                    for(HzTempDocumentRecord hzTempDocumentRecord:documentRecords){
+//                        DocumentBean documentBean = new DocumentBean();
+//                        documentBean.setDocument_id(hzTempDocumentRecord.getDocumentId());
+//                        documentBean.setDocument_name(hzTempDocumentRecord.getDocumentName());
+//                        documentBean.setDocumentRevision(hzTempDocumentRecord.getDocumentRevision());
+//                        documentBean.setProcessNum((String)hzTempDocumentRecord.getBelProcessNum());
+//                        documentBeans.add(documentBean);
+//                    }
+//
+//                    DocumentResultBean documentResultBean = analysis.getDocumentsInfoFromTCAndRecordThem(documentBeans);
+//
+//                    //外部发放
+//                    if("外部发放".equals(hzTempMainRecord.getProvideType())){
+//                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,null,hzTempMainRecord.getOutCpnyCode());
+//                    }else {
+//                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,hzTempMainRecord.getInDept(),null);
+//
+//                    }
+//                }
+
+
+//                ftpUploadResultBean.setFailList(failFileNames);
+//                ftpUploadResultBean.setSuccessList(successFileNames);
+                //申请人
+                for(ApplicantSendInfo applicantSendInfo :applicators){
+                    EmailBean emailBean1 = new EmailBean();
+                    List<String> l1 = new ArrayList<>();
+                    List<String> l2 = new ArrayList<>();
+                    l1.add(applicantSendInfo.getName());
+                    l2.add(applicantSendInfo.getEmail());
+
+                    emailBean1.setApplicators(l1);
+                    emailBean1.setApplicatorMails(l2);
+                    FtpUploadResultBean f = new FtpUploadResultBean();
+                    f.setFailList(applicantSendInfo.getFailList());
+                    f.setSuccessList(applicantSendInfo.getSuccessList());
+                    for(SupplySendInfo info:supplySendInfos){
+                        if(info.getSupplyCode().equals(applicantSendInfo.getSupplyCode())){
+                            emailBean1.setFtpPath(info.getSupplyPath());
+                            break;
+                        }
+                    }
+                    boolean b = analysis.sendMessage(f,emailBean1,applicantSendInfo.getProcessNum());
+                    if(!b){
+                        logger.error("邮件发送失败，请核对申请人邮箱！"+emailBean1.getApplicatorMails());
+                    }
+                }
+
+                //供应商
+                for(SupplySendInfo supplySendInfo :supplies){
+                    EmailBean emailBean1 = new EmailBean();
+                    List<String> l1 = new ArrayList<>();
+                    List<String> l2 = new ArrayList<>();
+                    List<String> l3 = new ArrayList<>();
+                    l1.add(supplySendInfo.getSupplyName());
+                    l2.add(supplySendInfo.getSupplyEmail());
+                    l3.add(supplySendInfo.getApplyName());
+                    emailBean1.setSupplies(l1);
+                    emailBean1.setSupplyMails(l2);
+                    emailBean1.setApplicators(l3);
+                    for(SupplySendInfo info:supplySendInfos){
+                        if(info.getSupplyCode().equals(supplySendInfo.getSupplyCode())){
+                            emailBean1.setFtpPath(info.getSupplyPath());
+                            break;
+                        }
+                    }
+                    FtpUploadResultBean f = new FtpUploadResultBean();
+                    f.setSuccessList(supplySendInfo.getSuccessList());
+                    f.setFailList(supplySendInfo.getFailList());
+                    boolean b = analysis.sendMessage(f,emailBean1,null);
+                    if(!b){
+                        logger.error("邮件发送失败，请核对收件人邮箱！"+emailBean1.getSupplyMails());
+                    }
+                }
+                boolean success = true;
+                for(FailBean failBean:ftpUploadResultBean.getFailList()){
+                    if(!failBean.getFailMsg().equals("success")){
+                        logger.error("数据发放失败,详细信息请查阅邮件!");
+                        success = false;
+                        break;
+                    }
+                }
+
+                if(success){
+                    //更新发放时间
+                    if("D".equals(itemType)){
+                        publishDataDAO.updateDocumentEffectTime(itemId);
+                        logger.error("设变数据发放成功!");
+                    }else if("P".equals(itemType)){
+                        publishDataDAO.updateItemChangeEffectTime(itemId);
+                        logger.error("设变数据发放成功!");
+                    }else {
+                        logger.error("设变数据发放失败!");
+                    }
+                }
+                return OperateResult.getSuccessResult();
+            }
+        }catch (Exception e){
+            logger.error("变更后数据发放失败！");
+            return OperateResult.getFailResult();
+        }
+        logger.error("数据发放变更参数传递错误！");
+        return OperateResult.getFailResult();
+    }
+
 
     /**
      * 从tc端进行数据发放
@@ -140,9 +447,6 @@ public class PublishData {
 
                     //外部发放
                     if("外部发放".equals(baseDataRecord.getProvideType())){
-                        supplies.add(baseDataRecord.getOutCpnyAccepter());//
-                        supplyEmails.add(baseDataRecord.getOutCpnyEmail());
-
                         ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,null,baseDataRecord.getOutCpnyCode());
                     }else {
                         ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,baseDataRecord.getInDept(),null);
@@ -150,19 +454,26 @@ public class PublishData {
                     }
                 }
 
-                for(String s :ftpUploadResultBean1.getSuccessList()){
-                    successFileNames.add(s);
+                if(ftpUploadResultBean1 != null){
+                    for(String s :ftpUploadResultBean1.getSuccessList()){
+                        successFileNames.add(s);
+                    }
+
+                    for(FailBean failBean :ftpUploadResultBean1.getFailList()){
+                        failFileNames.add(failBean);
+                    }
                 }
 
-                for(String s :ftpUploadResultBean2.getSuccessList()){
-                    successFileNames.add(s);
-                }
 
-                for(FailBean failBean :ftpUploadResultBean1.getFailList()){
-                    failFileNames.add(failBean);
-                }
-                for(FailBean failBean :ftpUploadResultBean2.getFailList()){
-                    failFileNames.add(failBean);
+                if(ftpUploadResultBean2 != null){
+                    for(String s :ftpUploadResultBean2.getSuccessList()){
+                        successFileNames.add(s);
+                    }
+
+
+                    for(FailBean failBean :ftpUploadResultBean2.getFailList()){
+                        failFileNames.add(failBean);
+                    }
                 }
 
                 ftpUploadResultBean.setFailList(failFileNames);
@@ -173,17 +484,36 @@ public class PublishData {
                 List<String> applicatorEmails = new ArrayList<>();
                 applicatorEmails.add(baseDataRecord.getApplicantEmail());
 
-                supplies.add(baseDataRecord.getInAccepter());
-                supplyEmails.add(baseDataRecord.getInEmail());
+                if("内部发放".equals(baseDataRecord.getProvideType())){
+                    supplies.add(baseDataRecord.getInAccepter());
+                    supplyEmails.add(baseDataRecord.getInEmail());
+                }
+
+                if("外部发放".equals(baseDataRecord.getProvideType())){
+                    supplies.add(baseDataRecord.getOutCpnyAccepter());//
+                    supplyEmails.add(baseDataRecord.getOutCpnyEmail());
+                }
                 emailBean.setSupplies(supplies);//
                 emailBean.setSupplyMails(supplyEmails);//
-
                 emailBean.setApplicatorMails(applicatorEmails);//申请人地址
                 emailBean.setApplicators(applicators);//申请人
 
-                boolean b = analysis.sendMessage(ftpUploadResultBean,emailBean,null);
+                boolean b = analysis.sendMessage(ftpUploadResultBean,emailBean,baseDataRecord.getProcessNum());
+                boolean success = true;
+                for(FailBean failBean:ftpUploadResultBean.getFailList()){
+                    if(!failBean.getFailMsg().equals("success")){
+                        logger.error("数据发放失败,详细信息请查阅邮件!");
+                        success = false;
+                        break;
+                    }
+                }
+
                 if(b){
-                    logger.error("数据发放成功,详细信息请查阅邮件!");
+                    //更新发放时间
+                    if(success){
+                        publishDataDAO.updatePublishTime(processNum);
+                        logger.error("数据发放成功!");
+                    }
                     return OperateResult.getSuccessResult();
                 }else {
                     logger.error("邮件发送失败!请核对申请人地址："+emailBean.getApplicatorMails()+"；请核对收件人地址："+emailBean.getSupplyMails());
@@ -192,11 +522,11 @@ public class PublishData {
 
             }
         }catch (Exception e){
-            logger.error(OperateResult.getFailResult());
+            logger.error("数据发放失败!");
            return OperateResult.getFailResult();
         }
-        logger.error(OperateResult.getSuccessResult());
-        return OperateResult.getSuccessResult();
+        logger.error("未接收到数据发放相对于的参数!");
+        return OperateResult.getFailResult();
 
     }
 
@@ -250,7 +580,7 @@ public class PublishData {
             emailBean.setApplicators(applicators);//
             emailBean.setSupplies(supplies);//
 
-            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"零件名称");
+            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,null);
             if(!success){
                 result.setErrMsg("零件清单发放失败，请核对收件人邮箱地址");
                 result.setErrCode(1002);
@@ -297,7 +627,7 @@ public class PublishData {
             emailBean.setSupplyMails(supplyEmails);//供应商地址
             emailBean.setApplicators(applicators);//申请人
             emailBean.setSupplies(supplies);//供应商
-            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,"文件名称");
+            boolean success = analysis.sendMessage(ftpUploadResultBean,emailBean,null);
             if(!success){
                 result.setErrMsg("文件清单发放失败，清检查收件人邮箱地址");
                 result.setErrCode(1002);

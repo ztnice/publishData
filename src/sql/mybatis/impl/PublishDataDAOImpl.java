@@ -64,4 +64,15 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     public HzSupplyRecord getHzSupplyRecord(Map map) {
         return (HzSupplyRecord)super.findForObject("PublishDataDAOImpl_getHzSupplyRecord",map);
     }
+
+    @Override
+    public int updateItemChangeEffectTime(String itemId) {
+
+       return super.update("PublishDataDAOImpl_updateItemChangeEffectTime",itemId);
+    }
+
+    @Override
+    public int updateDocumentEffectTime(String documentId) {
+        return super.update("PublishDataDAOImpl_updateDocumentEffectTime",documentId);
+    }
 }

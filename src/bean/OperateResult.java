@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @Description:
  */
 public class OperateResult implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3456789098754323234L;
 
     public static final String SUCCESS_MSG ="数据发放成功！";
     public static final String FAILED_MSG ="数据发放失败！";

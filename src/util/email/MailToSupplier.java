@@ -30,7 +30,7 @@ public class MailToSupplier {
 	/**邮件接受者邮箱地址*/
 	private List<String> receiveMailAccount;
 	private boolean debug = true;
-	private String path = "ftp://10.0.8.231";
+	private String path = "";
 
 	private List<String> files;
 	//文件清单
@@ -48,9 +48,9 @@ public class MailToSupplier {
 		// 4. 根据 Session 获取邮件传输对象
 	}
 
-	public boolean release(String type) {
+	public boolean release() {
 		try {
-			message = createMimeMessage(session, type,props.getProperty("myEmailAccount"), receiveMailAccount);
+			message = createMimeMessage(session,props.getProperty("myEmailAccount"), receiveMailAccount);
 
 			// 4. 根据 Session 获取邮件传输对象
 			transport = session.getTransport();
@@ -98,7 +98,7 @@ public class MailToSupplier {
 	 * @return
 	 * @throws Exception
 	 */
-	public MimeMessage createMimeMessage(Session session,String type, String sendMail, List<String> receiveMail) throws Exception {
+	public MimeMessage createMimeMessage(Session session, String sendMail, List<String> receiveMail) throws Exception {
 		// 1. 创建一封邮件
 		MimeMessage message = new MimeMessage(session);
 
@@ -127,6 +127,7 @@ public class MailToSupplier {
 		} else {
 			List<String> list = new ArrayList<>();
 			list.add("暂无成功发放数据！");
+			sb.append(addSupplier()+"</br>");
 			sb.append(list)	;
 		}
 //        sb.append("</table>");
@@ -134,7 +135,6 @@ public class MailToSupplier {
 //		sb.append(getHeadModelAnother(ITEM_TYPE));
 //		sb.append(getContent(itemNames));
 		sb.append(getEndModel());
-		System.out.println(sb);
 		message.setContent(sb.toString(), "text/html;charset=UTF-8");
 		// 6. 设置发件时间
 
@@ -273,7 +273,9 @@ public class MailToSupplier {
 				sb.append(addSender());
 				continue;
 			} else if (line.trim().equals("--sharePath--")) {
-				sb.append(addSharePath());
+				if(fileNames!=null&&fileNames.size()>0){
+					sb.append(addSharePath());
+				}
 				continue;
 			} else if (line.trim().equals("--date--")) {
 				sb.append(addDate());

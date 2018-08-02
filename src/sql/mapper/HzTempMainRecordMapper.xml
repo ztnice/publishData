@@ -146,7 +146,13 @@
 		#{processNum,jdbcType=VARCHAR}
 	</update>
 
-
+	<!--流程结束后，更新发布时间-->
+	<select id="select1" parameterType="java.util.HashMap">
+		select *
+		HZ_TEMPMAINRECORD
+		where PROCESS_CREATE_DATE between
+		#{date1,jdbcType=DATE} and #{date2,jdbcType=DATE}
+	</select>
 
 
 

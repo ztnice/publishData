@@ -2,12 +2,12 @@ package execute;
 
 /**
  * @Author: haozt
- * @Date: 2018/7/31
+ * @Date: 2018/8/1
  * @Description:
  */
 public class Test {
     public static void main(String[] a){
         PublishData publishData = new PublishData();
-        publishData.publishDataFromTc(new String[]{"222222"});
+        publishData.publishDataFromTcChange(new String[]{"000769/01/P"});
     }
 }
