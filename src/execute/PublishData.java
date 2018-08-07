@@ -150,6 +150,8 @@ public class PublishData {
                 itemQuery.setItemRevision(itemRevision);
                 itemQuery.setChangeFlag(1);
                 hzTempItemRecords = publishDataDAO.getHzTempItemRecordList(itemQuery);
+                List<FailBean> failFileNames = new ArrayList<>();
+                List<String> successFileNames = new ArrayList<>();
                 if(hzTempItemRecords!=null && hzTempItemRecords.size()>0){
                     Map<HzTempMainRecord,List<ItemBean>> map = new HashMap<>();
 
@@ -174,7 +176,6 @@ public class PublishData {
 
                     }
 
-
                     for(Map.Entry<HzTempMainRecord,List<ItemBean>> entry :map.entrySet()){
                         if(entry.getValue()==null ||entry.getValue().size()==0){
                             continue;
@@ -195,9 +196,14 @@ public class PublishData {
                         if(ftpUploadResultBean1 != null){
                             for(String s :ftpUploadResultBean1.getSuccessList()){
                                 success.add(s);
+                                successFileNames.add(s);
                             }
                             for(FailBean failBean :ftpUploadResultBean1.getFailList()){
+//                                if(!"success".equals(failBean.getFailMsg())){
+//                                    continue;
+//                                }
                                 fail.add(failBean);
+                                failFileNames.add(failBean);
                             }
                         }
 
@@ -261,9 +267,8 @@ public class PublishData {
 //                    }
 //                }
 
-
-//                ftpUploadResultBean.setFailList(failFileNames);
-//                ftpUploadResultBean.setSuccessList(successFileNames);
+                ftpUploadResultBean.setFailList(failFileNames);
+                ftpUploadResultBean.setSuccessList(successFileNames);
                 //申请人
                 for(ApplicantSendInfo applicantSendInfo :applicators){
                     EmailBean emailBean1 = new EmailBean();
@@ -278,15 +283,27 @@ public class PublishData {
                     f.setFailList(applicantSendInfo.getFailList());
                     f.setSuccessList(applicantSendInfo.getSuccessList());
                     for(SupplySendInfo info:supplySendInfos){
-                        if(info.getSupplyCode().equals(applicantSendInfo.getSupplyCode())){
-                            emailBean1.setFtpPath(info.getSupplyPath());
-                            break;
+                        if(info !=null){
+                            if(applicantSendInfo.getSupplyCode().equals(info.getSupplyCode())){
+                                emailBean1.setFtpPath(info.getSupplyPath());
+                                break;
+                            }
                         }
                     }
-                    boolean b = analysis.sendMessage(f,emailBean1,applicantSendInfo.getProcessNum());
-                    if(!b){
-                        logger.error("邮件发送失败，请核对申请人邮箱！"+emailBean1.getApplicatorMails());
-                    }
+                    boolean allSuccess = true;
+                   for(FailBean failBean :f.getFailList()){
+                        if(!"success".equals(failBean.getFailMsg())){
+                            allSuccess = false;
+                           break;
+                        }
+                   }
+                   if(allSuccess){
+                       boolean b = analysis.sendMessage(f,emailBean1,applicantSendInfo.getProcessNum());
+                       if(!b){
+                           logger.error("邮件发送失败，请核对申请人邮箱！"+emailBean1.getApplicatorMails());
+                       }
+                       publishDataDAO.updateItemChangeEffectTime(itemId,itemRevision,applicantSendInfo.getProcessNum());
+                   }
                 }
 
                 //供应商
@@ -302,23 +319,35 @@ public class PublishData {
                     emailBean1.setSupplyMails(l2);
                     emailBean1.setApplicators(l3);
                     for(SupplySendInfo info:supplySendInfos){
-                        if(info.getSupplyCode().equals(supplySendInfo.getSupplyCode())){
-                            emailBean1.setFtpPath(info.getSupplyPath());
-                            break;
+                        if(info!=null){
+                            if(supplySendInfo.getSupplyCode().equals(info.getSupplyCode())){
+                                emailBean1.setFtpPath(info.getSupplyPath());
+                                break;
+                            }
                         }
                     }
+
                     FtpUploadResultBean f = new FtpUploadResultBean();
                     f.setSuccessList(supplySendInfo.getSuccessList());
                     f.setFailList(supplySendInfo.getFailList());
-                    boolean b = analysis.sendMessage(f,emailBean1,null);
-                    if(!b){
-                        logger.error("邮件发送失败，请核对收件人邮箱！"+emailBean1.getSupplyMails());
+                    boolean allSuccess = true;
+                    for(FailBean failBean :f.getFailList()){
+                        if(!"success".equals(failBean.getFailMsg())){
+                            allSuccess = false;
+                            break;
+                        }
+                    }
+                    if(allSuccess){
+                        boolean b = analysis.sendMessage(f,emailBean1,null);
+                        if(!b){
+                            logger.error("邮件发送失败，请核对收件人邮箱！"+emailBean1.getSupplyMails());
+                        }
                     }
                 }
                 boolean success = true;
                 for(FailBean failBean:ftpUploadResultBean.getFailList()){
                     if(!failBean.getFailMsg().equals("success")){
-                        logger.error("数据发放失败,详细信息请查阅邮件!");
+                        logger.error("设变数据发放未全部成功,详细信息请查阅邮件!");
                         success = false;
                         break;
                     }
@@ -327,22 +356,22 @@ public class PublishData {
                 if(success){
                     //更新发放时间
                     if("D".equals(itemType)){
-                        publishDataDAO.updateDocumentEffectTime(itemId);
+//                        publishDataDAO.updateDocumentEffectTime(itemId);
                         logger.error("设变数据发放成功!");
                     }else if("P".equals(itemType)){
-                        publishDataDAO.updateItemChangeEffectTime(itemId);
                         logger.error("设变数据发放成功!");
                     }else {
                         logger.error("设变数据发放失败!");
                     }
                 }
+                logger.error("设变数据发放结束！");
                 return OperateResult.getSuccessResult();
             }
         }catch (Exception e){
-            logger.error("变更后数据发放失败！");
+            logger.error("设变数据发放失败！");
             return OperateResult.getFailResult();
         }
-        logger.error("数据发放变更参数传递错误！");
+        logger.error("数据发放设变参数传递错误！");
         return OperateResult.getFailResult();
     }
 
@@ -525,7 +554,7 @@ public class PublishData {
             logger.error("数据发放失败!");
            return OperateResult.getFailResult();
         }
-        logger.error("未接收到数据发放相对于的参数!");
+        logger.error("未接收到数据发放相对应的参数!");
         return OperateResult.getFailResult();
 
     }

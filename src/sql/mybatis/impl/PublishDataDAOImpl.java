@@ -7,6 +7,8 @@ import sql.dbdo.*;
 import sql.mybatis.BaseDAO;
 import sql.mybatis.inter.PublishDataDAO;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,9 +68,12 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     }
 
     @Override
-    public int updateItemChangeEffectTime(String itemId) {
-
-       return super.update("PublishDataDAOImpl_updateItemChangeEffectTime",itemId);
+    public int updateItemChangeEffectTime(String itemId,String itemRevision,String processNum) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("itemId",itemId);
+        map.put("itemRevision",itemRevision);
+        map.put("processNum",processNum);
+       return super.update("PublishDataDAOImpl_updateItemChangeEffectTime",map);
     }
 
     @Override

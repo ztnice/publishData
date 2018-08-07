@@ -1,6 +1,8 @@
 package util.email;
 
 
+import org.apache.log4j.Logger;
+
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -13,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MailToSupplier {
+	private static Logger logger = Logger.getLogger(MailToSupplier.class);
 	private PropertyLoader loader = new PropertyLoader();
 	private Session session;
 	private MimeMessage message;
@@ -78,6 +81,7 @@ public class MailToSupplier {
 			// // 7. 关闭连接
 			transport.close();
 		} catch (Exception e) {
+			logger.error("邮箱无法连接，请核对网络稍后重试！");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 //			MessageBox.post("邮件发送失败，请检查收件人邮箱:" + receiveMailAccount, "邮件发送失败", MessageBox.ERROR);

@@ -2,6 +2,7 @@ package util.email;
 
 
 import bean.FailBean;
+import org.apache.log4j.Logger;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class MailToApplicant {
+	private static Logger logger = Logger.getLogger(MailToApplicant.class);
 	private PropertyLoader loader = new PropertyLoader();
 	private Session session;
 	private MimeMessage message;
@@ -71,6 +73,7 @@ public class MailToApplicant {
 			transport.sendMessage(message, message.getAllRecipients());
 			transport.close();
 		} catch (Exception e) {
+			logger.error("邮箱无法连接，请核对网络稍后重试！");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 //			MessageBox.post("邮件发送失败，请检查收件人邮箱:" + receiveMailAccount, "邮件发送失败", MessageBox.ERROR);

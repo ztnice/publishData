@@ -42,7 +42,7 @@ public interface PublishDataDAO {
     HzSupplyRecord getHzSupplyRecord(Map map);
 
 
-    int updateItemChangeEffectTime(String itemId);
+    int updateItemChangeEffectTime(String itemId,String itemRevision,String processNum);
 
     int updateDocumentEffectTime(String documentId);
 }

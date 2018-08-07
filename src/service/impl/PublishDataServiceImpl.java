@@ -79,7 +79,8 @@ public class PublishDataServiceImpl implements PublishDataService {
                         stringList.add("CATProduct");
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                            if(stringList.contains(poriginalFileName.split("\\.")[1])){
+                            int i  = poriginalFileName.lastIndexOf(".");
+                            if(stringList.contains(poriginalFileName.substring(i+1,poriginalFileName.length()))){
                                 dataInfoBeans.add(findDataInfoBean);
                             }
                         });
@@ -87,7 +88,8 @@ public class PublishDataServiceImpl implements PublishDataService {
                     case "DirectModel":
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                            if("jt".equals(poriginalFileName.split("\\.")[1])){
+                            int i  = poriginalFileName.lastIndexOf(".");
+                            if("jt".equals(poriginalFileName.substring(i+1,poriginalFileName.length()))){
                                 dataInfoBeans.add(findDataInfoBean);
                             }
                         });
@@ -95,7 +97,8 @@ public class PublishDataServiceImpl implements PublishDataService {
                     case "H9_CGR":
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                            if("cgr".equals(poriginalFileName.split("\\.")[1])){
+                            int i  = poriginalFileName.lastIndexOf(".");
+                            if("cgr".equals(poriginalFileName.substring(i+1,poriginalFileName.length()))){
                                 dataInfoBeans.add(findDataInfoBean);
                             }
                         });
@@ -103,7 +106,8 @@ public class PublishDataServiceImpl implements PublishDataService {
                     case "CATDrawing":
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                            if("CATDrawing".equals(poriginalFileName.split("\\.")[1])){
+                            int i  = poriginalFileName.lastIndexOf(".");
+                            if("CATDrawing".equals(poriginalFileName.substring(i+1,poriginalFileName.length()))){
                                 dataInfoBeans.add(findDataInfoBean);
                             }
                         });
@@ -111,7 +115,8 @@ public class PublishDataServiceImpl implements PublishDataService {
                     case "H9_AutoCAD":
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
-                            if("dwg".equals(poriginalFileName.split("\\.")[1])){
+                            int i  = poriginalFileName.lastIndexOf(".");
+                            if("dwg".equals(poriginalFileName.substring(i+1,poriginalFileName.length()))){
                                 dataInfoBeans.add(findDataInfoBean);
                             }
                         });

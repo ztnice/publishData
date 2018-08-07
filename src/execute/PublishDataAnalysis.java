@@ -606,8 +606,8 @@ public class PublishDataAnalysis {
 
         mailToApplicant.setReceiver(emailBean.getApplicators());
         mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
-        if(!"".equals(emailBean.getFtpPath())){
-            mailToApplicant.setPath(FTP_PATH+path);
+        if(null != emailBean.getFtpPath() && !"".equals(emailBean.getFtpPath())){
+            mailToApplicant.setPath(FTP_PATH+emailBean.getFtpPath());
         }
 
 
@@ -619,8 +619,8 @@ public class PublishDataAnalysis {
         mailToSupplier.setReceiver(emailBean.getSupplies());
         mailToSupplier.setReceiveMailAccount(emailBean.getSupplyMails());
         mailToSupplier.setApplicant(emailBean.getApplicators());
-        if(!"".equals(emailBean.getFtpPath())){
-            mailToSupplier.setPath(FTP_PATH+path);
+        if(null != emailBean.getFtpPath() && !"".equals(emailBean.getFtpPath())){
+            mailToSupplier.setPath(FTP_PATH+emailBean.getFtpPath());
         }
         try{
             if(mailToApplicant != null && mailToApplicant.getReceiveMailAccount()!=null){

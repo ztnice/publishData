@@ -121,10 +121,13 @@
 	</insert>
 
 
-	<update id="PublishDataDAOImpl_updateItemChangeEffectTime" parameterType="java.lang.String">
+	<update id="PublishDataDAOImpl_updateItemChangeEffectTime" parameterType="java.util.HashMap">
 		update HZ_TEMPITEMRECORD
 		set CHANGE_EFFECT_TIME = sysdate
-		where ITEM_ID = #{itemId,jdbcType=INTEGER} and CHANGE_FLAG=1
+		where ITEM_ID = #{itemId,jdbcType=VARCHAR} and
+		ITEMREVISION = #{itemRevision,jdbcType=VARCHAR} and
+		BEL_PROCESS_NUM =#{processNum,jdbcType=VARCHAR} and
+		CHANGE_FLAG=1
 	</update>
 
 </mapper>
