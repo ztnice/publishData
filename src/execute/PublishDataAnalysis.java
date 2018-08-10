@@ -199,7 +199,7 @@ public class PublishDataAnalysis {
                     }
                     if(Integer.valueOf(1).equals(item.getCGR_digifax())){
                         TypeBean typeBean = new TypeBean();
-                        typeBean.setNameTC("H9_CGR");
+                        typeBean.setNameTC("CATCache");
                         typeBean.setName("CGR数模");
                         types.add(typeBean);
                     }

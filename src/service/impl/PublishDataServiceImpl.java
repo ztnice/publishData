@@ -94,7 +94,7 @@ public class PublishDataServiceImpl implements PublishDataService {
                             }
                         });
                         return  dataInfoBeans;
-                    case "H9_CGR":
+                    case "CATCache":
                         list.forEach(findDataInfoBean -> {
                             String poriginalFileName = findDataInfoBean.getPoriginalFileName();
                             int i  = poriginalFileName.lastIndexOf(".");
