@@ -4,12 +4,11 @@ import bean.*;
 import org.apache.log4j.Logger;
 import service.PublishDataService;
 import service.impl.PublishDataServiceImpl;
-import sql.dbdo.HzSupplyRecord;
-import sql.dbdo.HzTempDocumentRecord;
-import sql.dbdo.HzTempItemRecord;
-import sql.dbdo.HzTempMainRecord;
+import sql.dbdo.*;
 import sql.mybatis.impl.PublishDataDAOImpl;
 import sql.mybatis.inter.PublishDataDAO;
+import util.ftp.FtpPropertyLoader;
+import util.ftp.FtpUtil;
 
 import java.util.*;
 
@@ -42,11 +41,12 @@ public class PublishData {
      * @return
      */
     public OperateResult publishDataFromTcChange(String[] ddddd ){
-        List<SupplySendInfo> supplySendInfos = new ArrayList<>();
+        logger.error("设变数据发放开始！");
         OperateResult operateResult = new OperateResult();
         PublishDataDAO publishDataDAO = new PublishDataDAOImpl();
         try {
             for(String itemInfo :ddddd){
+                List<SupplySendInfo> supplySendInfos = new ArrayList<>();
                 String itemId = itemInfo.split("/")[0];
                 String itemRevision = itemInfo.split("/")[1];
                 String itemType = itemInfo.split("/")[2];
@@ -55,20 +55,6 @@ public class PublishData {
 //                List<HzTempDocumentRecord> documentRecords = null;
                 List<HzTempItemRecord> hzTempItemRecords = null;
                 Set<String> processNums = new HashSet<>();
-//                if("D".equals(itemType)){//文件
-//                    HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
-//                    documentQuery.setDocumentId(itemId);
-//                    documentRecords = publishDataDAO.getHzTempDocumentList(documentQuery);
-//                    if(documentRecords == null || documentRecords.size() ==0){
-//                        logger.error("未找到设变数据发放的文件清单信息！");
-//                    }else {
-//                        for(HzTempDocumentRecord record :documentRecords){
-//                            processNums.add((String)record.getBelProcessNum());
-//                        }
-//                        String processNum = (String)documentRecords.get(0).getBelProcessNum();
-//                        hzTempMainRecord = publishDataDAO.getHzTempMainRecord(processNum);
-//                    }
-//                }
 
                 if("P".equals(itemType)){//零件
                     HzTempItemRecord itemQuery = new HzTempItemRecord();
@@ -103,23 +89,6 @@ public class PublishData {
                     hzTempItemRecords = records;
                 }
 
-//                if(documentRecords!= null && documentRecords.size()>0){
-//                    List<HzTempDocumentRecord> documentRecordList = new ArrayList<>();
-//                    HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
-//                    documentQuery.setDocumentId(itemId);
-//                    documentQuery.setDocumentRevision(itemRevision);
-//                    documentQuery.setChangeFlag(1);
-//                    List<HzTempDocumentRecord> records = publishDataDAO.getHzTempDocumentList(documentQuery);
-//                    if(records == null || records.size() == 0){
-//                        for(HzTempDocumentRecord hzTempDocumentRecord :documentRecords){
-//                            hzTempDocumentRecord.setDocumentRevision(itemRevision);
-//                            hzTempDocumentRecord.setChangeFlag(1);
-//                            documentRecordList.add(hzTempDocumentRecord);
-//                        }
-//                        publishDataDAO.insertDocumentBeanList(documentRecordList);
-//                    }
-//                }
-
                 for(String s :processNums){
                     HzTempMainRecord tempMainRecord = publishDataDAO.getHzTempMainRecord(s);
                     hzTempMainRecords.add(tempMainRecord);
@@ -129,7 +98,7 @@ public class PublishData {
                     operateResult.setErrCode(1001L);
                     operateResult.setErrMsg("未找到变更基本数据信息！");
                     logger.error("未找到变更基本数据信息");
-                    return operateResult;
+                    continue;
                 }
 
                 //发邮件 通知 和上传ftp服务器
@@ -207,8 +176,8 @@ public class PublishData {
                             }
                         }
 
-                        ApplicantSendInfo applicantSendInfo = new ApplicantSendInfo();
-                        SupplySendInfo supplySendInfo = new SupplySendInfo();
+                        ApplicantSendInfo applicantSendInfo = new ApplicantSendInfo();//申请人
+                        SupplySendInfo supplySendInfo = new SupplySendInfo();//供应商
                         applicantSendInfo.setEmail(entry.getKey().getApplicantEmail());
                         applicantSendInfo.setName(entry.getKey().getApplicant());
                         applicantSendInfo.setFailList(fail);
@@ -237,35 +206,6 @@ public class PublishData {
 
                 }
 
-
-
-                //文件清单
-//                List<DocumentBean> documentBeans = new ArrayList<>();
-//                HzTempDocumentRecord documentQuery = new HzTempDocumentRecord();
-//                documentQuery.setDocumentId(itemId);
-//                documentQuery.setDocumentRevision(itemRevision);
-//                documentQuery.setChangeFlag(1);
-//                documentRecords = publishDataDAO.getHzTempDocumentList(documentQuery);
-//                if(documentRecords != null && documentRecords.size()>0){
-//                    for(HzTempDocumentRecord hzTempDocumentRecord:documentRecords){
-//                        DocumentBean documentBean = new DocumentBean();
-//                        documentBean.setDocument_id(hzTempDocumentRecord.getDocumentId());
-//                        documentBean.setDocument_name(hzTempDocumentRecord.getDocumentName());
-//                        documentBean.setDocumentRevision(hzTempDocumentRecord.getDocumentRevision());
-//                        documentBean.setProcessNum((String)hzTempDocumentRecord.getBelProcessNum());
-//                        documentBeans.add(documentBean);
-//                    }
-//
-//                    DocumentResultBean documentResultBean = analysis.getDocumentsInfoFromTCAndRecordThem(documentBeans);
-//
-//                    //外部发放
-//                    if("外部发放".equals(hzTempMainRecord.getProvideType())){
-//                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,null,hzTempMainRecord.getOutCpnyCode());
-//                    }else {
-//                        ftpUploadResultBean2 = analysis.upLoadDocumentListToFTP(documentResultBean,hzTempMainRecord.getInDept(),null);
-//
-//                    }
-//                }
 
                 ftpUploadResultBean.setFailList(failFileNames);
                 ftpUploadResultBean.setSuccessList(successFileNames);
@@ -342,6 +282,11 @@ public class PublishData {
                         if(!b){
                             logger.error("邮件发送失败，请核对收件人邮箱！"+emailBean1.getSupplyMails());
                         }
+                        if(emailBean1.getFtpPath() !=null && emailBean1.getFtpPath().contains("suppliers")){
+                            SupplyFtpPath supplyFtpPath = new SupplyFtpPath();
+                            supplyFtpPath.setFtpPath(emailBean1.getFtpPath());
+                            publishDataDAO.insertSupplyFtpPath(supplyFtpPath);
+                        }
                     }
                 }
                 boolean success = true;
@@ -365,14 +310,12 @@ public class PublishData {
                     }
                 }
                 logger.error("设变数据发放结束！");
-                return OperateResult.getSuccessResult();
             }
+            return OperateResult.getSuccessResult();
         }catch (Exception e){
             logger.error("设变数据发放失败！");
             return OperateResult.getFailResult();
         }
-        logger.error("数据发放设变参数传递错误！");
-        return OperateResult.getFailResult();
     }
 
 
@@ -385,6 +328,7 @@ public class PublishData {
         logger.error("数据发放开始！");
         OperateResult operateResult = new OperateResult();
         PublishDataDAO publishDataDAO = new PublishDataDAOImpl();
+
         //根据流程编号获取文件清单 零件清单 更新基本信息之发放时间 发邮件通知人和上传服务ftp
         try {
             for(String processNum :processNums){
@@ -394,7 +338,7 @@ public class PublishData {
                     operateResult.setErrCode(1001L);
                     operateResult.setErrMsg("基本信息未填写！");
                     logger.error("未找到数据发放基本信息");
-                    return operateResult;
+                    continue;
                 }
                 //查询要发放的零部件清单
                 HzTempItemRecord record = new HzTempItemRecord();
@@ -483,7 +427,7 @@ public class PublishData {
                     }
                 }
 
-                if(ftpUploadResultBean1 != null){
+                if(ftpUploadResultBean1 != null){//零件清单
                     for(String s :ftpUploadResultBean1.getSuccessList()){
                         successFileNames.add(s);
                     }
@@ -494,7 +438,7 @@ public class PublishData {
                 }
 
 
-                if(ftpUploadResultBean2 != null){
+                if(ftpUploadResultBean2 != null){//文件清单
                     for(String s :ftpUploadResultBean2.getSuccessList()){
                         successFileNames.add(s);
                     }
@@ -507,26 +451,31 @@ public class PublishData {
 
                 ftpUploadResultBean.setFailList(failFileNames);
                 ftpUploadResultBean.setSuccessList(successFileNames);
+
+
                 List<String> applicators = new ArrayList<>();
                 applicators.add(baseDataRecord.getApplicant());
 
                 List<String> applicatorEmails = new ArrayList<>();
                 applicatorEmails.add(baseDataRecord.getApplicantEmail());
-
+                String path = analysis.getSupplySendInfo().getSupplyPath();
                 if("内部发放".equals(baseDataRecord.getProvideType())){
                     supplies.add(baseDataRecord.getInAccepter());
                     supplyEmails.add(baseDataRecord.getInEmail());
+
                 }
 
                 if("外部发放".equals(baseDataRecord.getProvideType())){
                     supplies.add(baseDataRecord.getOutCpnyAccepter());//
                     supplyEmails.add(baseDataRecord.getOutCpnyEmail());
+                    SupplyFtpPath path1 = new SupplyFtpPath();
+                    path1.setFtpPath(path);
+                    publishDataDAO.insertSupplyFtpPath(path1);
                 }
-                emailBean.setSupplies(supplies);//
-                emailBean.setSupplyMails(supplyEmails);//
+
                 emailBean.setApplicatorMails(applicatorEmails);//申请人地址
                 emailBean.setApplicators(applicators);//申请人
-
+                emailBean.setFtpPath(path);
                 boolean b = analysis.sendMessage(ftpUploadResultBean,emailBean,baseDataRecord.getProcessNum());
                 boolean success = true;
                 for(FailBean failBean:ftpUploadResultBean.getFailList()){
@@ -536,27 +485,28 @@ public class PublishData {
                         break;
                     }
                 }
+                boolean b1 =false;
+                if(success && supplies.size()>0){
+                    EmailBean emailBean1 = new EmailBean();
+                    emailBean1.setApplicators(applicators);
+                    emailBean1.setSupplies(supplies);//供应商
+                    emailBean1.setSupplyMails(supplyEmails);//供应商邮件地址
+                    b1 = analysis.sendMessage(ftpUploadResultBean,emailBean1,baseDataRecord.getProcessNum());
+                }
 
-                if(b){
+                if(b && b1){
                     //更新发放时间
                     if(success){
                         publishDataDAO.updatePublishTime(processNum);
                         logger.error("数据发放成功!");
                     }
-                    return OperateResult.getSuccessResult();
-                }else {
-                    logger.error("邮件发送失败!请核对申请人地址："+emailBean.getApplicatorMails()+"；请核对收件人地址："+emailBean.getSupplyMails());
-                    return OperateResult.getFailResult();
                 }
-
             }
+            return OperateResult.getSuccessResult();
         }catch (Exception e){
             logger.error("数据发放失败!");
            return OperateResult.getFailResult();
         }
-        logger.error("未接收到数据发放相对应的参数!");
-        return OperateResult.getFailResult();
-
     }
 
     /**
@@ -672,6 +622,25 @@ public class PublishData {
             result.setErrMsg("文件清单发放失败，网络错误");
         }
         return result;
+    }
+
+    public void createSupplyFloder(String supplyCode){
+        PublishDataService publishDataService = new PublishDataServiceImpl();
+        HzSupplyRecord record = publishDataService.getHzSupplyRecord(supplyCode);
+        String path = "";
+        if(record !=null){
+            FtpPropertyLoader loader = new FtpPropertyLoader();
+            Properties properties = loader.getProperties();
+            path= "/suppliers/"+record.getSuppliersCode()+"-"+record.getSuppliersName();
+            int i  = FtpUtil.createFolder(properties.getProperty("FTP_BASEPATH"),path);
+            if(i ==1){
+                PublishDataDAO publishDataDAO = new PublishDataDAOImpl();
+                HzSupplyRecord  hzSupplyRecord = new HzSupplyRecord();
+                hzSupplyRecord.setSuppliersCode(supplyCode);
+                hzSupplyRecord.setOutCpnyFtpPath(path);
+                publishDataDAO.updateHzSupplyRecord(hzSupplyRecord);
+            }
+        }
     }
 
 }

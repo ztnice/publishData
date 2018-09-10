@@ -39,6 +39,7 @@
       <root url="jar://$PROJECT_DIR$/lib/spring-webmvc-5.0.5.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/sqljdbc4.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/wsdl4j-1.5.1.jar!/" />
+      <root url="jar://D:/apache-tomcat-9.0.0.M17/apache-tomcat-9.0.0.M17/lib/servlet-api.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/lib/druid-1.1.9-javadoc.jar!/" />

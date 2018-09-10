@@ -98,12 +98,13 @@
 	</select>
 
 
-	<insert id="PublishDataDAOImpl_insertItemBeanList" useGeneratedKeys="false" parameterType="java.util.List" >
-		insert into HZ_TEMPITEMRECORD ( BEL_PROCESS_NUM, ITEM_ID,
+	<insert id="PublishDataDAOImpl_insertItemBeanList" useGeneratedKeys="false" parameterType="java.util.List">
+
+		insert into HZ_TEMPITEMRECORD (BEL_PROCESS_NUM, ITEM_ID,
 		ITEM_NAME, ITEMREVISION, CATIA_DIGIFAX,
 		JT_DIGIFAX, CGR_DIGIFAX, CATIA_BLUEPRINT,
 		CAD_BLUEPRINT, OTHERS,CHANGE_FLAG)
-		<foreach collection="list" item="item" index="index"  separator="UNION ALL" >
+		<foreach collection="list" item="item" index="index" separator="UNION ALL">
 			SELECT
 			#{item.belProcessNum,jdbcType=VARCHAR},
 			#{item.itemId,jdbcType=VARCHAR},
@@ -118,6 +119,9 @@
 			#{item.changeFlag,jdbcType=INTEGER}
 			from DUAL
 		</foreach>
+		<selectKey keyProperty="id" resultType="java.math.BigDecimal">
+			select SEQ_HZ_TEMPITEMRECORD.currval as id from dual
+		</selectKey>
 	</insert>
 
 

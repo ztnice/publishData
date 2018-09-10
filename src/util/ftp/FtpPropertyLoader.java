@@ -1,6 +1,5 @@
 package util.ftp;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,8 +7,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FtpPropertyLoader {
-	/** 属性文件放在当前包下面即可，如果FTP服务器的位置改变了，需要改属性文件 */	private final static String filePath = "resource.properties";
-	private static String path2 = "C:\\Users\\Administrator\\Desktop\\commons-net-3.6-bin\\resource.properties";
+	/** 属性文件放在当前包下面即可，如果FTP服务器的位置改变了，需要改属性文件 */
+	private final static String filePath = "resource.properties";
 	private Properties Properties;
 
 	public FtpPropertyLoader() {
@@ -55,8 +54,6 @@ public class FtpPropertyLoader {
 		try {
 			File file = new File(filePath);
 			if (!file.exists()) {
-				System.out.println("没有找打属性文件" + filePath);
-				JOptionPane.showMessageDialog(null, "未找到属性文件", "错误", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			in = new FileInputStream(file);
@@ -75,8 +72,4 @@ public class FtpPropertyLoader {
 	public Properties getProperties() {
 		return Properties;
 	}
-//
-//	public static void main(String[] args) {
-//		new FtpPropertyLoader(path2);
-//	}
 }

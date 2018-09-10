@@ -11,7 +11,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MailToSupplier {
@@ -40,9 +39,6 @@ public class MailToSupplier {
 	private List<String> fileNames;
 	//零件清单
 	private List<String> itemNames;
-
-    public static  final String ITEM_TYPE = "零件名称";
-    public static  final String FILE_TYPE = "文件名称";
 
 	public MailToSupplier() {
 		props = loader.getProperties();
@@ -239,7 +235,6 @@ public class MailToSupplier {
 		}
 		sb.replace(0, 1, "");
 		br.close();
-		System.out.println(sb);
 		return sb;
 
 	}
@@ -263,7 +258,6 @@ public class MailToSupplier {
         }
         sb.replace(0, 1, "");
         br.close();
-        System.out.println(sb);
         return sb;
 
     }
@@ -290,7 +284,6 @@ public class MailToSupplier {
 		}
 		sb.replace(0, 1, "");
 		br.close();
-		System.out.println(sb);
 		return sb;
 	}
 
@@ -342,7 +335,7 @@ public class MailToSupplier {
 		for (String string : receiver) {
 			sb.append(string + ",");
 		}
-		sb.append("	好");
+		sb.append("	您好");
 		return sb;
 	}
 

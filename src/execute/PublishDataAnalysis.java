@@ -47,7 +47,7 @@ public class PublishDataAnalysis {
     private int documentErrorCountForTC;
 
     private String path="";
-    private static final String FTP_PATH = "ftp://10.0.8.231";
+    public static final String FTP_PATH = "ftp://10.1.0.231";
     private Date publishDate = new Date();
 
     private SupplySendInfo supplySendInfo;
@@ -399,25 +399,30 @@ public class PublishDataAnalysis {
             for (FtpItemUploadBean itemUploadBean : beans) {
                  this.supplySendInfo = new SupplySendInfo();
                 String ftpFilePath = "";
+                String ftpFilePath2="";
                 if(supplyCode == null){
                     if(dept == null){
-                        ftpFilePath = "/hozon/"+sdf.format(publishDate)+"//"+itemUploadBean.getItem_name();
-                        path = "/hozon/"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/hozon/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path = "/测试文件夹/hozon/"+sdf.format(publishDate);
                     }else {
                         supplySendInfo.setSupplyCode(dept);
-                        ftpFilePath = "/hozon/"+dept+"/"+sdf.format(publishDate)+"//"+itemUploadBean.getItem_name();
-                        path="/hozon/"+dept+"/"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path="/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyPath(path);
                     }
                 }else {
                     if(hzSupplyRecord == null){
-                        ftpFilePath = "/suppliers/"+sdf.format(publishDate)+"//"+itemUploadBean.getItem_name();
-                        path = "/suppliers/"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        ftpFilePath2 = "/测试文件夹/hozon/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path = "/测试文件夹/suppliers/"+sdf.format(publishDate);
                     }else {
                         supplySendInfo.setSupplyCode(hzSupplyRecord.getSuppliersCode());
-
-                        ftpFilePath = "/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"/"+sdf.format(publishDate)+"//"+itemUploadBean.getItem_name();
-                        path="/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"/"+sdf.format(publishDate);
+                        if(hzSupplyRecord.getOutCpnyFtpPath() == null){
+                            hzSupplyRecord.setOutCpnyFtpPath("/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
+                        }
+                        ftpFilePath = "/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        ftpFilePath2 = "/测试文件夹/hozon/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path="/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyPath(path);
 
                     }
@@ -447,7 +452,15 @@ public class PublishDataAnalysis {
                     }
                     if(this.itemErrorCountForTC == 0){
                         InputStream input = new FileInputStream(new File(filePath));
-                        int isSuccess = FtpUtil.uploadMFile(properties, properties.getProperty("FTP_BASEPATH"), ftpFilePath, fileName, input);
+                        InputStream inputStream = new FileInputStream(new File(filePath));
+                        InputStream[] inputStreams = new InputStream[]{input,inputStream};
+                        String[] s = new String[]{ftpFilePath,ftpFilePath2};
+//                        FtpUtil.uploadMFile(properties, properties.getProperty("FTP_BASEPATH"), ftpFilePath2, fileName, input);
+                        int isSuccess = FtpUtil.uploadMFile(properties, properties.getProperty("FTP_BASEPATH"), s, fileName, inputStreams);
+                        if(input!=null || inputStream!=null){
+                            input.close();
+                            inputStream.close();
+                        }
                         if (isSuccess != 1) {
                             failBean.setName(itemUploadBean.getItem_name());
                             failBean.setFailMsg(fileName+"上传FTP失败，网络错误");
@@ -509,21 +522,32 @@ public class PublishDataAnalysis {
             }
             for(FtpDocumentUploadBean documentUploadBean :documentUploadBeans){
                 String ftpFilePath = "";
+                String ftpFilePath2 = "";
+                this.supplySendInfo = new SupplySendInfo();
                 if(supplyCode == null){
                     if(dept == null){
-                        ftpFilePath = "/hozon/"+sdf.format(publishDate)+"//"+documentUploadBean.getDocument_name();
-                        path = "/hozon/"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/hozon/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path = "/测试文件夹/hozon/"+sdf.format(publishDate);
                     }else {
-                        ftpFilePath = "/hozon/"+dept+"//"+sdf.format(publishDate)+"//"+documentUploadBean.getDocument_name();
-                        path = "/hozon/"+dept+"//"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate);
+                        supplySendInfo.setSupplyCode(dept);
+                        supplySendInfo.setSupplyPath(path);
                     }
                 }else {
                     if(hzSupplyRecord == null){
-                        ftpFilePath = "/suppliers/"+sdf.format(publishDate)+"//"+documentUploadBean.getDocument_name();
-                        path="/suppliers/"+sdf.format(publishDate);
+                        ftpFilePath = "/测试文件夹/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        ftpFilePath2 = "/测试文件夹/hozon/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path="/测试文件夹/suppliers/"+sdf.format(publishDate);
                     }else {
-                        ftpFilePath = "/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"//"+sdf.format(publishDate)+"//"+documentUploadBean.getDocument_name();
-                        path="/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"//"+sdf.format(publishDate);
+                        if(hzSupplyRecord.getOutCpnyFtpPath() == null){
+                            hzSupplyRecord.setOutCpnyFtpPath("/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
+                        }
+                        ftpFilePath = "/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        ftpFilePath2 = "/测试文件夹/hozon/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path="/测试文件夹/"+hzSupplyRecord.getSuppliersCode()+"/"+sdf.format(publishDate);
+                        supplySendInfo.setSupplyCode(hzSupplyRecord.getSuppliersCode());
+                        supplySendInfo.setSupplyPath(path);
                     }
                 }
                 int documentCount = 0;
@@ -554,7 +578,16 @@ public class PublishDataAnalysis {
                     }
                     if(documentCount == 0 && this.itemErrorCountForTC == 0){
                         InputStream input = new FileInputStream(new File(filePath));
-                        int  isSuccess = FtpUtil.uploadMFile(properties,properties.getProperty("FTP_BASEPATH"),ftpFilePath, fileName, input);
+                        InputStream inputStream = new FileInputStream(new File(filePath));
+                        String[] s = new String[]{ftpFilePath,ftpFilePath2};
+                        InputStream[] inputStreams = new InputStream[]{input,inputStream};
+//                        FtpUtil.uploadMFile(properties,properties.getProperty("FTP_BASEPATH"),s, fileName, input);
+                        int  isSuccess = FtpUtil.uploadMFile(properties,properties.getProperty("FTP_BASEPATH"),s, fileName, inputStreams);
+                        if(input!=null || inputStream!=null){
+                            input.close();
+                            inputStream.close();
+                        }
+
                         if(isSuccess!=1){
                             failBean.setFailMsg(fileName+"上传FTP失败，网络错误！");
                             failBean.setName(documentUploadBean.getDocument_name());
@@ -598,48 +631,47 @@ public class PublishDataAnalysis {
         List<FailBean> failBeans = resultBean.getFailList();
         List<String> success= resultBean.getSuccessList();
 
+        if(emailBean.getApplicatorMails() != null){
+            MailToApplicant mailToApplicant = new MailToApplicant();
+            mailToApplicant.setFileName(success);
+            mailToApplicant.setFailFiles(failBeans);
+            mailToApplicant.setProcessNum(processNum);
 
-        MailToApplicant mailToApplicant = new MailToApplicant();
-        mailToApplicant.setFileName(success);
-        mailToApplicant.setFailFiles(failBeans);
-        mailToApplicant.setProcessNum(processNum);
-
-        mailToApplicant.setReceiver(emailBean.getApplicators());
-        mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
-        if(null != emailBean.getFtpPath() && !"".equals(emailBean.getFtpPath())){
-            mailToApplicant.setPath(FTP_PATH+emailBean.getFtpPath());
-        }
-
-
-
-
-        MailToSupplier mailToSupplier = new MailToSupplier();
-        mailToSupplier.setFileNames(success);
-
-        mailToSupplier.setReceiver(emailBean.getSupplies());
-        mailToSupplier.setReceiveMailAccount(emailBean.getSupplyMails());
-        mailToSupplier.setApplicant(emailBean.getApplicators());
-        if(null != emailBean.getFtpPath() && !"".equals(emailBean.getFtpPath())){
-            mailToSupplier.setPath(FTP_PATH+emailBean.getFtpPath());
-        }
-        try{
-            if(mailToApplicant != null && mailToApplicant.getReceiveMailAccount()!=null){
+            mailToApplicant.setReceiver(emailBean.getApplicators());
+            mailToApplicant.setReceiveMailAccount(emailBean.getApplicatorMails());
+            if(null != emailBean.getFtpPath() && !"".equals(emailBean.getFtpPath())){
+                mailToApplicant.setPath(FTP_PATH+emailBean.getFtpPath());
+            }
+            try {
                 boolean mailToApplication = mailToApplicant.release();
                 if(!mailToApplication){
                     logger.error("邮件发送失败，请核对收件人地址"+emailBean.getApplicatorMails());
                     throw new Exception("邮件发送失败，请核对收件人地址");
                 }
+            }catch (Exception e){
+                return false;
             }
-            if(mailToSupplier != null && mailToSupplier.getReceiveMailAccount()!=null){
+        }
+
+
+
+        if(emailBean.getSupplyMails() != null){
+            MailToSupplier mailToSupplier = new MailToSupplier();
+            mailToSupplier.setFileNames(success);
+
+            mailToSupplier.setReceiver(emailBean.getSupplies());
+            mailToSupplier.setReceiveMailAccount(emailBean.getSupplyMails());
+            mailToSupplier.setApplicant(emailBean.getApplicators());
+            mailToSupplier.setPath(FTP_PATH);
+            try {
                 boolean mailToSupp = mailToSupplier.release();
                 if(!mailToSupp){
                     logger.error("邮件发送失败，请核对收件人地址"+emailBean.getSupplyMails());
                     throw new Exception("邮件发送失败，请核对收件人地址");
                 }
+            }catch (Exception e){
+                return false;
             }
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
         }
         return true;
     }

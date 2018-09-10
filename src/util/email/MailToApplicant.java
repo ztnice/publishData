@@ -10,7 +10,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -19,14 +18,14 @@ public class MailToApplicant {
 	private static Logger logger = Logger.getLogger(MailToApplicant.class);
 	private PropertyLoader loader = new PropertyLoader();
 	private Session session;
-	private MimeMessage message;
-	private Transport transport;
+	private MimeMessage message ;
+	private Transport transport ;
 	private Properties props;
 	/** 邮件接人人姓名*/
 	private List<String> receiver;
 	/** 邮件接收者邮箱*/
 	private List<String> receiveMailAccount;
-	private boolean debug = true;
+//	private boolean debug = true;
 	private String path ="";
 
 	private String processNum;
@@ -40,43 +39,25 @@ public class MailToApplicant {
 	private List<String> realFileName;
 
 	public MailToApplicant() {
-		props = loader.getProperties();
-		session = Session.getInstance(props);
-		session.setDebug(debug);
+		this.props = loader.getProperties();
+		this.session = Session.getInstance(props);
+		this.session.setDebug(true);
 	}
 
 	public boolean release() {
 		try {
-			message = createMimeMessage(session, props.getProperty("myEmailAccount"), receiveMailAccount);
-			// // 4. 根据 Session 获取邮件传输对象
-			transport = session.getTransport();
-			// 5. 使用 邮箱账号 和 密码 连接邮件服务器, 这里认证的邮箱必须与 message 中的发件人邮箱一致, 否则报错
-			//
-			// PS_01: 成败的判断关键在此一句, 如果连接服务器失败, 都会在控制台输出相应失败原因的 log,
-			// 仔细查看失败原因, 有些邮箱服务器会返回错误码或查看错误类型的链接, 根据给出的错误
-			// 类型到对应邮件服务器的帮助网站上查看具体失败原因。
-			//
-			// PS_02: 连接失败的原因通常为以下几点, 仔细检查代码:
-			// (1) 邮箱没有开启 SMTP 服务;
-			// (2) 邮箱密码错误, 例如某些邮箱开启了独立密码;
-			// (3) 邮箱服务器要求必须要使用 SSL 安全连接;
-			// (4) 请求过于频繁或其他原因, 被邮件服务器拒绝服务;
-			// (5) 如果以上几点都确定无误, 到邮件服务器网站查找帮助。
-			// 452698545
-			// PS_03: 仔细看log, 认真看log, 看懂log, 错误原因都在log已说明。ilAccount"),
-			transport.connect(props.getProperty("mail.smtp.host"), props.getProperty("myEmailAccount"),
+//			PropertyLoader loader = new PropertyLoader();
+//			Properties props = loader.getProperties();
+//			Session session = Session.getInstance(props);
+			this.message = createMimeMessage(session, props.getProperty("myEmailAccount"), receiveMailAccount);
+			this.transport = session.getTransport();
+			this.transport.connect(props.getProperty("mail.smtp.host"), props.getProperty("myEmailAccount"),
 					props.getProperty("myEmailPassword"));
-			// transport.connect(myEmailAccount, myEmailPassword);
-			// 6. 发送邮件, 发到所有的收件地址, message.getAllRecipients()
-			// 获取到的是在创建邮件对象时添加的所有收件人,
-			// 抄送人, 密送人
-			transport.sendMessage(message, message.getAllRecipients());
-			transport.close();
+			this.transport.sendMessage(message, message.getAllRecipients());
+			this.transport.close();
 		} catch (Exception e) {
 			logger.error("邮箱无法连接，请核对网络稍后重试！");
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-//			MessageBox.post("邮件发送失败，请检查收件人邮箱:" + receiveMailAccount, "邮件发送失败", MessageBox.ERROR);
 			return false;
 		}
 		return true;
@@ -115,15 +96,7 @@ public class MailToApplicant {
 
 		sb.append(getMailHeadModel());
 		sb.append(getMailContent(failFiles));
-//		if(failFiles!=null&&failFiles.size()>0)
-//		sb.append(getFailContent(failFiles,type));
-//		sb.append("</table>");
-//		sb.append("</div>");
-//		sb.append(getHeadModelAnother(ITEM_TYPE));
-//		sb.append(getSuccContent(items));
-//		sb.append(getFailContent(itemFailFiles,ITEM_TYPE));
 		sb.append(getEndModel());
-		System.out.println(sb);
 		message.setContent(sb.toString(), "text/html;charset=UTF-8");
 
 		message.setSentDate(new Date());
@@ -136,69 +109,69 @@ public class MailToApplicant {
 
 
 
-	private StringBuilder getFailContent(List<FailBean> fileName2,String type) throws IOException, Exception {
-		InputStream inputStream = this.getClass().getResourceAsStream("applicantMid");
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-		String line = null;
-		StringBuilder sb = new StringBuilder();
-		while ((line = br.readLine()) != null) {
-			if (line.trim().equals("-----")) {
-				sb.append(addSupplier());
-				continue;
-			}
-			if(line.trim().equals("<th></th>")){
-				line = "<th>"+type+"</th>";
-			}
-			sb.append(line);
-			sb.append("\n");
-		}
-		// sb.replace(0, 1, "");
-		br.close();
-		if(fileName2!=null &&fileName2.size()>0){
-
-			for(int i= 0;i<fileName2.size();i++){
-				sb.append("<tr>");
-				sb.append("<td>");
-				sb.append(fileName2.get(i).getName());
-				sb.append("</td>");
-				sb.append("<td>");
-				sb.append(fileName2.get(i).getFailMsg());
-				sb.append("</td>");
-				sb.append("</tr>");
-			}
-
-
-		}
-
-//		for (int i = 0; i < fileName2.size(); i++) {
-//			sb.append("<tr>");
-//			sb.append("<td>");
-//			sb.append(fileName2.get(i));
-//			sb.append("</td>");
-//			sb.append("<td>");
-//			sb.append(fileName2.get(i));
-//			sb.append("</td>");
-//			sb.append("</tr>");
+//	private StringBuilder getFailContent(List<FailBean> fileName2,String type) throws IOException, Exception {
+//		InputStream inputStream = this.getClass().getResourceAsStream("applicantMid");
+//		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+//		String line = null;
+//		StringBuilder sb = new StringBuilder();
+//		while ((line = br.readLine()) != null) {
+//			if (line.trim().equals("-----")) {
+//				sb.append(addSupplier());
+//				continue;
+//			}
+//			if(line.trim().equals("<th></th>")){
+//				line = "<th>"+type+"</th>";
+//			}
+//			sb.append(line);
+//			sb.append("\n");
 //		}
-		return sb;
-	}
+//		// sb.replace(0, 1, "");
+//		br.close();
+//		if(fileName2!=null &&fileName2.size()>0){
+//
+//			for(int i= 0;i<fileName2.size();i++){
+//				sb.append("<tr>");
+//				sb.append("<td>");
+//				sb.append(fileName2.get(i).getName());
+//				sb.append("</td>");
+//				sb.append("<td>");
+//				sb.append(fileName2.get(i).getFailMsg());
+//				sb.append("</td>");
+//				sb.append("</tr>");
+//			}
+//
+//
+//		}
+//
+////		for (int i = 0; i < fileName2.size(); i++) {
+////			sb.append("<tr>");
+////			sb.append("<td>");
+////			sb.append(fileName2.get(i));
+////			sb.append("</td>");
+////			sb.append("<td>");
+////			sb.append(fileName2.get(i));
+////			sb.append("</td>");
+////			sb.append("</tr>");
+////		}
+//		return sb;
+//	}
 
 	/***
 	 *
 	 * @param fileName
 	 * @return
 	 */
-	private StringBuilder getSuccContent(List<String> fileName) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < fileName.size(); i++) {
-			sb.append("<tr>");
-			sb.append("<td>");
-			sb.append(fileName.get(i));
-			sb.append("</td>");
-			sb.append("</tr>");
-		}
-		return sb;
-	}
+//	private StringBuilder getSuccContent(List<String> fileName) {
+//		StringBuilder sb = new StringBuilder();
+//		for (int i = 0; i < fileName.size(); i++) {
+//			sb.append("<tr>");
+//			sb.append("<td>");
+//			sb.append(fileName.get(i));
+//			sb.append("</td>");
+//			sb.append("</tr>");
+//		}
+//		return sb;
+//	}
 
 	/**
 	 * 后期需求更改 邮件样式产生了变更
@@ -383,7 +356,7 @@ public class MailToApplicant {
 		for (String string : receiver) {
 			sb.append(string + ",");
 		}
-		sb.append("	好");
+		sb.append("	您好");
 		return sb;
 	}
 

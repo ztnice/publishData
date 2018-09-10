@@ -12,7 +12,6 @@ public class EmailBean {
 
     private List<String> applicators;
 
-
     private List<String> supplyMails;
 
     private List<String> applicatorMails;

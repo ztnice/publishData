@@ -41,8 +41,13 @@ public interface PublishDataDAO {
 
     HzSupplyRecord getHzSupplyRecord(Map map);
 
+    int updateHzSupplyRecord(HzSupplyRecord record);
 
     int updateItemChangeEffectTime(String itemId,String itemRevision,String processNum);
 
-    int updateDocumentEffectTime(String documentId);
+    int insertSupplyFtpPath(SupplyFtpPath ftpPath);
+
+    int deleteFtpPathList(List<SupplyFtpPath> paths);
+
+    List<SupplyFtpPath> findSupplyFtpPathList();
 }

@@ -49,4 +49,8 @@
         <extension>wsdl</extension>
         <mime-type>text/xml</mime-type>
     </mime-mapping>
+    <!-- 监听器配置  定时触发器-->
+    <listener>
+        <listener-class>task.RankTaskListener</listener-class>
+    </listener>
 </web-app>

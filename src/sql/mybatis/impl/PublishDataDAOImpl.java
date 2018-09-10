@@ -40,11 +40,16 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     @Override
     public int insertBaseData(HzTempMainRecord record) {
         return super.insert("PublishDataDAOImpl_insertBaseData",record);
+
     }
 
     @Override
     public int insertItemBeanList(List<HzTempItemRecord> itemRecords) {
-        return super.insert("PublishDataDAOImpl_insertItemBeanList",itemRecords);
+
+        int i = super.insert("PublishDataDAOImpl_insertItemBeanList",itemRecords);
+        long a =  itemRecords.get(0).getId();
+        System.out.println(a);
+        return  i ;
     }
 
     @Override
@@ -68,6 +73,11 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     }
 
     @Override
+    public int updateHzSupplyRecord (HzSupplyRecord record) {
+        return super.update("PublishDataDAOImpl_updateHzSupplyRecord",record);
+    }
+
+    @Override
     public int updateItemChangeEffectTime(String itemId,String itemRevision,String processNum) {
         Map<String,Object> map = new HashMap<>();
         map.put("itemId",itemId);
@@ -77,7 +87,19 @@ public class PublishDataDAOImpl extends BaseDAO implements PublishDataDAO {
     }
 
     @Override
-    public int updateDocumentEffectTime(String documentId) {
-        return super.update("PublishDataDAOImpl_updateDocumentEffectTime",documentId);
+    public int insertSupplyFtpPath(SupplyFtpPath ftpPath) {
+
+        return super.insert("PublishDataDAOImpl_insertSupplyFtpPath",ftpPath);
     }
+
+    @Override
+    public int deleteFtpPathList(List<SupplyFtpPath> paths) {
+        return super.update("PublishDataDAOImpl_deleteFtpPathList",paths);
+    }
+
+    @Override
+    public List<SupplyFtpPath> findSupplyFtpPathList() {
+        return super.findForList("PublishDataDAOImpl_findSupplyFtpPathList",null);
+    }
+
 }

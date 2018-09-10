@@ -262,6 +262,9 @@ public class PublishDataServiceImpl implements PublishDataService {
     public HzSupplyRecord getHzSupplyRecord(String supplyCode) {
         Map<String,Object> map = new HashMap<>();
         map.put("suppliersCode",supplyCode);
+        if(publishDataDAO == null){
+            publishDataDAO = new PublishDataDAOImpl();
+        }
         return publishDataDAO.getHzSupplyRecord(map);
     }
 

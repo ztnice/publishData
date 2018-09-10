@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SupplyFtpPathMapper">
+  <resultMap id="BaseResultMap" type="sql.dbdo.SupplyFtpPath">
+    <id column="id" jdbcType="DOUBLE" property="id" />
+    <result column="ftp_path" jdbcType="VARCHAR" property="ftpPath" />
+    <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, ftp_path, publish_time,status
+  </sql>
+  
+  <select id="PublishDataDAOImpl_findSupplyFtpPathList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from HZ_SUPPLY_FTPPATH_RECORD
+    where status =1
+  </select>
+  
+  
+  <insert id="PublishDataDAOImpl_insertSupplyFtpPath" parameterType="sql.dbdo.SupplyFtpPath">
+    insert into HZ_SUPPLY_FTPPATH_RECORD (id, ftp_path, publish_time,status
+      )
+    values (SEQ_HZ_SUPPLY_FTPPATH_RECORD.nextval, #{ftpPath,jdbcType=VARCHAR}, sysdate,1
+      )
+  </insert>
+  
+  
+  <update id="PublishDataDAOImpl_deleteFtpPathList" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+      update HZ_SUPPLY_FTPPATH_RECORD
+      <set>
+        status = 0
+      </set>
+      where id = #{item.id,jdbcType=DOUBLE}
+    </foreach>
+  </update>
+</mapper>

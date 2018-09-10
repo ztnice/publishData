@@ -23,5 +23,11 @@
     where SUPPLIERS_CODE = #{suppliersCode,jdbcType=VARCHAR}
   </select>
 
+  <update id="PublishDataDAOImpl_updateHzSupplyRecord" parameterType="sql.dbdo.HzSupplyRecord">
+    update HZ_QUERY_SUPPLIERS set OUT_CPNY_FTP_PATH = #{outCpnyFtpPath,jdbcType=VARCHAR}
+    where SUPPLIERS_CODE = #{suppliersCode,jdbcType=VARCHAR}
+  </update>
+
+
   
 </mapper>
