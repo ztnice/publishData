@@ -76,7 +76,4 @@ public class PropertyLoader {
 		return Properties;
 	}
 
-//	public static void main(String[] args) {
-//		new PropertyLoader(path2);
-//	}
 }

@@ -5,22 +5,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema elementFormDefault="qualified" targetNamespace="http://execute" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://bean"/>
-   <element name="supplyCode" type="xsd:string"/>
-   <complexType name="ArrayOf_xsd_anyType">
-    <sequence>
-     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
-    </sequence>
-   </complexType>
-   <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
-   <element name="publishDocumentBeanReturn" type="tns1:Result"/>
-   <element name="processNums">
-    <complexType>
-     <sequence>
-      <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="publishDataFromTcReturn" type="tns1:OperateResult"/>
    <element name="ddddd">
     <complexType>
      <sequence>
@@ -29,28 +13,44 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     </complexType>
    </element>
    <element name="publishDataFromTcChangeReturn" type="tns1:OperateResult"/>
-   <element name="baseDataBean" type="tns1:BaseDataBean"/>
-   <element name="publishBaseDataReturn" type="tns1:Result"/>
+   <element name="processNums">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="publishDataFromTcReturn" type="tns1:OperateResult"/>
+   <complexType name="ArrayOf_xsd_anyType">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <element name="documentBean" type="impl:ArrayOf_xsd_anyType"/>
+   <element name="publishDocumentBeanReturn" type="tns1:Result"/>
+   <element name="supplyCode" type="xsd:string"/>
    <element name="itemBean" type="impl:ArrayOf_xsd_anyType"/>
    <element name="publishItemBeanReturn" type="tns1:Result"/>
-   <element name="baseDataBean1" type="tns1:BaseDataBean"/>
+   <element name="baseDataBean" type="tns1:BaseDataBean"/>
    <element name="items" type="impl:ArrayOf_xsd_anyType"/>
    <element name="documents" type="impl:ArrayOf_xsd_anyType"/>
    <element name="publishDataReturn" type="tns1:Result"/>
+   <element name="baseDataBean1" type="tns1:BaseDataBean"/>
+   <element name="publishBaseDataReturn" type="tns1:Result"/>
   </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://bean" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://execute"/>
+   <complexType name="OperateResult">
+    <sequence>
+     <element name="errCode" nillable="true" type="xsd:long"/>
+     <element name="errMsg" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
    <complexType name="Result">
     <sequence>
      <element name="errCode" nillable="true" type="xsd:int"/>
      <element name="errMsg" nillable="true" type="xsd:string"/>
      <element name="success" type="xsd:boolean"/>
-    </sequence>
-   </complexType>
-   <complexType name="OperateResult">
-    <sequence>
-     <element name="errCode" nillable="true" type="xsd:long"/>
-     <element name="errMsg" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
    <complexType name="Supplier">
@@ -99,21 +99,21 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="publishDocumentBeanResponse">
-
-      <wsdl:part element="impl:publishDocumentBeanReturn" name="publishDocumentBeanReturn"/>
-
-   </wsdl:message>
-
    <wsdl:message name="publishDataFromTcChangeResponse">
 
       <wsdl:part element="impl:publishDataFromTcChangeReturn" name="publishDataFromTcChangeReturn"/>
 
    </wsdl:message>
 
+   <wsdl:message name="publishDocumentBeanResponse">
+
+      <wsdl:part element="impl:publishDocumentBeanReturn" name="publishDocumentBeanReturn"/>
+
+   </wsdl:message>
+
    <wsdl:message name="publishBaseDataRequest">
 
-      <wsdl:part element="impl:baseDataBean" name="baseDataBean"/>
+      <wsdl:part element="impl:baseDataBean1" name="baseDataBean"/>
 
    </wsdl:message>
 
@@ -135,7 +135,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="publishDataRequest">
 
-      <wsdl:part element="impl:baseDataBean1" name="baseDataBean"/>
+      <wsdl:part element="impl:baseDataBean" name="baseDataBean"/>
 
       <wsdl:part element="impl:items" name="items"/>
 
@@ -169,19 +169,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:portType name="PublishData">
 
-      <wsdl:operation name="createSupplyFloder" parameterOrder="supplyCode">
+      <wsdl:operation name="publishDataFromTcChange" parameterOrder="ddddd">
 
-         <wsdl:input message="impl:createSupplyFloderRequest" name="createSupplyFloderRequest"/>
+         <wsdl:input message="impl:publishDataFromTcChangeRequest" name="publishDataFromTcChangeRequest"/>
 
-         <wsdl:output message="impl:createSupplyFloderResponse" name="createSupplyFloderResponse"/>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="publishDocumentBean" parameterOrder="documentBean">
-
-         <wsdl:input message="impl:publishDocumentBeanRequest" name="publishDocumentBeanRequest"/>
-
-         <wsdl:output message="impl:publishDocumentBeanResponse" name="publishDocumentBeanResponse"/>
+         <wsdl:output message="impl:publishDataFromTcChangeResponse" name="publishDataFromTcChangeResponse"/>
 
       </wsdl:operation>
 
@@ -193,19 +185,19 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="publishDataFromTcChange" parameterOrder="ddddd">
+      <wsdl:operation name="publishDocumentBean" parameterOrder="documentBean">
 
-         <wsdl:input message="impl:publishDataFromTcChangeRequest" name="publishDataFromTcChangeRequest"/>
+         <wsdl:input message="impl:publishDocumentBeanRequest" name="publishDocumentBeanRequest"/>
 
-         <wsdl:output message="impl:publishDataFromTcChangeResponse" name="publishDataFromTcChangeResponse"/>
+         <wsdl:output message="impl:publishDocumentBeanResponse" name="publishDocumentBeanResponse"/>
 
       </wsdl:operation>
 
-      <wsdl:operation name="publishBaseData" parameterOrder="baseDataBean">
+      <wsdl:operation name="createSupplyFloder" parameterOrder="supplyCode">
 
-         <wsdl:input message="impl:publishBaseDataRequest" name="publishBaseDataRequest"/>
+         <wsdl:input message="impl:createSupplyFloderRequest" name="createSupplyFloderRequest"/>
 
-         <wsdl:output message="impl:publishBaseDataResponse" name="publishBaseDataResponse"/>
+         <wsdl:output message="impl:createSupplyFloderResponse" name="createSupplyFloderResponse"/>
 
       </wsdl:operation>
 
@@ -225,41 +217,31 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="publishBaseData" parameterOrder="baseDataBean">
+
+         <wsdl:input message="impl:publishBaseDataRequest" name="publishBaseDataRequest"/>
+
+         <wsdl:output message="impl:publishBaseDataResponse" name="publishBaseDataResponse"/>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="PublishDataSoapBinding" type="impl:PublishData">
 
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
-      <wsdl:operation name="createSupplyFloder">
+      <wsdl:operation name="publishDataFromTcChange">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="createSupplyFloderRequest">
+         <wsdl:input name="publishDataFromTcChangeRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="createSupplyFloderResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="publishDocumentBean">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="publishDocumentBeanRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="publishDocumentBeanResponse">
+         <wsdl:output name="publishDataFromTcChangeResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -285,17 +267,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="publishDataFromTcChange">
+      <wsdl:operation name="publishDocumentBean">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="publishDataFromTcChangeRequest">
+         <wsdl:input name="publishDocumentBeanRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="publishDataFromTcChangeResponse">
+         <wsdl:output name="publishDocumentBeanResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -303,17 +285,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="publishBaseData">
+      <wsdl:operation name="createSupplyFloder">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="publishBaseDataRequest">
+         <wsdl:input name="createSupplyFloderRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="publishBaseDataResponse">
+         <wsdl:output name="createSupplyFloderResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -350,6 +332,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="publishDataResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="publishBaseData">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishBaseDataRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishBaseDataResponse">
 
             <wsdlsoap:body use="literal"/>
 

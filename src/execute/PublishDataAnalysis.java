@@ -47,7 +47,7 @@ public class PublishDataAnalysis {
     private int documentErrorCountForTC;
 
     private String path="";
-    public static final String FTP_PATH = "ftp://10.1.0.231";
+    public static final String FTP_PATH = "ftp://10.0.6.10";
     private Date publishDate = new Date();
 
     private SupplySendInfo supplySendInfo;
@@ -402,27 +402,27 @@ public class PublishDataAnalysis {
                 String ftpFilePath2="";
                 if(supplyCode == null){
                     if(dept == null){
-                        ftpFilePath = "/测试文件夹/hozon/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        path = "/测试文件夹/hozon/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/hozon/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path = "/TCDataSet/hozon/"+sdf.format(publishDate);
                     }else {
                         supplySendInfo.setSupplyCode(dept);
-                        ftpFilePath = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        path="/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path="/TCDataSet/hozon/"+dept+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyPath(path);
                     }
                 }else {
                     if(hzSupplyRecord == null){
-                        ftpFilePath = "/测试文件夹/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        ftpFilePath2 = "/测试文件夹/hozon/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        path = "/测试文件夹/suppliers/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        ftpFilePath2 = "/TCDataSet/hozon/suppliers/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path = "/TCDataSet/suppliers/"+sdf.format(publishDate);
                     }else {
                         supplySendInfo.setSupplyCode(hzSupplyRecord.getSuppliersCode());
                         if(hzSupplyRecord.getOutCpnyFtpPath() == null){
-                            hzSupplyRecord.setOutCpnyFtpPath("/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
+                            hzSupplyRecord.setOutCpnyFtpPath("/TCDataSet/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
                         }
-                        ftpFilePath = "/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        ftpFilePath2 = "/测试文件夹/hozon/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
-                        path="/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate);
+                        ftpFilePath = hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        ftpFilePath2 = "/TCDataSet/hozon/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+"/"+sdf.format(publishDate)+"/"+itemUploadBean.getItem_name();
+                        path=hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyPath(path);
 
                     }
@@ -526,26 +526,26 @@ public class PublishDataAnalysis {
                 this.supplySendInfo = new SupplySendInfo();
                 if(supplyCode == null){
                     if(dept == null){
-                        ftpFilePath = "/测试文件夹/hozon/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        path = "/测试文件夹/hozon/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/hozon/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path = "/TCDataSet/hozon/"+sdf.format(publishDate);
                     }else {
-                        ftpFilePath = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        path = "/测试文件夹/hozon/"+dept+"/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/hozon/"+dept+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path = "/TCDataSet/hozon/"+dept+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyCode(dept);
                         supplySendInfo.setSupplyPath(path);
                     }
                 }else {
                     if(hzSupplyRecord == null){
-                        ftpFilePath = "/测试文件夹/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        ftpFilePath2 = "/测试文件夹/hozon/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        path="/测试文件夹/suppliers/"+sdf.format(publishDate);
+                        ftpFilePath = "/TCDataSet/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        ftpFilePath2 = "/TCDataSet/hozon/suppliers/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path="/TCDataSet/suppliers/"+sdf.format(publishDate);
                     }else {
                         if(hzSupplyRecord.getOutCpnyFtpPath() == null){
-                            hzSupplyRecord.setOutCpnyFtpPath("/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
+                            hzSupplyRecord.setOutCpnyFtpPath("/TCDataSet/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName());
                         }
-                        ftpFilePath = "/测试文件夹/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        ftpFilePath2 = "/测试文件夹/hozon/"+hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
-                        path="/测试文件夹/"+hzSupplyRecord.getSuppliersCode()+"/"+sdf.format(publishDate);
+                        ftpFilePath = hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        ftpFilePath2 = "/TCDataSet/hozon/suppliers/"+hzSupplyRecord.getSuppliersCode()+"-"+hzSupplyRecord.getSuppliersName()+sdf.format(publishDate)+"/"+documentUploadBean.getDocument_name();
+                        path=hzSupplyRecord.getOutCpnyFtpPath()+"/"+sdf.format(publishDate);
                         supplySendInfo.setSupplyCode(hzSupplyRecord.getSuppliersCode());
                         supplySendInfo.setSupplyPath(path);
                     }

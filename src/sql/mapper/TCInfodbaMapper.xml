@@ -35,18 +35,75 @@
 
 	<select id="PublishDataDAOImpl_getTCInfodbaRecordList" parameterType="sql.dbdo.TCInfodbaRecord"
 			resultMap="BaseResultMap">
-	select t.puid,t.pfile_name,t.psd_path_name,t2.pwnt_path_name,t.poriginal_file_name from PIMANFILE t ,PIMANVOLUME t2
-    where t.pfile_name in (
-         SELECT t_02.pfile_name FROM PPOM_OBJECT t_01 , PIMANFILE t_02 , PPOM_OBJECT t_03 , PIMANVOLUME t_04
-              WHERE (
-                  ( t_02.puid in (select t.pvalu_0 from PREF_LIST_0 t where t.puid in (SELECT  DISTINCT t_01.rsecondary_objectu FROM PIMANRELATION t_01 WHERE (
- ( t_01.rprimary_objectu = (select t.puid from PITEMREVISION t where t.ritems_tagu=(select t_01.puid from PITEM t_01 where t_01.pitem_id=#{itemId,jdbcType=VARCHAR}) and t.pitem_revision_id=#{itemRevision,jdbcType=VARCHAR}
-) )  )))
-                      AND ( t_02.rvolume_tagu = t_04.puid ) )
-                  AND ( t_01.puid = t_02.puid AND t_03.puid = t_04.puid )
-              )
-    )
+	SELECT
+	T .puid,
+	T .pfile_name,
+	T .psd_path_name,
+	t2.pwnt_path_name,
+	T .poriginal_file_name
+	FROM
+	PIMANFILE T,
+	PIMANVOLUME t2
+	WHERE
+	T .pfile_name IN (
+	SELECT
+	t_02.pfile_name
+	FROM
+	PPOM_OBJECT t_01,
+	PIMANFILE t_02,
+	PPOM_OBJECT t_03,
+	PIMANVOLUME t_04
+	WHERE
+	(
+	(
+	t_02.puid IN (
+	SELECT
+	T .pvalu_0
+	FROM
+	PREF_LIST_0 T
+	WHERE
+	T .puid IN (
+	SELECT DISTINCT
+	t_01.rsecondary_objectu
+	FROM
+	PIMANRELATION t_01
+	WHERE
+	(
+	(
+	t_01.rprimary_objectu = (
+	SELECT
+	*
+	FROM
+	(
+	SELECT
+	T .puid
+	FROM
+	PITEMREVISION T
+	WHERE
+	T .ritems_tagu = (
+	select t_01.puid from PITEM t_01 where t_01.pitem_id=#{itemId,jdbcType=VARCHAR}) and t.pitem_revision_id=#{itemRevision,jdbcType=VARCHAR}
+	ORDER BY
+	T .PSEQUENCE_ID DESC
+	)
+	WHERE
+	ROWNUM = 1
+	)
+	)
+	)
+	)
+	)
+	AND (
+	t_02.rvolume_tagu = t_04.puid
+	)
+	)
+	AND (
+	t_01.puid = t_02.puid
+	AND t_03.puid = t_04.puid
+	)
+	)
+	)
 	</select>
+
 
 
 </mapper>

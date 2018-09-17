@@ -1,9 +1,6 @@
 package util.ftp;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.ftp.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -25,7 +22,7 @@ public class FtpUtil extends FTPFile {
 
 		/** 全部上传成功 */
 		int flag = FTP_UPLOAD_ALL_SUCCESS;
-		FTPClient ftp = initConnectFtp();
+		FTPClient ftp = initConnectFtp(2);
 		try {
 			// 切换到上传目录
 			String p ="";
@@ -76,7 +73,7 @@ public class FtpUtil extends FTPFile {
 
 	public static int createFolder(String basePath, String filePath) {
 		int flag = FTP_UPLOAD_ALL_SUCCESS;
-		FTPClient ftp = initConnectFtp();
+		FTPClient ftp = initConnectFtp(2);
 		try {
 			// 切换到上传目录
 			if(ftp!=null){
@@ -121,8 +118,13 @@ public class FtpUtil extends FTPFile {
 	 * 初始化连接
 	 * @return
 	 */
-	public static FTPClient initConnectFtp(){
+	public static FTPClient initConnectFtp(int i){
 		FTPClient ftp = new FTPClient();
+		if(i == 1){
+			ftp.setControlEncoding("UTF-8");
+			FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_NT);
+			conf.setServerLanguageCode("zh");
+		}
 		try {
 			int reply;
 			FtpPropertyLoader loader = new FtpPropertyLoader();
@@ -148,8 +150,8 @@ public class FtpUtil extends FTPFile {
 	 * @param pathName
 	 * @return
 	 */
-	public static boolean removeDirectoryALLFile(String pathName) {
-		FTPClient ftp = initConnectFtp();
+	public static boolean removeDirectoryALLFile(String pathName){
+		FTPClient ftp = initConnectFtp(1);
 		try {
 			if(ftp!=null){
 				FTPFile[] files = ftp.listFiles(pathName);
@@ -198,19 +200,4 @@ public class FtpUtil extends FTPFile {
 		}
 	}
 
-//	public static void main(String[] a) throws Exception{
-//		FtpPropertyLoader loader = new FtpPropertyLoader();
-//		Properties properties = loader.getProperties();
-//		String path = "E:/Siemens/ftp/root/hozon/suppliers/CS2-CS2/2018-09-06 14-36-29";
-//		FTPClient ftpClient = initConnectFtp();
-//
-//		String p ="/suppliers/CS3-CS3/2018-09-10 13-55-30";
-//		boolean s = removeDirectoryALLFile(p);
-//		boolean b = ftpClient.deleteFile(p);
-//		boolean b  = removeAll(p);
-//		deleteFile(pa);
-//		createFolder(properties,properties.getProperty("FTP_BASEPATH"),"bb/cc");
-//		System.out.println(s);
-//		createFolder("11","cs3-cs2");
-//	}
 }

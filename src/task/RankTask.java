@@ -3,6 +3,7 @@ package task;
 import sql.dbdo.SupplyFtpPath;
 import sql.mybatis.impl.PublishDataDAOImpl;
 import sql.mybatis.inter.PublishDataDAO;
+import util.DateUtil;
 import util.ftp.FtpUtil;
 
 import java.util.ArrayList;
@@ -23,10 +24,10 @@ public class RankTask extends TimerTask {
         List<SupplyFtpPath> list1 = new ArrayList<>();
         if(list != null && list.size()>0){
             for(SupplyFtpPath path:list){
-//                long diff = DateUtil.daysDiff(new Date(),path.getPublishTime());
-                long diff = (new Date().getTime() - (path.getPublishTime().getTime()))/(1000*60);//分钟
+                long diff = DateUtil.daysDiff(path.getPublishTime(),new Date());//天数
+//                long diff = (new Date().getTime() - (path.getPublishTime().getTime()))/(1000*60);//分钟
                 String p = path.getFtpPath();
-                if(diff >= 10){
+                if(diff >= 7){
                     boolean b = FtpUtil.removeDirectoryALLFile(p);
                     if(b){
                         list1.add(path);
